@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leader session 4 · What a sample can say - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Leader session 4 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Leader session 4 of 6</div>
+    <h1>What a sample can say, <span class="accent">and why you can trust it</span></h1>
+    <p class="sub">You almost never see all the data. You see a slice - a survey, a test cell, last week's traffic - and you decide as if it spoke for the whole. This session is about when that leap is safe and when it lies. The good news is one of the most useful results in all of statistics: the average of a fair sample behaves so predictably that a few thousand people can tell you what millions think. The catch is that a biased slice lies no matter how big it gets. No math you have to do, no code.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Building up</span>
+      <span class="chip audience">Leaders · C-level / PM / marketing</span>
+      <span class="chip audience">No code</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:4">3-22 · A sample stands in</span>
+      <span class="a3" style="flex:4">22-38 · The CLT</span>
+      <span class="a4" style="flex:2">38-45 · See it &amp; wrap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Every number you read is a slice</h2>
+    </div>
+    <p class="lede">When Lumen Skincare, the brand we follow through this course, reports "customers rate us 4.6 stars" or "conversion is 3.2%", nobody measured every customer or every session forever. Someone measured a sample and let it stand in for the whole. That leap is the quiet engine under every dashboard, poll, and A/B test - and it is either the most powerful tool you have or the most convincing way to fool yourself, depending on one thing: whether the sample was fair. This session gives you the instinct to tell the difference, and the single idea that makes fair samples trustworthy.</p>
+    <div class="legend">
+      <span class="pill solid">Live - covered in session</span>
+      <span class="pill light">Self-study - read after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      Two things that make you hard to fool with data. First, bigger is not better if the sample is biased - a lopsided slice lies at any size, and no sample size fixes a broken way of collecting it. Second, the Central Limit Theorem: the <em>average</em> of a fair sample is itself bell-shaped and clusters near the truth, tightening as the sample grows - which is exactly why a well-run poll of ~1,000 people can read a whole nation.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: A SAMPLE STANDS IN ============ -->
+  <section class="section" id="sample">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the reading skill</span>
+      <h2>A sample stands in for the whole <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">A population is everyone you care about; a sample is the slice you actually measure. The whole game is whether the slice looks like the whole. A fair sample misses the truth by a little, at random, and that gap - sampling error - shrinks as you measure more. A biased sample misses in one direction on purpose, and that gap does not shrink at all. Telling those two apart is the most valuable habit in this session.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A population cloud of mixed dots on the left, with two samples drawn from it: a representative sample that mirrors the mix, and a biased sample that scoops only from one corner and looks nothing like the whole.">
+        <style>
+          .smP-L { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .smP-T { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .smP-N { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .smP-hi { fill: #0E7C90; }
+          .smP-lo { fill: #7FD1DE; }
+          .smP-arm { stroke: #B4D2D9; stroke-width: 2; fill: none; }
+        </style>
+        <text class="smP-L" x="30" y="28">Two samples from one population - only one tells the truth</text>
+        <!-- population cloud -->
+        <rect x="40" y="55" width="240" height="230" rx="14" fill="#E6F6F9" stroke="#B4D2D9" stroke-width="1.5"/>
+        <text class="smP-N" x="90" y="75" style="fill:#10232A">the whole population</text>
+        <!-- mixed dots: happy (hi) and unhappy (lo) scattered -->
+        <g>
+          <circle class="smP-hi" cx="80"  cy="105" r="7"/>
+          <circle class="smP-lo" cx="120" cy="100" r="7"/>
+          <circle class="smP-hi" cx="165" cy="110" r="7"/>
+          <circle class="smP-lo" cx="210" cy="105" r="7"/>
+          <circle class="smP-hi" cx="250" cy="120" r="7"/>
+          <circle class="smP-lo" cx="90"  cy="150" r="7"/>
+          <circle class="smP-hi" cx="135" cy="155" r="7"/>
+          <circle class="smP-lo" cx="180" cy="150" r="7"/>
+          <circle class="smP-hi" cx="225" cy="160" r="7"/>
+          <circle class="smP-lo" cx="70"  cy="200" r="7"/>
+          <circle class="smP-hi" cx="115" cy="205" r="7"/>
+          <circle class="smP-lo" cx="160" cy="200" r="7"/>
+          <circle class="smP-hi" cx="205" cy="210" r="7"/>
+          <circle class="smP-lo" cx="250" cy="205" r="7"/>
+          <circle class="smP-hi" cx="95"  cy="250" r="7"/>
+          <circle class="smP-lo" cx="150" cy="255" r="7"/>
+          <circle class="smP-hi" cx="215" cy="250" r="7"/>
+        </g>
+        <!-- arms -->
+        <path class="smP-arm" d="M280 130 L470 110"/>
+        <path class="smP-arm" d="M280 220 L470 240"/>
+        <!-- representative sample -->
+        <rect x="470" y="70" width="330" height="86" rx="10" fill="#FFFFFF" stroke="#0E7C90" stroke-width="2"/>
+        <rect x="470" y="70" width="330" height="24" rx="10" fill="#0E7C90"/>
+        <text class="smP-T" x="486" y="87">Representative sample - mirrors the mix</text>
+        <circle class="smP-hi" cx="510" cy="126" r="7"/>
+        <circle class="smP-lo" cx="545" cy="126" r="7"/>
+        <circle class="smP-hi" cx="580" cy="126" r="7"/>
+        <circle class="smP-lo" cx="615" cy="126" r="7"/>
+        <circle class="smP-hi" cx="650" cy="126" r="7"/>
+        <circle class="smP-lo" cx="685" cy="126" r="7"/>
+        <text class="smP-N" x="710" y="131" style="fill:#10232A">reads the truth</text>
+        <!-- biased sample -->
+        <rect x="470" y="200" width="330" height="86" rx="10" fill="#FFFFFF" stroke="#F97362" stroke-width="2"/>
+        <rect x="470" y="200" width="330" height="24" rx="10" fill="#F97362"/>
+        <text class="smP-T" x="486" y="217">Biased sample - only the happy corner</text>
+        <circle class="smP-hi" cx="510" cy="256" r="7"/>
+        <circle class="smP-hi" cx="545" cy="256" r="7"/>
+        <circle class="smP-hi" cx="580" cy="256" r="7"/>
+        <circle class="smP-hi" cx="615" cy="256" r="7"/>
+        <circle class="smP-hi" cx="650" cy="256" r="7"/>
+        <circle class="smP-hi" cx="685" cy="256" r="7"/>
+        <text class="smP-N" x="710" y="261" style="fill:#F97362">lies at any size</text>
+        <rect x="40" y="308" width="14" height="14" rx="3" fill="#F97362"/>
+        <text class="smP-N" x="62" y="319" style="fill:#10232A">A fair sample looks like the population in miniature. A biased one over-picks one kind - and adding more of the same kind only makes the lie more confident.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - a bigger biased sample is a more confident wrong answer, not a better one</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Population, sample, and the two ways a sample can miss<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Every sample misses the truth somehow. There are two very different kinds of miss, and only one of them is fixable by measuring more:</p>
+        <ul>
+          <li><strong>Sampling error</strong> - the honest, random gap between a fair sample and the whole. It points in no particular direction and <em>shrinks</em> as the sample grows. This is the "give or take" in every poll.</li>
+          <li><strong>Sampling bias</strong> - a lopsided way of choosing who gets measured, so the slice leans one way on purpose. It does <em>not</em> shrink with size. A survey of only people who opted in, only recent buyers, only weekday traffic - each quietly tilts the answer.</li>
+          <li><strong>The trap:</strong> a big number feels authoritative. "We heard from 50,000 customers" sounds unarguable. But 50,000 of the wrong customers is just a very loud wrong answer.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Ask "who is missing?" before "how many?"</strong>
+          The first question about any sample is not its size but who never got the chance to be in it. If a whole kind of person or session was structurally excluded, no sample size rescues the number.
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Bias in disguise: the surveys that only hear the happy<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Sampling bias rarely announces itself. It hides in how the data was collected:</p>
+        <ul>
+          <li><strong>Self-selection</strong> - people who volunteer to answer are different from those who ignore you. Voluntary reviews skew to the delighted and the furious, not the quiet middle.</li>
+          <li><strong>Survivorship</strong> - measuring only who stuck around. A churn survey sent to current customers cannot hear from the ones who already left.</li>
+          <li><strong>Coverage gaps</strong> - the channel of collection excludes people. A pop-up survey only hears from desktop users who did not close it.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Lumen runs a post-purchase survey and celebrates a 4.6-star average. But the survey only fires <em>after</em> checkout - so it only ever hears from people who bought. Everyone who bounced at the price, hit a broken coupon, or abandoned the cart is invisible. The 4.6 is real for buyers and useless as a read on the whole audience. Growth nearly set the roadmap on a number that structurally could not see its own biggest problem: the people who never became customers.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: THE CLT ============ -->
+  <section class="section" id="clt">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · the one big idea</span>
+      <h2>The Central Limit Theorem <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">Here is the result that makes trusting a fair sample possible at all. If you take a fair sample and compute its average, that average is remarkably well-behaved: across many samples it forms a bell curve, centered on the true value, and it gets tighter as the sample grows. This holds even when the raw data is nothing like a bell. It is the quiet reason polls, dashboards, and A/B tests work - and it hides the single most common misunderstanding in all of statistics.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A skewed population on the left, and three distributions of the sample mean for growing sample sizes n equals 2, 10, and 50, each one narrower and more bell-shaped and centered on the truth.">
+        <style>
+          .clT-L { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .clT-H { font: 700 12px Inter, sans-serif; fill: #0B5563; }
+          .clT-N { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .clT-skew { fill: #7FD1DE; stroke: #0E7C90; stroke-width: 2; }
+          .clT-m1 { fill: #7FD1DE; stroke: #0B5563; stroke-width: 2; }
+          .clT-m2 { fill: #22A5B8; stroke: #0B5563; stroke-width: 2; }
+          .clT-m3 { fill: #0E7C90; stroke: #0B5563; stroke-width: 2; }
+        </style>
+        <text class="clT-L" x="30" y="26">The raw data stays skewed forever - but the average of a sample goes bell-shaped and tightens</text>
+        <!-- population (skewed) -->
+        <text class="clT-H" x="40" y="66">The population (order values)</text>
+        <path class="clT-skew" d="M40 220 C 60 220, 70 90, 110 90 C 150 90, 170 175, 220 200 C 280 230, 360 236, 420 236 L 420 220 Z"/>
+        <line x1="40" y1="220" x2="420" y2="220" stroke="#B4D2D9" stroke-width="1.5"/>
+        <line x1="150" y1="90" x2="150" y2="236" stroke="#F97362" stroke-width="2" stroke-dasharray="5 4"/>
+        <text class="clT-N" x="158" y="120" style="fill:#F97362">the true mean</text>
+        <text class="clT-N" x="40" y="256" style="fill:#10232A">right-skewed, a long tail of big orders - not a bell at all</text>
+        <!-- distributions of the sample mean, narrowing -->
+        <text class="clT-H" x="470" y="66">Distribution of the sample MEAN</text>
+        <line x1="470" y1="220" x2="850" y2="220" stroke="#B4D2D9" stroke-width="1.5"/>
+        <line x1="660" y1="80" x2="660" y2="236" stroke="#F97362" stroke-width="2" stroke-dasharray="5 4"/>
+        <text class="clT-N" x="600" y="252" style="fill:#F97362">all centered on the same true mean</text>
+        <!-- n=2 wide, low -->
+        <path class="clT-m1" d="M490 220 C 560 220, 600 175, 660 175 C 720 175, 760 220, 830 220 Z"/>
+        <!-- n=10 medium -->
+        <path class="clT-m2" d="M560 220 C 610 220, 640 135, 660 135 C 680 135, 710 220, 760 220 Z"/>
+        <!-- n=50 tall, narrow -->
+        <path class="clT-m3" d="M615 220 C 640 220, 652 95, 660 95 C 668 95, 680 220, 705 220 Z"/>
+        <!-- labels -->
+        <rect x="470" y="286" width="120" height="20" rx="5" fill="#7FD1DE"/>
+        <text class="clT-N" x="484" y="301" style="fill:#10232A">n = 2 · wide, wobbly</text>
+        <rect x="600" y="286" width="120" height="20" rx="5" fill="#22A5B8"/>
+        <text class="clT-N" x="614" y="301" style="fill:#FFFFFF">n = 10 · tighter</text>
+        <rect x="730" y="286" width="120" height="20" rx="5" fill="#0E7C90"/>
+        <text class="clT-N" x="744" y="301" style="fill:#FFFFFF">n = 50 · tight bell</text>
+        <rect x="40" y="326" width="14" height="14" rx="3" fill="#F97362"/>
+        <text class="clT-N" x="62" y="337" style="fill:#10232A">The CLT is about the sample MEAN, not the raw data. The margin of error shrinks with the square root of n - quadruple the sample to halve the wobble.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - as n grows the sample-mean distribution tightens into a bell on the truth, even from skewed data</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>What the theorem actually promises<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Strip away the name and the CLT says three plain things about the <strong>average of a fair sample</strong>:</p>
+        <ul>
+          <li><strong>It clusters near the truth.</strong> Sample averages land around the real population average, missing by a little in random directions.</li>
+          <li><strong>It is bell-shaped.</strong> Collect many sample averages and they form a normal curve - so all the 68-95-99.7 machinery from Session 3 applies to the average, giving you a "give or take" range.</li>
+          <li><strong>It tightens with size.</strong> Bigger samples produce averages that hug the truth more closely. The wobble (the margin of error) shrinks with the <em>square root</em> of the sample size - so to halve it you must quadruple the sample. Diminishing returns are built in.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>This is why a poll works</strong>
+          You do not need to ask everyone. A fair sample's average is predictably close to the whole, and you can even state how close. That single fact is the foundation of confidence intervals (Session 5) and A/B tests (Session 6).
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The key correction: the mean goes normal, the data does not <span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>This is the number-one misunderstanding of the whole subject, so state it plainly: <strong>the Central Limit Theorem is about the distribution of the sample mean, not about the raw data.</strong></p>
+        <ul>
+          <li>Lumen's individual order values are right-skewed and <em>stay</em> right-skewed no matter how much data you collect. Measuring a million orders does not make the orders bell-shaped - it just draws the same skewed hill more clearly.</li>
+          <li>What goes bell-shaped is the <em>average of a sample</em> of orders. Take 50 orders, average them; do that many times; those averages form a tidy bell centered on the true mean.</li>
+          <li>So "the data is normal" and "the average is normally distributed" are completely different claims. The CLT grants you only the second, and the second is all you need for inference.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>An analyst tells the Lumen team the CLT means order values "become normal with enough data", and proposes using the plain 68-95-99.7 rule on individual orders. That is the classic slip. The orders never stop being skewed. What is safely bell-shaped is the <em>average order value of a sample</em> - which is exactly the thing a report quotes and an A/B test compares. Getting this straight is what separates a leader who trusts the right number from one who mis-applies a rule to raw, skewed data.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Margin of error, and why national polls need only ~1,000 people<span class="mini">4 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The CLT's "tightens with size" has a famous, counter-intuitive consequence: a poll of about 1,000 people can read a nation of millions.</p>
+        <ul>
+          <li><strong>Margin of error</strong> is the "give or take" around a sample estimate - the half-width of the range you would trust. For a fair sample it depends on the sample size, barely at all on the population size.</li>
+          <li><strong>The square-root law</strong> means returns diminish fast. Around n = 1,000 the margin of error for a proportion is roughly 3 percentage points - good enough to call most questions. Pushing to 4,000 only halves it to about 1.5 points, at four times the cost.</li>
+          <li><strong>Population size barely matters.</strong> The same ~1,000 reads a city or a country about equally well, as long as the sample is fair - which is why "but the country is huge" is not the objection people think it is.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>The leader takeaway</strong>
+          When a fair sample is already a few thousand strong, "get more data" usually buys very little precision. The far bigger lever is almost always fixing bias - who is in the sample - not adding more of who already is.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ SEE IT ============ -->
+  <section class="section" id="seeit">
+    <div class="section-kicker">
+      <span class="klabel">See it live</span>
+      <h2>Watch the sample mean settle down <span class="tag concept">3 min live</span></h2>
+    </div>
+    <p class="lede">This is the idea worth seeing with your own eyes. Start with the skewed population, then push the sample size n up and watch the distribution of the sample mean tighten and turn into a clean bell centered on the truth - even though the population underneath stays lopsided. That gap, between skewed raw data and a normal sample mean, is the whole point of the session.</p>
+    <div class="stat-live" data-tool="clt"></div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Before Session 5</span>
+      <h2>This week <span class="tag exercise">◐ 25 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Find a "who is missing?" in a real number.</strong> Take a survey score or satisfaction metric from your org and name who structurally could not be in the sample. Decide whether that gap changes how much you trust it.</li>
+      <li><strong>Spot a bias-by-size.</strong> Find a claim that leans on a big sample ("based on 40,000 responses"). Ask whether those 40,000 were chosen fairly or self-selected - and whether more of them would fix anything.</li>
+      <li><strong>Say the CLT correction out loud.</strong> Explain to a colleague, in one sentence, the difference between "the data is normal" and "the average is normally distributed". Teaching it is the fastest way to keep it straight.</li>
+      <li><strong>Optional:</strong> for a metric you sample, estimate roughly how much precision you would gain by doubling the sample (less than you think) versus fixing a known bias (usually more).</li>
+    </ul>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · Lumen's post-purchase survey averages 4.6 stars, from 50,000 responses. Why should a leader still be cautious?</p>
+      <button class="qopt" type="button">A · 50,000 is too small to trust</button>
+      <button class="qopt" type="button">B · it only surveys people who bought - the unhappy non-buyers are structurally excluded, and size cannot fix that bias</button>
+      <button class="qopt" type="button">C · stars are the wrong scale</button>
+      <p class="qwhy">The survey fires only after checkout, so it never hears from people who bounced or abandoned. That is sampling bias, which does not shrink with size - 50,000 buyers is a loud read on buyers, not on the whole audience.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · Lumen order values are strongly right-skewed. What does the Central Limit Theorem actually promise?</p>
+      <button class="qopt" type="button">A · with enough orders, the individual order values become normally distributed</button>
+      <button class="qopt" type="button">B · nothing useful, because the data is skewed</button>
+      <button class="qopt" type="button">C · the average of a fair sample of orders is bell-shaped and centered on the true mean, even though the orders stay skewed</button>
+      <p class="qwhy">The CLT is about the distribution of the sample mean, not the raw data. Individual orders stay skewed forever; it is their sample average that goes normal. Option A is the single most common misunderstanding.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · A fair sample of 1,000 gives a margin of error near 3 points. Your team wants to quadruple it to 4,000. Roughly what happens to the margin?</p>
+      <button class="qopt" type="button">A · it roughly halves to ~1.5 points - error shrinks with the square root of n, so 4x the sample buys 2x the precision</button>
+      <button class="qopt" type="button">B · it quarters to under 1 point</button>
+      <button class="qopt" type="button">C · it stays the same</button>
+      <p class="qwhy">Margin of error shrinks with the square root of the sample size. Multiplying n by 4 divides the margin by sqrt(4) = 2 - halving it. Diminishing returns are built in, which is why fixing bias usually beats simply adding data.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This leader session teaches how to read a sample and trust the right numbers from it - the ~80% you need to judge any survey, poll, or test cell. The hands-on computation (simulating sampling distributions in code) lives in Builder Session 5; the sources below go deeper.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Population vs sample, sampling error, and sampling bias (bigger is not better if biased)</span><span class="note">Part 1</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The Central Limit Theorem and the key correction (mean vs raw data)</span><span class="note">Part 2</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 5 - Foundations for inference</span><span class="note">the structural spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Google "The Power of Statistics" - module 3, sampling</span><span class="note">Python-first version - Builder Session 5</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Khan Academy - Sampling distributions</span><span class="note">short videos, no code, great for the CLT</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Leader Session 4 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Population vs sample</b><span>Population = everyone you care about. Sample = the slice you measure and let stand in. The game is whether the slice looks like the whole.</span></div>
+      <div class="cheat-item"><b>Two kinds of miss</b><span>Sampling error = random, shrinks with size. Sampling bias = lopsided on purpose, does NOT shrink with size.</span></div>
+      <div class="cheat-item"><b>Bigger is not better if biased</b><span>A lopsided sample lies at any size. Ask "who is missing?" before "how many?" Self-selection, survivorship, coverage gaps.</span></div>
+      <div class="cheat-item"><b>The CLT</b><span>The average of a fair sample is bell-shaped, centered on the truth, and tightens as n grows. The engine behind polls and tests.</span></div>
+      <div class="cheat-item"><b>The key correction</b><span>The CLT is about the sample MEAN, not the raw data. Order values stay skewed forever; their averages go normal.</span></div>
+      <div class="cheat-item"><b>Square-root law</b><span>Margin of error shrinks with sqrt(n). Quadruple the sample to halve the wobble - why ~1,000 reads a nation, and why fixing bias beats adding data.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Leader session 4 of 6 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="a3-the-bell-and-its-cousins.html">← Prev: The bell and its cousins</a> &nbsp;·&nbsp; <a href="a5-the-number-and-its-error-bars.html">Next: The number and its error bars →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/stat-live.js?v=1"></script>
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

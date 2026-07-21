@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leader session 1 · Reading the data - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Leader session 1 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Leader session 1 of 6</div>
+    <h1>Reading the data, <span class="accent">without being fooled by it</span></h1>
+    <p class="sub">Every report you read has already thrown most of the data away and handed you a summary: an average, a total, a "typical" customer. That summary is a choice, and the wrong choice quietly misleads a smart room. This session gives you the leader's toolkit for reading any statistic honestly - what the center really is, how spread out the story is, and why the average is the single most over-trusted number in business. No math you have to do, no code. This is your ▶ start button for the leader track.</p>
+    <div class="chip-row">
+      <span class="chip level">🟢 Start here</span>
+      <span class="chip audience">Leaders · C-level / PM / marketing</span>
+      <span class="chip audience">No code</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:4">3-22 · The center</span>
+      <span class="a3" style="flex:4">22-40 · Spread &amp; shape</span>
+      <span class="a4" style="flex:1">40-45 · Wrap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>"The average customer spends $74"</h2>
+    </div>
+    <p class="lede">It sounds like a fact. It is actually a decision. Lumen Skincare, the direct-to-consumer brand we follow through this whole course, has thousands of orders - and someone chose to squeeze them all into one number. Change the choice and the story changes: the <em>typical</em> order is closer to $63, a handful of $300 gift sets drag the average up, and "the average customer" is a person who may not exist. Descriptive statistics is the craft of summarizing data without lying with the summary. Get it right and you read every dashboard with clearer eyes.</p>
+    <div class="legend">
+      <span class="pill solid">Live - covered in session</span>
+      <span class="pill light">Self-study - read after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      A working sense for the three questions every summary answers - where is the center, how spread out is it, and what shape is it - plus the instinct to ask "mean or median?" the moment someone quotes an average of anything money-shaped. You will read a boxplot, a histogram, and a "typical" claim without being quietly fooled by any of them.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: THE CENTER ============ -->
+  <section class="section" id="center">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the one big idea</span>
+      <h2>The center: mean, median, and when the average lies <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">There are three ways to name the "middle" of a set of numbers, and on skewed data they disagree - sometimes a lot. Knowing which one a report used, and which one it <em>should</em> have used, is the highest-leverage reading skill in this whole session.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A right-skewed histogram of Lumen order values, with the median at $63 and the mean pulled right to $74 by a long tail of large orders.">
+        <style>
+          .ceL { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .ceT { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .ceN { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .ceBar { fill: #7FD1DE; }
+          .ceMed { stroke: #0E7C90; stroke-width: 3; }
+          .ceMean { stroke: #F97362; stroke-width: 3; stroke-dasharray: 5 4; }
+        </style>
+        <text class="ceL" x="30" y="30">Lumen order values - a right-skewed pile of money</text>
+        <!-- histogram bars (heights hand-shaped to a right skew) -->
+        <g class="ceBar">
+          <rect x="70" y="235" width="34" height="35" rx="3"/>
+          <rect x="106" y="150" width="34" height="120" rx="3"/>
+          <rect x="142" y="110" width="34" height="160" rx="3"/>
+          <rect x="178" y="130" width="34" height="140" rx="3"/>
+          <rect x="214" y="165" width="34" height="105" rx="3"/>
+          <rect x="250" y="195" width="34" height="75" rx="3"/>
+          <rect x="286" y="212" width="34" height="58" rx="3"/>
+          <rect x="322" y="228" width="34" height="42" rx="3"/>
+          <rect x="358" y="238" width="34" height="32" rx="3"/>
+          <rect x="394" y="245" width="34" height="25" rx="3"/>
+          <rect x="430" y="250" width="34" height="20" rx="3"/>
+          <rect x="466" y="254" width="34" height="16" rx="3"/>
+          <rect x="502" y="257" width="34" height="13" rx="3"/>
+          <rect x="538" y="259" width="34" height="11" rx="3"/>
+          <rect x="574" y="261" width="34" height="9" rx="3"/>
+          <rect x="610" y="262" width="34" height="8" rx="3"/>
+          <rect x="646" y="263" width="34" height="7" rx="3"/>
+          <rect x="682" y="264" width="34" height="6" rx="3"/>
+          <rect x="718" y="265" width="34" height="5" rx="3"/>
+          <rect x="754" y="266" width="34" height="4" rx="3"/>
+        </g>
+        <line class="ceMed" x1="176" y1="70" x2="176" y2="270"/>
+        <rect x="120" y="52" width="118" height="22" rx="6" fill="#0E7C90"/>
+        <text class="ceT" x="132" y="68">Median $63</text>
+        <line class="ceMean" x1="230" y1="70" x2="230" y2="270"/>
+        <rect x="244" y="52" width="112" height="22" rx="6" fill="#F97362"/>
+        <text class="ceT" x="256" y="68">Mean $74</text>
+        <line x1="70" y1="270" x2="800" y2="270" stroke="#B4D2D9" stroke-width="1.5"/>
+        <text class="ceN" x="70" y="288">$0</text>
+        <text class="ceN" x="740" y="288">$300+</text>
+        <text class="ceN" x="470" y="150" style="fill:#F97362">← the long tail of gift sets and bundles</text>
+        <text class="ceN" x="470" y="168" style="fill:#F97362">drags the mean to the right of the median</text>
+        <rect x="70" y="306" width="14" height="14" rx="3" fill="#F97362"/>
+        <text class="ceN" x="92" y="317" style="fill:#10232A">Rule of thumb: mean &gt; median means right-skewed. On money, the median is the honest "typical". The mean tells you the total-per-head.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - on skewed money data the mean sits to the right of the median</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Mean, median, mode - what each one actually means<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Three different answers to "what is the middle?", each right for a different job:</p>
+        <ul>
+          <li><strong>Mean (the average)</strong> - add everything up, divide by the count. Great for totals and budgets (mean order x orders = revenue). Easily yanked around by a few extreme values.</li>
+          <li><strong>Median</strong> - line every value up and take the one in the middle. Half are below, half above. Barely moves when a few giants show up, so it is the honest "typical" on skewed data like income, order value, or time-on-site.</li>
+          <li><strong>Mode</strong> - the most common value. Useful for categories ("most orders are the $39 cleanser") more than for continuous money.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>A Lumen deck says "average order value is $74, up from $71." A director wants to fund a campaign aimed at "the $74 customer." But the median order is $63 - most customers spend less than the average, and the lift came from a few big gift-set buyers over the holidays, not a broad shift. Targeting the mean would have chased a customer who is really a statistical mirage. Asking "mean or median?" reframed the whole plan.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The one question to ask about any average<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>When someone quotes an average, ask: <strong>"is this data skewed, and if so should we be looking at the median?"</strong> Anything money-, time-, or count-shaped is usually skewed - a floor at zero and a long tail of big values. For those, the mean overstates the typical case.</p>
+        <ul>
+          <li><strong>Symmetric data</strong> (heights, measurement error, many natural quantities) - mean and median nearly agree, use either.</li>
+          <li><strong>Right-skewed data</strong> (order value, salaries, session length, revenue per account) - median for "typical", mean only for "per-head totals".</li>
+          <li><strong>A single headline number</strong> hides the spread entirely. Part 2 is about getting the spread back.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Your leverage is the question, not the calculation</strong>
+          You never have to compute a median in a meeting. You have to notice when the average is doing the misleading and ask for the median beside it. That habit alone will save more decisions than any formula.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: SPREAD & SHAPE ============ -->
+  <section class="section" id="spread">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · the story behind the summary</span>
+      <h2>Spread and shape: how much does it vary? <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">Two teams both average 3.2% conversion. One is steady at 3.0-3.4% every week; the other swings from 1% to 6%. Same center, completely different reality - and a single average would have hidden it. Spread is the second half of every summary, and the boxplot is the fastest way to see it.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A boxplot of Lumen order values showing the five-number summary: minimum, first quartile, median, third quartile, and an outlier beyond the whisker.">
+        <style>
+          .bpL { font: 700 12px Inter, sans-serif; fill: #10232A; }
+          .bpN { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .bpBox { fill: #E6F6F9; stroke: #0E7C90; stroke-width: 2.5; }
+          .bpMed { stroke: #0E7C90; stroke-width: 4; }
+          .bpWh { stroke: #22A5B8; stroke-width: 2; }
+        </style>
+        <text class="bpL" x="30" y="30">The five-number summary, drawn as a boxplot</text>
+        <!-- axis -->
+        <line x1="70" y1="200" x2="810" y2="200" stroke="#B4D2D9" stroke-width="1.5"/>
+        <!-- whiskers -->
+        <line class="bpWh" x1="120" y1="120" x2="250" y2="120"/>
+        <line class="bpWh" x1="120" y1="100" x2="120" y2="140"/>
+        <line class="bpWh" x1="560" y1="120" x2="700" y2="120"/>
+        <line class="bpWh" x1="700" y1="100" x2="700" y2="140"/>
+        <!-- box IQR -->
+        <rect class="bpBox" x="250" y="90" width="310" height="60" rx="6"/>
+        <line class="bpMed" x1="360" y1="90" x2="360" y2="150"/>
+        <!-- outlier -->
+        <circle cx="775" cy="120" r="6" fill="#F97362"/>
+        <!-- labels -->
+        <text class="bpN" x="96" y="168">min</text>
+        <text class="bpN" x="228" y="80">Q1 $48</text>
+        <text class="bpN" x="330" y="80">median $63</text>
+        <text class="bpN" x="536" y="80">Q3 $92</text>
+        <text class="bpN" x="678" y="168">whisker</text>
+        <text class="bpN" x="748" y="150" style="fill:#F97362">outlier</text>
+        <!-- IQR bracket -->
+        <line x1="250" y1="176" x2="560" y2="176" stroke="#557079" stroke-width="1.2"/>
+        <line x1="250" y1="170" x2="250" y2="182" stroke="#557079" stroke-width="1.2"/>
+        <line x1="560" y1="170" x2="560" y2="182" stroke="#557079" stroke-width="1.2"/>
+        <text class="bpN" x="360" y="194">the middle 50% (IQR = Q3 - Q1 = $44)</text>
+        <rect x="70" y="238" width="14" height="14" rx="3" fill="#F97362"/>
+        <text class="bpN" x="92" y="249" style="fill:#10232A">The box holds the middle half of orders; the line inside is the median; the dot is a single unusually large order flagged as an outlier.</text>
+        <text class="bpN" x="92" y="270" style="fill:#10232A">One glance shows center, spread, skew, and outliers at once - which is why analysts reach for it before any average.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - a boxplot shows center, spread, and outliers in one picture</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Range, IQR, and standard deviation - three ways to say "how spread out"<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Range</strong> - biggest minus smallest. Simple, but one freak value blows it up.</li>
+          <li><strong>Interquartile range (IQR)</strong> - the width of the middle 50% (Q3 minus Q1). Ignores the extremes, so it is the robust partner to the median. The box in the boxplot above.</li>
+          <li><strong>Standard deviation (SD)</strong> - the typical distance of a value from the mean. The partner to the mean, and the number that powers almost all the inference later in this course. A bigger SD means a wider, less predictable spread.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Two Lumen ad channels both return an average $74 order. Channel A's SD is $20; Channel B's is $70. Channel A is a dependable machine; Channel B is a lottery of tiny orders and occasional whales. Same average, opposite risk profile. A leader who only reads the mean funds them as if they were identical.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Shape: skew, and the percentiles you will actually be quoted<span class="mini">4 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>Shape</strong> is the third question. Most business data is not a neat bell - it is skewed, with a long tail on one side.</p>
+        <ul>
+          <li><strong>Right-skewed</strong> (tail to the right) - order value, income, response time. Mean &gt; median. The common case.</li>
+          <li><strong>Percentiles</strong> - "the 90th percentile order is $180" means 90% of orders are at or below $180. This is how you will hear tail behaviour described - especially for latency ("p95 page-load") and spend.</li>
+          <li><strong>Why it matters:</strong> service-level promises, capacity planning, and pricing all live in the tail, not at the average. "Average latency is fine" can coexist with "p99 is a disaster."</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Center + spread + shape = the whole summary</strong>
+          Any honest description of data answers all three. When a report gives you only the center, it has handed you a third of the picture. Ask for the other two-thirds.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Before Session 2</span>
+      <h2>This week <span class="tag exercise">◐ 25 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Find one "average" in a recent report</strong> from your org. Ask: is this data skewed? Would the median tell a different story? Write one sentence on which you would trust.</li>
+      <li><strong>Hunt a hidden spread.</strong> Find a metric quoted as a single number (an average handle time, an average deal size) and ask your team for its range or its distribution. Notice how much the single number hid.</li>
+      <li><strong>Read one boxplot or histogram</strong> in a dashboard you already have. Name the center, the spread, and whether it is skewed - out loud.</li>
+      <li><strong>Optional:</strong> pick a metric and decide, in advance, whether mean or median is the right summary for it. You will defend that choice in Session 2.</li>
+    </ul>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · Lumen's mean order value is $74 and the median is $63. What does that gap most likely tell you?</p>
+      <button class="qopt" type="button">A · the data was entered wrong</button>
+      <button class="qopt" type="button">B · the orders are right-skewed - a tail of large orders pulls the mean above the typical order</button>
+      <button class="qopt" type="button">C · most customers spend exactly $74</button>
+      <p class="qwhy">Mean &gt; median is the signature of a right skew. A few large orders lift the average, so the median ($63) is the more honest "typical" order.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · Two channels both average a $74 order, but channel A has SD $20 and channel B has SD $70. The safest reading is...</p>
+      <button class="qopt" type="button">A · they are interchangeable, both average $74</button>
+      <button class="qopt" type="button">B · channel B is better because it can produce big orders</button>
+      <button class="qopt" type="button">C · same center, very different spread - B is far less predictable and carries more risk</button>
+      <p class="qwhy">The average hides the spread. A larger standard deviation means wider, less predictable outcomes - a real difference in risk that a single mean would conceal.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · A dashboard shows "average page-load is 1.2s" and everyone relaxes. What should a careful leader still ask?</p>
+      <button class="qopt" type="button">A · what is the 95th or 99th percentile - is the tail hurting a slice of users?</button>
+      <button class="qopt" type="button">B · nothing, the average is low</button>
+      <button class="qopt" type="button">C · whether to switch to a bar chart</button>
+      <p class="qwhy">Averages hide tails. A fine mean can sit next to a terrible p95/p99, where a meaningful group of users has a bad experience. Service quality lives in the tail, not the average.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This leader session teaches the reading skills behind descriptive statistics - the ~80% you need to interpret any summary honestly. The hands-on computation (numpy, pandas, matplotlib) lives in Builder Session 1; the sources below go deeper.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Center: mean, median, mode; when the mean misleads</span><span class="note">Part 1</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Spread &amp; shape: range, IQR, SD, skew, percentiles, boxplots</span><span class="note">Part 2</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 2 - Summarizing data</span><span class="note">the structural spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Google "The Power of Statistics" - measures of center &amp; dispersion</span><span class="note">Python-first version - Builder Session 1</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Computing these in code (describe, percentile, hist, boxplot)</span><span class="note">Builder Session 1 - not covered here by design</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Leader Session 1 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Mean vs median</b><span>Mean = total-per-head, easily pulled by extremes. Median = the honest "typical" on skewed money data. Ask which one the report used.</span></div>
+      <div class="cheat-item"><b>Skew tell</b><span>Mean &gt; median means right-skewed (a long tail of big values). Order value, income, and latency are almost always right-skewed.</span></div>
+      <div class="cheat-item"><b>Spread</b><span>Range (crude), IQR (robust, pairs with median), SD (pairs with mean, powers all later inference). Same average can hide wildly different spread.</span></div>
+      <div class="cheat-item"><b>Boxplot</b><span>Shows min, Q1, median, Q3, max, and outliers in one glance. The box is the middle 50% (the IQR).</span></div>
+      <div class="cheat-item"><b>Percentiles</b><span>"p90 = $180" means 90% of values are at or below $180. How tails and service levels get quoted.</span></div>
+      <div class="cheat-item"><b>The whole summary</b><span>Center + spread + shape. A single headline number is one-third of the story - ask for the rest.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Leader session 1 of 6 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="../index.html">← All sessions</a> &nbsp;·&nbsp; <a href="a2-thinking-in-odds.html">Next: Thinking in odds →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

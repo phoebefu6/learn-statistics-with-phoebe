@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 1 · Describe the data - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Builder session 1 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Builder session 1 of 10</div>
+    <h1>Describe the data, <span class="accent">in numpy and pandas</span></h1>
+    <p class="sub">Before you fit a model or run a test, you summarize. This session builds the Lumen Skincare dataset once (with a fixed seed, so every later session reconciles), then computes center, spread, and shape in Python - and shows you why <code>.describe()</code> can quietly mislead you on skewed money data. Everyone starts here; b2 through b10 reuse the exact dataset you build today. This is your ▶ start button for the builder track.</p>
+    <div class="chip-row">
+      <span class="chip level">🟢 Start here</span>
+      <span class="chip audience">Builders · DA / DE / DS</span>
+      <span class="chip audience">Python · numpy / pandas / matplotlib</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:3">3-16 · Center &amp; spread</span>
+      <span class="a3" style="flex:5">16-40 · Build it in Python</span>
+      <span class="a4" style="flex:1">40-45 · Wrap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Summaries are lossy - know what you dropped</h2>
+    </div>
+    <p class="lede">A dataset of 50,000 Lumen orders becomes, in one line of pandas, a handful of numbers. That compression is the point - and the danger. <code>df.describe()</code> hands you a mean without a warning that the data is skewed, a standard deviation without telling you the distribution has a fat tail. This session makes you fluent in computing descriptive statistics <em>and</em> suspicious of them in exactly the right places.</p>
+    <div class="legend">
+      <span class="pill solid">Live - built in session</span>
+      <span class="pill light">Self-study - run after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      A reproducible Lumen dataset (seed 42) you will reuse all course long, and the numpy/pandas vocabulary for center, spread, and shape - <code>mean</code>, <code>median</code>, <code>std</code>, <code>percentile</code>, <code>describe</code>, <code>skew</code> - plus histograms and boxplots in matplotlib. Crucially, you will see the mean-vs-median gap appear in real numbers and know how to report it honestly.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: CENTER & SPREAD ============ -->
+  <section class="section" id="center">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the vocabulary in code</span>
+      <h2>Center, spread, shape - and the functions that compute them <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">Three questions, and the numpy/pandas call for each. The whole of descriptive statistics fits on one card - the skill is knowing which number to trust on which data.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Raw Lumen order data flows into a describe step, producing three groups of summary numbers: center, spread, and shape.">
+        <style>
+          .dsL { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .dsK { font: 700 12px Inter, sans-serif; fill: #10232A; }
+          .dsN { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .dsA { stroke: #B4D2D9; stroke-width: 2.5; fill: none; marker-end: url(#dsAh); }
+        </style>
+        <defs>
+          <marker id="dsAh" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#B4D2D9" stroke-width="1.6"/></marker>
+        </defs>
+        <rect x="30" y="110" width="150" height="70" rx="12" fill="#0B5563"/>
+        <text class="dsL" x="52" y="140">50,000 orders</text>
+        <text class="dsL" x="52" y="160">order_value col</text>
+        <line class="dsA" x1="180" y1="145" x2="248" y2="145"/>
+        <rect x="250" y="110" width="130" height="70" rx="12" fill="#0E7C90"/>
+        <text class="dsL" x="272" y="140">.describe()</text>
+        <text class="dsL" x="272" y="160">summarize</text>
+        <line class="dsA" x1="380" y1="145" x2="448" y2="145"/>
+        <!-- three output boxes -->
+        <rect x="450" y="40" width="400" height="62" rx="12" fill="#E6F6F9" stroke="#7FD1DE" stroke-width="1.5"/>
+        <text class="dsK" x="466" y="64">CENTER</text>
+        <text class="dsN" x="466" y="86" style="fill:#10232A">mean $74 · median (50%) $63 · mode</text>
+        <rect x="450" y="114" width="400" height="62" rx="12" fill="#E6F6F9" stroke="#7FD1DE" stroke-width="1.5"/>
+        <text class="dsK" x="466" y="138">SPREAD</text>
+        <text class="dsN" x="466" y="160" style="fill:#10232A">std $38 · IQR (25%-75%) · min/max</text>
+        <rect x="450" y="188" width="400" height="62" rx="12" fill="#E6F6F9" stroke="#7FD1DE" stroke-width="1.5"/>
+        <text class="dsK" x="466" y="212">SHAPE</text>
+        <text class="dsN" x="466" y="234" style="fill:#10232A">skew &gt; 0 (right tail) · kurtosis · percentiles</text>
+        <rect x="30" y="256" width="14" height="14" rx="3" fill="#F97362"/>
+        <text class="dsN" x="52" y="267" style="fill:#10232A">.describe() gives center + spread but not skew - add .skew() and a histogram, or you will trust a mean the data does not support.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - describe() covers center and spread; you add shape yourself</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The functions, and what they compute<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Center:</strong> <code>np.mean</code> / <code>df.mean()</code>, <code>np.median</code> / <code>df.median()</code>, <code>df.mode()</code>.</li>
+          <li><strong>Spread:</strong> <code>np.std</code> / <code>df.std()</code> (note the ddof gotcha below), <code>np.percentile</code> for quartiles, IQR = Q3 - Q1.</li>
+          <li><strong>Shape:</strong> <code>df.skew()</code> (&gt; 0 is right-skewed), <code>df.kurt()</code>, and always a histogram to see it.</li>
+          <li><strong>All at once:</strong> <code>df.describe()</code> gives count, mean, std, min, 25/50/75%, max.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>The ddof gotcha</strong>
+          <code>numpy.std</code> defaults to <code>ddof=0</code> (population SD, divide by N). <code>pandas.std</code> defaults to <code>ddof=1</code> (sample SD, divide by N-1). On a sample you almost always want N-1, so they disagree unless you set <code>ddof</code> explicitly. We unpack <em>why</em> N-1 in Builder Session 6.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo">
+    <div class="section-kicker">
+      <span class="klabel">★ everyone builds · the running dataset</span>
+      <h2>Build Lumen once, describe it honestly <span class="tag demo">22 min · everyone builds</span></h2>
+    </div>
+    <p class="lede">We simulate the Lumen orders with a fixed seed so your numbers match mine - and match every later builder session. Right-skewed order values (lognormal), a ~3.2% conversion flag, and a prior-spend column we will need for correlation in b10.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Build the dataset (seed 42).</strong> Run this once; save it - b2 through b10 reload it.</p>
+        <div class="prompt-box good">
+          <span class="label">build_lumen.py</span>
+<pre>import numpy as np, pandas as pd
+
+rng = np.random.default_rng(42)
+N = 50_000
+
+# order_value: right-skewed money, lognormal, mean ~ $74, median ~ $63
+order_value = np.round(np.exp(rng.normal(4.0, 0.55, N)), 2)
+order_value = np.clip(order_value, 5, 400)
+
+df = pd.DataFrame({
+    "order_value": order_value,
+    "product_category": rng.choice(
+        ["cleanser", "serum", "moisturizer", "set"], N, p=[.34, .28, .26, .12]),
+    # prior-30-day spend: correlated with this order (rho ~ 0.6) - used in b10
+    "prior_30d_spend": np.round(
+        0.6 * order_value + 0.8 * rng.normal(74, 38, N), 2).clip(0, None),
+})
+df.to_parquet("lumen_orders.parquet")   # reload in later sessions
+print(df.shape)
+print(df.head())</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Describe it - then look past describe().</strong> The mean/median gap is the whole lesson.</p>
+        <div class="prompt-box good">
+          <span class="label">describe.py</span>
+<pre>ov = df["order_value"]
+
+print(df.describe())            # count, mean, std, min, 25/50/75%, max
+
+print("mean   :", round(ov.mean(), 2))     # ~ 74
+print("median :", round(ov.median(), 2))   # ~ 63  -> mean &gt; median
+print("std    :", round(ov.std(), 2))      # pandas: ddof=1 (sample)
+print("IQR    :", round(ov.quantile(.75) - ov.quantile(.25), 2))
+print("p90    :", round(ov.quantile(.90), 2))
+print("skew   :", round(ov.skew(), 2))     # &gt; 0 confirms the right tail</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Prove the ddof gotcha to yourself.</strong> Same data, two "standard deviations".</p>
+        <div class="prompt-box good">
+          <span class="label">ddof.py</span>
+<pre>import numpy as np
+print("numpy  ddof=0 :", round(np.std(ov), 4))          # population
+print("numpy  ddof=1 :", round(np.std(ov, ddof=1), 4))  # sample - matches pandas
+print("pandas default:", round(ov.std(), 4))            # ddof=1</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>See the shape.</strong> A histogram and a boxplot make the skew undeniable.</p>
+        <div class="prompt-box good">
+          <span class="label">plot.py</span>
+<pre>import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(1, 2, figsize=(11, 4))
+ax[0].hist(ov, bins=60, color="#7FD1DE", edgecolor="white")
+ax[0].axvline(ov.mean(),   color="#F97362", ls="--", label=f"mean {ov.mean():.0f}")
+ax[0].axvline(ov.median(), color="#0E7C90",           label=f"median {ov.median():.0f}")
+ax[0].legend(); ax[0].set_title("Order value - right-skewed")
+ax[1].boxplot(ov, vert=False)
+ax[1].set_title("Same data as a boxplot")
+plt.tight_layout(); plt.show()</pre>
+        </div>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>A Lumen analyst shipped a dashboard headline: "avg order $74." The growth team built a persona around it. The histogram above would have stopped them - the mode is nearer $50, the median $63, and the $74 is a tail artifact. One <code>ov.skew()</code> of about +0.9 is the number that says "report the median too."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Before Session 2</span>
+      <h2>This week <span class="tag exercise">◐ 40 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Group and compare.</strong> Use <code>df.groupby("product_category")["order_value"].agg(["mean","median","std"])</code>. Which category is most skewed (mean furthest above median)?</li>
+      <li><strong>Robust vs sensitive.</strong> Append one $10,000 order to the data. Re-check mean, median, std, and IQR. Which barely moved? That is robustness.</li>
+      <li><strong>Percentiles by hand.</strong> Confirm <code>np.percentile(ov, 90)</code> matches <code>ov.quantile(.90)</code>, and write one sentence on what "p90" means to a non-technical stakeholder.</li>
+      <li><strong>Optional:</strong> add a boolean <code>converted</code> column at ~3.2% true with <code>rng.random(N) &lt; 0.032</code> - we build on it in b2.</li>
+    </ul>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · <code>np.std(x)</code> and <code>pandas Series.std()</code> give slightly different numbers on the same data. Why?</p>
+      <button class="qopt" type="button">A · pandas rounds differently</button>
+      <button class="qopt" type="button">B · numpy defaults to ddof=0 (divide by N), pandas to ddof=1 (divide by N-1)</button>
+      <button class="qopt" type="button">C · one of them is buggy</button>
+      <p class="qwhy">numpy uses the population formula (ddof=0) by default; pandas uses the sample formula (ddof=1). On a sample you want N-1, so set ddof explicitly to make them agree.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · <code>df.describe()</code> reports mean, std, and quartiles but NOT which of the following?</p>
+      <button class="qopt" type="button">A · the 25th percentile</button>
+      <button class="qopt" type="button">B · the maximum</button>
+      <button class="qopt" type="button">C · the skewness - you add df.skew() yourself</button>
+      <p class="qwhy">describe() covers center and spread (count, mean, std, min, 25/50/75%, max) but not shape. Call df.skew() and plot a histogram to judge skew.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · You append one huge $10,000 order to Lumen's data. Which pair barely moves?</p>
+      <button class="qopt" type="button">A · median and IQR (robust to outliers)</button>
+      <button class="qopt" type="button">B · mean and std</button>
+      <button class="qopt" type="button">C · both pairs move equally</button>
+      <p class="qwhy">The median and IQR are built from order positions, so a single extreme value barely shifts them. The mean and standard deviation are built from the actual values, so they lurch toward the outlier.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This builder session covers ~80% of the computational descriptive-statistics content in the sources below, on the Lumen dataset. Deeper theory (why N-1, the shape of estimators) arrives in b6.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Center, spread, shape in numpy/pandas; describe, percentile, skew</span><span class="note">Part 1 + demo</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Histograms &amp; boxplots in matplotlib; the ddof gotcha</span><span class="note">demo</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 2 - Summarizing data</span><span class="note">theory spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Google "The Power of Statistics" - descriptive stats with Python</span><span class="note">module 1</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Why divide by N-1 (Bessel's correction), MLE view</span><span class="note">Builder Session 6 - not covered here by design</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder Session 1 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Center</b><span><code>df.mean()</code>, <code>df.median()</code>, <code>df.mode()</code>. On skewed money, report the median.</span></div>
+      <div class="cheat-item"><b>Spread</b><span><code>df.std()</code> (ddof=1), <code>np.percentile</code>, IQR = q75 - q25. SD pairs with mean, IQR with median.</span></div>
+      <div class="cheat-item"><b>Shape</b><span><code>df.skew()</code> &gt; 0 = right tail. describe() will NOT tell you this - always plot.</span></div>
+      <div class="cheat-item"><b>ddof</b><span>numpy ddof=0 (population), pandas ddof=1 (sample). Set it explicitly to avoid surprises.</span></div>
+      <div class="cheat-item"><b>describe()</b><span>count, mean, std, min, 25/50/75%, max in one call. Center + spread, no shape.</span></div>
+      <div class="cheat-item"><b>Reproducibility</b><span><code>np.random.default_rng(42)</code>. Fixed seed = your numbers match the course all the way to b10.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 1 of 10 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="../index.html">← All sessions</a> &nbsp;·&nbsp; <a href="b2-probability-and-simulation.html">Next: Probability &amp; simulation →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

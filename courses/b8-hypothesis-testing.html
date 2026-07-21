@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 8 · Hypothesis testing - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Builder session 8 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Builder session 8 of 10</div>
+    <h1>Hypothesis testing, <span class="accent">in scipy and statsmodels</span></h1>
+    <p class="sub">This is where descriptive statistics turns into a decision. You state a null, compute a test statistic, read a p-value - and you learn to say exactly what that p-value does and does not mean. We run one-sample and two-sample t-tests on Lumen order values, then the two-proportion z-test on Lumen's 3.2% vs 3.6% checkout rate and watch the SAME effect flip from "not significant" to "significant" as we turn up n. That flip is the bridge into the experimentation course.</p>
+    <div class="chip-row">
+      <span class="chip level">🟠 Getting real</span>
+      <span class="chip audience">Builders · DA / DE / DS</span>
+      <span class="chip audience">Python · scipy / statsmodels</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:3">3-16 · The logic of a test</span>
+      <span class="a3" style="flex:5">16-40 · Build the tests</span>
+      <span class="a4" style="flex:1">40-45 · Wrap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>A test is a rule for acting under uncertainty</h2>
+    </div>
+    <p class="lede">Lumen's growth team ran a new checkout button and saw 3.6% convert versus the old 3.2%. Is that a real lift, or the kind of wobble you get from luck alone? A hypothesis test is the disciplined answer: assume nothing changed, ask how surprising the data would be under that assumption, and decide. The trap is reading the output wrong - so today we get the p-value definition exactly right and pair every verdict with an effect size and a confidence interval.</p>
+    <div class="legend">
+      <span class="pill solid">Live - built in session</span>
+      <span class="pill light">Self-study - run after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      The four-line skeleton of every test - null, statistic, p-value, decision at alpha - written in scipy and statsmodels. You will run <code>ttest_1samp</code>, <code>ttest_ind</code>, <code>proportions_ztest</code>, and a power calculation, and you will hold two ideas at once: statistical significance is not practical importance, and the same true effect can be "significant" or not depending only on n.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: THE LOGIC ============ -->
+  <section class="section" id="logic">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the vocabulary of a test</span>
+      <h2>Null, alternative, statistic, p-value, alpha, and the two errors <span class="tag concept">13 min live</span></h2>
+    </div>
+    <p class="lede">Every test is the same six moving parts. Learn them once here and the code in Part 2 is just plumbing.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A null sampling distribution shaped like a bell, centered at zero, with the observed statistic marked on the right tail and the two symmetric tail areas beyond it shaded as the two-tailed p-value.">
+        <style>
+          .htL { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .htN { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .htW { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .htA { stroke: #B4D2D9; stroke-width: 2.2; fill: none; marker-end: url(#htAh); }
+        </style>
+        <defs>
+          <marker id="htAh" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#B4D2D9" stroke-width="1.6"/></marker>
+        </defs>
+        <!-- axis -->
+        <line class="htA" x1="60" y1="250" x2="820" y2="250" style="marker-end:url(#htAh)"/>
+        <text class="htN" x="430" y="278">test statistic (if the null were true)</text>
+        <text class="htN" x="418" y="242">0</text>
+        <!-- bell curve -->
+        <path d="M90,250 C 240,250 300,70 440,70 C 580,70 640,250 790,250" fill="#E6F6F9" stroke="#0E7C90" stroke-width="2.6"/>
+        <!-- right tail shaded -->
+        <path d="M660,250 C 700,215 740,250 745,250 C 730,250 690,250 660,250 Z" fill="#F97362" opacity="0.85"/>
+        <path d="M660,250 L660,140 C 700,150 730,205 745,250 Z" fill="#F97362" opacity="0.8"/>
+        <!-- left tail shaded -->
+        <path d="M220,250 L220,140 C 180,150 150,205 135,250 Z" fill="#F97362" opacity="0.8"/>
+        <!-- observed marks -->
+        <line x1="660" y1="80" x2="660" y2="250" stroke="#0B5563" stroke-width="2.4" stroke-dasharray="5 4"/>
+        <text class="htL" x="600" y="66">observed +t</text>
+        <line x1="220" y1="120" x2="220" y2="250" stroke="#B4D2D9" stroke-width="2" stroke-dasharray="5 4"/>
+        <text class="htN" x="150" y="112">mirror -t</text>
+        <!-- p-value label -->
+        <rect x="640" y="292" width="180" height="30" rx="8" fill="#0B5563"/>
+        <text class="htW" x="656" y="312">shaded area = p-value</text>
+        <text class="htN" x="70" y="312">two-tailed: BOTH tails count - a result this extreme in either direction</text>
+        <!-- center label -->
+        <text class="htN" x="360" y="150" style="fill:#0E7C90;font-weight:700">the null world</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the p-value is the shaded tail area, not the height of any bar</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The six parts, in plain words<span class="mini">5 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Null hypothesis (H0):</strong> the boring default - "nothing changed", the two rates are equal, the mean is 70. We assume it is true and see how the data looks.</li>
+          <li><strong>Alternative (H1):</strong> what you would act on - "the rates differ", "the mean is not 70". Two-sided by default; one-sided only when a change in one direction is the only one you care about (and you commit before seeing data).</li>
+          <li><strong>Test statistic:</strong> one number that measures how far the data sits from H0 in standard-error units - a t, a z, an F. Bigger magnitude = further from the null world.</li>
+          <li><strong>p-value:</strong> P(a test statistic at least this extreme <em>given the null is true</em>). It lives in the tail area of the picture above.</li>
+          <li><strong>alpha:</strong> the surprise threshold you fix in advance, usually 0.05. If p &lt; alpha you reject H0.</li>
+          <li><strong>Power:</strong> the probability you correctly reject a false null - 1 minus the Type II rate. Low power means real effects slip through as "not significant".</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Say the p-value correctly, every time</strong>
+          p is <em>P(data this extreme | H0 true)</em>. It is NOT the probability the null is true, NOT the probability your result is a fluke, and NOT the probability the variant is better. It answers one narrow question: if nothing had changed, how often would luck alone hand me a gap this big?
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Type I vs Type II, and one-tailed vs two-tailed<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Type I error (false positive):</strong> reject a true null - you "found" an effect that is not there. Its rate is alpha. Shipping a button that does nothing.</li>
+          <li><strong>Type II error (false negative):</strong> fail to reject a false null - a real effect went undetected. Its rate is beta; power = 1 - beta. Killing a button that actually worked.</li>
+          <li><strong>Two-tailed:</strong> H1 is "different" - extreme in either direction counts, alpha splits across both tails. This is the honest default.</li>
+          <li><strong>One-tailed:</strong> H1 is "greater" (or "less") - all of alpha in one tail, more power for that direction, zero credit for the other. Only valid if you decided the direction before looking.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>The 2x2 that names your risk</strong>
+          Rows = the truth (H0 true / H0 false); columns = your decision (fail to reject / reject). The two off-diagonal cells are the two errors. Lowering alpha shrinks Type I but, holding n fixed, grows Type II - the only way to shrink both is more data.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo">
+    <div class="section-kicker">
+      <span class="klabel">★ everyone builds · on the Lumen data</span>
+      <h2>Four tests, from a mean to a proportion to power <span class="tag demo">★ 24 min · everyone builds</span></h2>
+    </div>
+    <p class="lede">Reload the Lumen dataset you built in b1 (add the <code>converted</code> flag from the b1 homework if you have not). Each test is a few lines - the skill is stating the null out loud before you read the number, and reading the number honestly after.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>One-sample t-test.</strong> H0: mean order value is $70. H1: it is not. With n this large even a $4 gap is far from the null.</p>
+        <div class="prompt-box good">
+          <span class="label">one_sample.py</span>
+<pre>import numpy as np, pandas as pd
+from scipy import stats
+
+df = pd.read_parquet("lumen_orders.parquet")   # from b1
+ov = df["order_value"]
+
+t, p = stats.ttest_1samp(ov, popmean=70)
+print(f"mean = {ov.mean():.2f}")        # ~ 74
+print(f"t = {t:.2f}, p = {p:.2e}")      # large t, tiny p -&gt; reject H0
+# effect size (Cohen's d) - is the gap PRACTICALLY meaningful?
+d = (ov.mean() - 70) / ov.std(ddof=1)
+print(f"Cohen's d = {d:.3f}")           # small-ish: significant != big</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Two-sample t-test.</strong> H0: cleanser and serum have the same mean order value. In our b1 sim, order value does not depend on category - so expect a large p, a correct negative result.</p>
+        <div class="prompt-box good">
+          <span class="label">two_sample.py</span>
+<pre>cleanser = df.loc[df.product_category == "cleanser", "order_value"]
+serum    = df.loc[df.product_category == "serum",    "order_value"]
+
+# Welch's t-test does NOT assume equal variances - the safer default
+t, p = stats.ttest_ind(cleanser, serum, equal_var=False)
+print(f"cleanser mean {cleanser.mean():.2f} vs serum {serum.mean():.2f}")
+print(f"t = {t:.2f}, p = {p:.3f}")      # p large -&gt; fail to reject
+# failing to reject is NOT proof they are equal - it is "no evidence of a gap"</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Two-proportion z-test - the experimentation bridge.</strong> H0: control 3.2% and variant 3.6% convert at the same rate. Same effect, two sample sizes, two verdicts.</p>
+        <div class="prompt-box good">
+          <span class="label">two_prop.py</span>
+<pre>from statsmodels.stats.proportion import proportions_ztest
+
+def ab(n_per_arm, p_ctrl=0.032, p_var=0.036):
+    conv  = np.array([round(p_var * n_per_arm), round(p_ctrl * n_per_arm)])
+    nobs  = np.array([n_per_arm, n_per_arm])
+    z, p = proportions_ztest(conv, nobs)   # variant first
+    return z, p
+
+z1, p1 = ab(5_000)
+z2, p2 = ab(32_000)
+print(f"n=5,000/arm : z = {z1:.2f}, p = {p1:.3f}")   # z~1.16, p~0.25  NOT significant
+print(f"n=32,000/arm: z = {z2:.2f}, p = {p2:.3f}")   # z~2.8,  p~0.005 significant</pre>
+        </div>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Read those two lines slowly. The lift is identical - 3.2% to 3.6%, a +0.4pp, +12.5% relative bump - in both. At 5,000 per arm the p-value is ~0.25 and Lumen would (correctly) refuse to ship. At 32,000 per arm the same lift lands at p~0.005 and now it is "significant". Nothing about the button changed; only the sample size did. This is why the experimentation course sizes the test <em>before</em> launch instead of peeking at whatever n happens to arrive.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Power and sample size.</strong> Turn the last point into a plan: how many users per arm to detect the 3.2% to 3.6% lift with 80% power at alpha 0.05?</p>
+        <div class="prompt-box good">
+          <span class="label">power.py</span>
+<pre>from statsmodels.stats.power import NormalIndPower
+from statsmodels.stats.proportion import proportion_effectsize
+
+h = proportion_effectsize(0.036, 0.032)   # Cohen's h ~ 0.022 (tiny effect)
+n = NormalIndPower().solve_power(
+        effect_size=h, alpha=0.05, power=0.80, alternative="two-sided")
+print(f"Cohen's h = {h:.4f}")
+print(f"n per arm  = {n:,.0f}")   # ~ 32,000 - matches the z~2.8 crossover above</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SEE IT ============ -->
+  <section class="section" id="seeit">
+    <div class="section-kicker">
+      <span class="klabel">★ see it move</span>
+      <h2>Watch the verdict flip as n grows <span class="tag demo">3 min · everyone builds</span></h2>
+    </div>
+    <p class="lede">Here is Lumen's A/B result as a live tool. Drag <strong>users per arm</strong> and watch the 3.2%-vs-3.6% gap cross from "not significant" to "significant" - the CI on the lift closing in on zero and then finally excluding it. Same effect the whole time; only your certainty changes.</p>
+    <div class="stat-live" data-tool="test"></div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Before Session 9</span>
+      <h2>This week <span class="tag exercise">◐ 40 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Find the crossover yourself.</strong> Loop <code>ab(n)</code> over n from 5,000 to 40,000 in steps of 2,500 and print the first n where p drops below 0.05. Compare it to the power calculation's answer.</li>
+      <li><strong>One-tailed vs two-tailed.</strong> Re-run the one-sample t-test with <code>alternative="greater"</code>. How does p change, and why is committing to a direction beforehand the only thing that makes it honest?</li>
+      <li><strong>Effect size discipline.</strong> Invent a scenario where a test is significant (p &lt; 0.05) but the effect is too small to act on. Write one sentence a stakeholder would understand.</li>
+      <li><strong>Optional:</strong> simulate the Type I rate - run <code>ttest_ind</code> on two samples drawn from the SAME distribution 1,000 times and confirm about 5% of them come back p &lt; 0.05 anyway.</li>
+    </ul>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · A test returns p = 0.03. Which statement is correct?</p>
+      <button class="qopt" type="button">A · there is a 3% chance the null is true</button>
+      <button class="qopt" type="button">B · if the null were true, a result at least this extreme would happen about 3% of the time</button>
+      <button class="qopt" type="button">C · there is a 97% chance the variant is better</button>
+      <p class="qwhy">A p-value is P(data this extreme | H0 true). It says nothing directly about the probability the null is true or that the variant wins - those require a prior, not a p-value.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · Lumen's 3.2%-to-3.6% lift is "not significant" at 5,000/arm but "significant" at 32,000/arm. What changed?</p>
+      <button class="qopt" type="button">A · the true effect got bigger</button>
+      <button class="qopt" type="button">B · the button was redesigned between the two tests</button>
+      <button class="qopt" type="button">C · only n changed - more data shrinks the standard error, so the same gap clears the bar</button>
+      <p class="qwhy">The effect is identical in both. Larger n means a smaller standard error, a larger z, and a smaller p. Significance is a statement about evidence at a given n, not about the size of the effect.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · You lower alpha from 0.05 to 0.01 and keep n fixed. What happens to the two error rates?</p>
+      <button class="qopt" type="button">A · Type I (false positive) drops, Type II (false negative) rises</button>
+      <button class="qopt" type="button">B · both drop</button>
+      <button class="qopt" type="button">C · both rise</button>
+      <p class="qwhy">Alpha is the Type I rate, so lowering it cuts false positives. But with n fixed, making the bar stricter means more real effects miss it - Type II rises and power falls. Only more data shrinks both at once.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This builder session covers ~80% of the introductory hypothesis-testing content in the sources below, on the Lumen dataset. Chi-square and ANOVA get their own session (b9); correlation and regression close the track in b10.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Null/alternative, test statistic, p-value, alpha, Type I/II, power, one- vs two-tailed</span><span class="note">Part 1</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">t-tests, two-proportion z-test, and power/sample size in scipy + statsmodels</span><span class="note">demo</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 5-7 - inference for means and proportions</span><span class="note">theory spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Google "The Power of Statistics" - module 5, hypothesis testing</span><span class="note">applied path</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">365 Data Science - hypothesis testing; StatQuest - p-values, clearly explained</span><span class="note">intuition builders</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder Session 8 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>The skeleton</b><span>State H0, pick a statistic, get the p-value, decide at alpha. Same four steps for every test.</span></div>
+      <div class="cheat-item"><b>p-value</b><span>P(data this extreme | H0 true). NOT P(null true), NOT P(fluke), NOT P(variant wins).</span></div>
+      <div class="cheat-item"><b>One-sample t</b><span><code>stats.ttest_1samp(x, popmean)</code>. Two-sample: <code>ttest_ind(a, b, equal_var=False)</code> (Welch).</span></div>
+      <div class="cheat-item"><b>Two proportions</b><span><code>proportions_ztest(conv, nobs)</code>. Lumen 3.2% vs 3.6%: p~0.25 at 5k/arm, p~0.005 at 32k/arm.</span></div>
+      <div class="cheat-item"><b>Power</b><span><code>NormalIndPower().solve_power(effect_size=h, alpha, power)</code>. h from <code>proportion_effectsize</code>.</span></div>
+      <div class="cheat-item"><b>Significance != importance</b><span>Always report an effect size and a CI beside p. Big n makes trivial gaps "significant".</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 8 of 10 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="b7-confidence-intervals.html">← Prev: Confidence intervals</a> &nbsp;·&nbsp; <a href="b9-chi-square-anova.html">Next: Chi-square &amp; ANOVA →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/stat-live.js?v=1"></script>
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

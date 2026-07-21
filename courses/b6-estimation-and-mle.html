@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 6 · Estimation and MLE - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Builder session 6 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Builder session 6 of 10</div>
+    <h1>Estimation and <span class="accent">maximum likelihood</span></h1>
+    <p class="sub">Every number you report about Lumen - the mean order value, the conversion rate, the spread - is an <em>estimate</em> of a truth you never see. This session is about doing that honestly: what makes an estimator good, why <code>std</code> quietly divides by N-1, and the one principle that generates almost every estimator you will ever use - maximum likelihood. We prove each claim in code, on Lumen's own numbers.</p>
+    <div class="chip-row">
+      <span class="chip level">🟠 Getting real</span>
+      <span class="chip audience">Builders · DA / DE / DS</span>
+      <span class="chip audience">Python · scipy / numpy</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:3">3-15 · Estimators &amp; bias</span>
+      <span class="a3" style="flex:5">15-40 · Build the MLE</span>
+      <span class="a4" style="flex:1">40-45 · Wrap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>An estimate is a bet - here is how to make a good one</h2>
+    </div>
+    <p class="lede">You compute <code>ov.mean()</code> and call it "the average order value." But it is really your best <em>guess</em> at a population mean you can never fully observe. Estimation theory asks the sharp question behind that guess: across all the samples you might have drawn, does your recipe land on the truth on average (unbiased), and does it home in as data grows (consistent)? And when there is no obvious recipe, maximum likelihood hands you one.</p>
+    <div class="legend">
+      <span class="pill solid">Live - built in session</span>
+      <span class="pill light">Self-study - run after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      A clean grip on <em>estimator vs estimate</em>, <em>bias</em>, and <em>consistency</em>; a numerical proof of why sample variance divides by N-1 (Bessel's correction); and maximum likelihood estimation built two ways - a hand-rolled log-likelihood grid that peaks exactly at Lumen's 3.2% conversion rate, and scipy's <code>.fit</code> / <code>minimize</code> doing the same job for you.
+    </div>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="theory">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the vocabulary in code</span>
+      <h2>Estimator, bias, consistency, and the likelihood <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">Four ideas. The first three judge an estimator; the fourth manufactures one from scratch.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A log-likelihood curve rising to a single peak at p-hat equals 0.032, the maximum likelihood estimate of Lumen's conversion rate, with a dashed line dropping to the axis at 0.032.">
+        <style>
+          .mlL { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .mlN { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .mlW { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .mlD { stroke: #F97362; stroke-width: 2; stroke-dasharray: 5 4; fill: none; }
+        </style>
+        <defs>
+          <marker id="mlAh" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#B4D2D9" stroke-width="1.6"/></marker>
+        </defs>
+        <!-- axes -->
+        <line x1="90" y1="40" x2="90" y2="270" stroke="#B4D2D9" stroke-width="1.5"/>
+        <line x1="90" y1="270" x2="800" y2="270" stroke="#B4D2D9" stroke-width="1.5"/>
+        <text class="mlN" x="30" y="150" transform="rotate(-90 30 150)">log-likelihood</text>
+        <text class="mlN" x="700" y="292">candidate p</text>
+        <!-- likelihood curve peaking at ~0.032 (x=300) -->
+        <path d="M110,262 Q200,150 300,86 Q460,140 760,258" fill="none" stroke="#0E7C90" stroke-width="3"/>
+        <!-- peak marker -->
+        <circle cx="300" cy="86" r="6" fill="#0B5563"/>
+        <line class="mlD" x1="300" y1="92" x2="300" y2="270"/>
+        <text class="mlL" x="312" y="80">MLE peak</text>
+        <text class="mlN" x="312" y="98">makes the data most probable</text>
+        <!-- x ticks -->
+        <text class="mlN" x="140" y="288">0.01</text>
+        <text class="mlN" x="284" y="288">0.032</text>
+        <text class="mlN" x="470" y="288">0.05</text>
+        <text class="mlN" x="700" y="288">0.08</text>
+        <!-- callout box -->
+        <rect x="500" y="60" width="290" height="86" rx="12" fill="#E6F6F9" stroke="#7FD1DE" stroke-width="1.5"/>
+        <text class="mlL" x="518" y="88">MLE of a proportion</text>
+        <text class="mlN" x="518" y="110" style="fill:#10232A">= the sample proportion itself.</text>
+        <text class="mlN" x="518" y="130" style="fill:#10232A">p-hat = converted.mean() = 0.032</text>
+        <rect x="90" y="304" width="14" height="14" rx="3" fill="#F97362"/>
+        <text class="mlN" x="112" y="315" style="fill:#10232A">Maximum likelihood picks the parameter value that makes the observed Lumen data most probable. For a proportion that value is exactly the observed rate, 3.2%.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the log-likelihood of Lumen's conversion data peaks at p-hat = 0.032, the sample proportion</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The four ideas, in order<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Estimator vs estimate.</strong> An <em>estimator</em> is the recipe - the function of the data, like "take the sample mean." An <em>estimate</em> is the number that recipe spits out on one particular sample. The recipe is what we judge; the number is just today's output.</li>
+          <li><strong>Bias.</strong> An estimator is unbiased if, averaged over all possible samples, it lands on the true value. Bias is the systematic gap between the average estimate and the truth - not the noise on any one sample.</li>
+          <li><strong>Consistency.</strong> An estimator is consistent if it converges to the truth as n grows. Unbiased is about being centered right; consistent is about tightening onto the target with more data.</li>
+          <li><strong>Likelihood.</strong> Given a candidate parameter value, the likelihood is the probability of having observed exactly the data you did. Maximum likelihood estimation (MLE) chooses the parameter value that makes your data most probable - the peak of the curve above.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Why we divide by N-1 (Bessel's correction)</strong>
+          Sample variance uses <code>1/(N-1)</code>, not <code>1/N</code>. The reason: you measure spread around the <em>sample</em> mean, but the sample mean is itself pulled toward your data, so squared deviations from it are systematically too small. Dividing by N (<code>ddof=0</code>) therefore <em>underestimates</em> the true variance. Dividing by N-1 (<code>ddof=1</code>) corrects the bias exactly. You already spent one degree of freedom estimating the mean.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo">
+    <div class="section-kicker">
+      <span class="klabel">★ everyone builds · prove it in code</span>
+      <h2>Prove the bias correction, then build the MLE <span class="tag demo">★ 22 min · everyone builds</span></h2>
+    </div>
+    <p class="lede">We treat the full 50,000-row Lumen dataset as the population (so we know the true answers), then sample from it and watch the estimators behave. First the N vs N-1 story, then maximum likelihood two ways.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>N vs N-1, numerically.</strong> Take the whole dataset as the population, sample n=30 repeatedly, and compare the two variance recipes to the truth.</p>
+        <div class="prompt-box good">
+          <span class="label">bessel.py</span>
+<pre>import numpy as np, pandas as pd
+
+df = pd.read_parquet("lumen_orders.parquet")
+ov = df["order_value"].to_numpy()
+
+true_var = ov.var(ddof=0)          # variance of the whole population ~ 38^2 ~ 1450
+rng = np.random.default_rng(7)
+
+biased, unbiased = [], []
+for _ in range(5000):
+    s = rng.choice(ov, size=30, replace=False)
+    biased.append(np.var(s, ddof=0))    # divide by N   - the tempting one
+    unbiased.append(np.var(s, ddof=1))  # divide by N-1 - Bessel
+
+print("true variance      :", round(true_var, 1))
+print("mean of /N   (ddof=0):", round(np.mean(biased), 1))    # LOW - underestimates
+print("mean of /N-1 (ddof=1):", round(np.mean(unbiased), 1))  # matches true_var
+# ddof=0 lands ~ (n-1)/n = 29/30 of the truth; ddof=1 is unbiased.</pre>
+        </div>
+        <p>The <code>ddof=0</code> average sits about 3% low - exactly the factor (n-1)/n = 29/30. The <code>ddof=1</code> average lands on the truth. That is Bessel's correction, not as a rule to memorize but as a fact you just measured.</p>
+      </div>
+
+      <div class="step">
+        <p><strong>MLE of a proportion = the sample proportion.</strong> Build the log-likelihood of the conversion data over a grid of candidate p and find its peak.</p>
+        <div class="prompt-box good">
+          <span class="label">mle_proportion.py</span>
+<pre>rng = np.random.default_rng(42)
+converted = rng.random(ov.size) &lt; 0.032   # the Lumen conversion flag, ~3.2% true
+
+k = converted.sum()          # number of conversions
+n = converted.size           # number of sessions
+print("observed rate:", round(k / n, 4))   # ~ 0.032
+
+# log-likelihood of Binomial(n, p) over a grid of candidate p
+p_grid = np.linspace(0.001, 0.08, 800)
+loglik = k * np.log(p_grid) + (n - k) * np.log(1 - p_grid)
+
+p_hat = p_grid[np.argmax(loglik)]
+print("MLE p-hat    :", round(p_hat, 4))    # ~ 0.032 - the peak
+print("sample prop  :", round(k / n, 4))    # ~ 0.032 - identical
+# The MLE of a proportion IS the sample proportion. The curve peaks at 3.2%.</pre>
+        </div>
+        <div class="callout tip">
+          <strong>State it plainly</strong>
+          For a proportion, maximum likelihood gives you back exactly the observed rate - the MLE of p is <code>converted.mean()</code> = 0.032. The grid and the curve are not doing anything mysterious; they are confirming that the value which makes Lumen's conversion data most probable is the rate you already counted.
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>MLE via scipy.</strong> Same principle, real machinery: fit a distribution to order value, or minimize the negative log-likelihood by hand.</p>
+        <div class="prompt-box good">
+          <span class="label">mle_scipy.py</span>
+<pre>from scipy import stats
+from scipy.optimize import minimize
+
+# (a) let scipy fit a lognormal to the right-skewed order values
+shape, loc, scale = stats.lognorm.fit(ov, floc=0)   # floc=0 pins location
+print("lognorm sigma-hat:", round(shape, 3))   # ~ 0.55 - the value b1 generated with
+print("lognorm scale    :", round(scale, 1))   # ~ exp(mu), near the median
+
+# (b) roll your own: minimize the NEGATIVE log-likelihood of a Normal on log(ov)
+logs = np.log(ov)
+def neg_loglik(params, data):
+    mu, sigma = params
+    if sigma &lt;= 0:
+        return np.inf
+    return -np.sum(stats.norm.logpdf(data, loc=mu, scale=sigma))
+
+res = minimize(neg_loglik, x0=[logs.mean(), 1.0], args=(logs,))
+mu_hat, sigma_hat = res.x
+print("mu-hat   :", round(mu_hat, 3))     # ~ 4.0  (matches log-mean)
+print("sigma-hat:", round(sigma_hat, 3))  # ~ 0.55 (matches log-std, ddof=0)
+# MLE of a Normal mean IS the sample mean; MLE of its variance divides by N.</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>A confidence interval for an estimate, by bootstrap.</strong> A quick callback to b5 - wrap any estimate in a CI without a formula.</p>
+        <div class="prompt-box good">
+          <span class="label">boot_ci.py</span>
+<pre>rng = np.random.default_rng(42)
+B = 2000
+boot = np.empty(B)
+for b in range(B):
+    boot[b] = rng.choice(ov, size=ov.size, replace=True).mean()
+
+ci = np.percentile(boot, [2.5, 97.5])
+print("estimate      :", round(ov.mean(), 2))          # ~ 74
+print("95% bootstrap CI:", [round(ci[0], 2), round(ci[1], 2)])  # ~ [73.7, 74.3]
+# Same tool works for the MLE of any parameter - resample, refit, read the spread.</pre>
+        </div>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>When a Lumen analyst reports "conversion is 3.2%," maximum likelihood is the quiet justification: 3.2% is the single value that makes the month's click-and-buy data most probable. And when finance asks "how sure are you," the bootstrap CI is the answer - not a hand-wave, a range you can defend. Estimation is where a number stops being a spreadsheet cell and becomes a claim you can stand behind. Next session turns that range into a formal confidence interval.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Before Session 7</span>
+      <h2>This week <span class="tag exercise">◐ 40 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Feel the bias shrink.</strong> Rerun <code>bessel.py</code> at n=5, 30, and 200. How large does n get before the <code>ddof=0</code> gap stops mattering in practice? Tie it back to the (n-1)/n factor.</li>
+      <li><strong>Plot the likelihood.</strong> Plot <code>loglik</code> against <code>p_grid</code> with matplotlib (line <code>"#0E7C90"</code>) and mark the peak with a vertical <code>"#F97362"</code> line at 0.032. This is the SVG above, drawn from your own numbers.</li>
+      <li><strong>Fit vs moments.</strong> Compare <code>stats.lognorm.fit(ov, floc=0)</code>'s implied mean to <code>ov.mean()</code>. Where they disagree, which do you trust and why?</li>
+      <li><strong>Optional:</strong> confirm the Normal MLE of variance divides by N (not N-1) by comparing <code>sigma_hat**2</code> from <code>minimize</code> to <code>np.var(logs, ddof=0)</code> and <code>ddof=1</code>.</li>
+    </ul>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · Why does sample variance divide by N-1 instead of N?</p>
+      <button class="qopt" type="button">A · to make the number bigger so you are conservative</button>
+      <button class="qopt" type="button">B · it is an arbitrary convention with no real effect</button>
+      <button class="qopt" type="button">C · dividing by N underestimates the true variance; N-1 corrects the bias from using the sample mean</button>
+      <p class="qwhy">Squared deviations are measured around the sample mean, which is itself pulled toward the data, so they come out too small. Dividing by N (ddof=0) is biased low by exactly (n-1)/n; dividing by N-1 (ddof=1) makes the estimator unbiased.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · You build the log-likelihood of Lumen's converted flag over a grid of candidate p. Where does it peak?</p>
+      <button class="qopt" type="button">A · at the sample proportion, ~0.032 - the MLE of a proportion IS the sample proportion</button>
+      <button class="qopt" type="button">B · at 0.5, because that maximizes variance</button>
+      <button class="qopt" type="button">C · at the variant rate 0.036</button>
+      <p class="qwhy">Maximum likelihood picks the parameter that makes the observed data most probable. For a binomial proportion that value is exactly the observed rate, so the curve peaks at converted.mean() ~= 0.032.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · What is the difference between an estimator and an estimate?</p>
+      <button class="qopt" type="button">A · they are the same thing with different names</button>
+      <button class="qopt" type="button">B · the estimator is the recipe (a function of the data); the estimate is the number it produces on one sample</button>
+      <button class="qopt" type="button">C · the estimator is always biased and the estimate is always unbiased</button>
+      <p class="qwhy">An estimator like "take the sample mean" is a rule. An estimate is what that rule outputs on a particular dataset. Bias and consistency are properties of the estimator, judged across all samples, not of any single estimate.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This builder session covers ~80% of the computational estimation content in the sources below, on the Lumen dataset. MLE is lightly covered in most intro syllabi - we lean harder on it here because it is the principle behind nearly every estimator you will meet later.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Estimator vs estimate, bias, consistency; N-1 proved numerically</span><span class="note">Part 1 + demo</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">MLE by grid, by scipy .fit, and by minimize on the neg log-likelihood</span><span class="note">demo</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 5 - Foundations for inference</span><span class="note">theory spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">StatQuest - Maximum Likelihood, clearly explained</span><span class="note">short video; watch first</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">StatQuest - Why we divide by N-1 (Bessel's correction)</span><span class="note">MLE is lightly covered elsewhere by design</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder Session 6 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Estimator vs estimate</b><span>The recipe vs the number. We judge the recipe (bias, consistency), report the number.</span></div>
+      <div class="cheat-item"><b>Bias</b><span>Systematic gap between the average estimate and the truth. Not the noise on one sample.</span></div>
+      <div class="cheat-item"><b>N-1 (Bessel)</b><span><code>np.var(x, ddof=1)</code>. Dividing by N is biased low by (n-1)/n; N-1 is unbiased.</span></div>
+      <div class="cheat-item"><b>Likelihood</b><span>Probability of the observed data given a parameter. MLE = the value that maximizes it.</span></div>
+      <div class="cheat-item"><b>MLE of a proportion</b><span>= the sample proportion. Lumen's converted MLE is 0.032, full stop.</span></div>
+      <div class="cheat-item"><b>MLE in scipy</b><span><code>stats.lognorm.fit</code> / <code>norm.fit</code>, or <code>minimize</code> on the negative log-likelihood.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 6 of 10 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="b5-sampling-and-clt.html">← Prev: Sampling &amp; the CLT</a> &nbsp;·&nbsp; <a href="b7-confidence-intervals.html">Next: Confidence intervals →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

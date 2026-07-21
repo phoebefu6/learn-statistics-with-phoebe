@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 5 · Sampling and the CLT - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Builder session 5 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Builder session 5 of 10</div>
+    <h1>Sampling and the <span class="accent">Central Limit Theorem</span></h1>
+    <p class="sub">You never measure the whole population - you sample it, and every sample gives a slightly different answer. This session makes that wobble concrete: draw thousands of samples from Lumen's skewed order values, watch the distribution of their <em>means</em> turn into a bell curve, and measure how fast it tightens. This one idea - the CLT - is the engine behind every confidence interval and A/B test in the rest of the course.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Building up</span>
+      <span class="chip audience">Builders · DA / DE / DS</span>
+      <span class="chip audience">Python · numpy / scipy</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:3">3-15 · Sampling &amp; SE</span>
+      <span class="a3" style="flex:5">15-40 · Build the CLT</span>
+      <span class="a4" style="flex:1">40-45 · Wrap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>One sample is a guess - the shape of many samples is a law</h2>
+    </div>
+    <p class="lede">Take 100 Lumen orders and average them: you get a number near $74, but not exactly. Take another 100, another number. Do that thousands of times and something remarkable happens - those averages pile up into a clean, symmetric bell, even though the raw order values are stubbornly right-skewed. That bell has a known width, and knowing its width is what lets you say "the true mean is $74, give or take." Today you build that bell with your own hands.</p>
+    <div class="legend">
+      <span class="pill solid">Live - built in session</span>
+      <span class="pill light">Self-study - run after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      A working feel for the <em>sampling distribution of a statistic</em>, the standard-error formula <code>SE = sigma / sqrt(n)</code> verified against your own simulation, and the Central Limit Theorem shown - not asserted - on Lumen's skewed money data. Plus the bootstrap: a standard error and a confidence interval for the mean with no formula at all, just resampling.
+    </div>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="theory">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the vocabulary in code</span>
+      <h2>Sampling distributions, standard error, and the CLT <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">Three ideas stack on top of each other. Get them in order and the rest of the course is downhill.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A right-skewed population on the left feeds into distributions of the sample mean; as sample size grows from 2 to 10 to 50 the distribution of means becomes normal and narrows.">
+        <style>
+          .clL { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .clN { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .clW { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .clA { stroke: #B4D2D9; stroke-width: 2.5; fill: none; marker-end: url(#clAh); }
+        </style>
+        <defs>
+          <marker id="clAh" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#B4D2D9" stroke-width="1.6"/></marker>
+        </defs>
+        <!-- skewed population -->
+        <text class="clL" x="30" y="34">The population (order_value)</text>
+        <text class="clN" x="30" y="52">right-skewed - stays skewed forever</text>
+        <g>
+          <rect x="34" y="150" width="18" height="70" fill="#7FD1DE"/>
+          <rect x="54" y="95" width="18" height="125" fill="#7FD1DE"/>
+          <rect x="74" y="80" width="18" height="140" fill="#0E7C90"/>
+          <rect x="94" y="110" width="18" height="110" fill="#7FD1DE"/>
+          <rect x="114" y="140" width="18" height="80" fill="#7FD1DE"/>
+          <rect x="134" y="165" width="18" height="55" fill="#7FD1DE"/>
+          <rect x="154" y="182" width="18" height="38" fill="#7FD1DE"/>
+          <rect x="174" y="196" width="18" height="24" fill="#7FD1DE"/>
+          <rect x="194" y="205" width="18" height="15" fill="#7FD1DE"/>
+          <line x1="30" y1="220" x2="222" y2="220" stroke="#B4D2D9" stroke-width="1.5"/>
+        </g>
+        <line class="clA" x1="234" y1="150" x2="286" y2="150"/>
+        <text class="clN" x="234" y="140">average</text>
+        <text class="clN" x="240" y="176">samples</text>
+        <!-- three sampling distributions -->
+        <text class="clL" x="300" y="34">Distribution of the sample mean</text>
+        <!-- n=2 wide -->
+        <path d="M300,220 Q360,150 420,220" fill="#E6F6F9" stroke="#22A5B8" stroke-width="2.5"/>
+        <line x1="300" y1="220" x2="420" y2="220" stroke="#B4D2D9" stroke-width="1.2"/>
+        <text class="clN" x="338" y="238">n = 2</text>
+        <text class="clN" x="316" y="140" style="fill:#22A5B8">wide, still lumpy</text>
+        <!-- n=10 medium -->
+        <path d="M470,220 Q510,120 550,220" fill="#E6F6F9" stroke="#0E7C90" stroke-width="2.5"/>
+        <line x1="470" y1="220" x2="550" y2="220" stroke="#B4D2D9" stroke-width="1.2"/>
+        <text class="clN" x="498" y="238">n = 10</text>
+        <!-- n=50 tall narrow -->
+        <path d="M610,220 Q638,70 666,220" fill="#E6F6F9" stroke="#0B5563" stroke-width="2.5"/>
+        <line x1="610" y1="220" x2="666" y2="220" stroke="#B4D2D9" stroke-width="1.2"/>
+        <text class="clN" x="628" y="238">n = 50</text>
+        <text class="clN" x="600" y="60" style="fill:#0B5563">tall, narrow, normal</text>
+        <line class="clA" x1="700" y1="145" x2="748" y2="145"/>
+        <rect x="750" y="112" width="110" height="66" rx="12" fill="#0B5563"/>
+        <text class="clW" x="766" y="140">SE shrinks</text>
+        <text class="clW" x="766" y="160">by sqrt(n)</text>
+        <rect x="30" y="286" width="14" height="14" rx="3" fill="#F97362"/>
+        <text class="clN" x="52" y="297" style="fill:#10232A">The CLT is about the mean, not the data. Order values stay skewed; the average of a sample of them goes normal as n grows - and its spread narrows as SE = sigma / sqrt(n).</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the population is skewed forever; the distribution of its sample mean goes normal and narrows as n grows</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The three ideas, in order<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Sampling distribution of a statistic.</strong> Any statistic you compute (a mean, a median, a proportion) is itself random - draw a new sample and it changes. The distribution of that statistic across many samples is the sampling distribution. It is the thing statistics actually reasons about.</li>
+          <li><strong>Standard error.</strong> The standard deviation of that sampling distribution has a name: the standard error. For a mean it is <code>SE = sigma / sqrt(n)</code>. More data (bigger n) means a narrower sampling distribution, but only as fast as the square root - quadruple n to halve the SE.</li>
+          <li><strong>The Central Limit Theorem.</strong> As n grows, the sampling distribution of the <em>sample mean</em> approaches a normal distribution, <em>regardless of the shape of the population</em>. Skewed, bimodal, lumpy - it does not matter. The mean goes normal. That universality is why the normal curve is everywhere in statistics.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Read the theorem carefully</strong>
+          The CLT does not say your data becomes normal. Lumen order values are right-skewed and always will be. It says the <em>average of a sample</em> of them behaves normally once n is large enough. Confusing the two is the single most common mistake in applied statistics.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo">
+    <div class="section-kicker">
+      <span class="klabel">★ everyone builds · the money demo</span>
+      <h2>Watch the bell emerge from skewed money <span class="tag demo">★ 22 min · everyone builds</span></h2>
+    </div>
+    <p class="lede">Reload the Lumen orders you built in b1, then simulate sampling itself. We draw 2,000 samples of size n, take each sample's mean, and histogram those means. Bump n up and the histogram turns into a bell - even though the raw data never does.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Reload the data (seed 42).</strong> Same file you saved in b1 - the numbers reconcile.</p>
+        <div class="prompt-box good">
+          <span class="label">load.py</span>
+<pre>import numpy as np, pandas as pd
+
+df = pd.read_parquet("lumen_orders.parquet")   # built in b1
+ov = df["order_value"].to_numpy()
+
+print("N      :", ov.size)              # 50000
+print("mean   :", round(ov.mean(), 2))  # ~ 74  (the population mean)
+print("std    :", round(ov.std(), 2))   # ~ 38  (the population sigma)
+print("skew   :", round(pd.Series(ov).skew(), 2))  # ~ +0.9  still skewed</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>The money demo.</strong> Draw 2,000 sample means for n = 2, 10, 50 and watch the bell arrive.</p>
+        <div class="prompt-box good">
+          <span class="label">clt_demo.py</span>
+<pre>rng = np.random.default_rng(42)
+REPS = 2000
+
+def sample_means(data, n, reps, rng):
+    # reps samples of size n, return the mean of each
+    idx = rng.integers(0, data.size, size=(reps, n))
+    return data[idx].mean(axis=1)
+
+for n in (2, 10, 50):
+    means = sample_means(ov, n, REPS, rng)
+    print(f"n={n:>2}  mean-of-means={means.mean():6.2f}  "
+          f"std-of-means={means.std():5.2f}  "
+          f"skew={pd.Series(means).skew():+.2f}")
+# n= 2  mean-of-means= 74.0x  std-of-means=26.9x  skew=+0.6x  (still lumpy)
+# n=10  mean-of-means= 74.0x  std-of-means=12.0x  skew=+0.2x  (rounding out)
+# n=50  mean-of-means= 74.0x  std-of-means= 5.3x  skew=+0.0x  (normal)</pre>
+        </div>
+        <p>The mean of the sample means stays glued to the population mean (~$74). What changes is the <em>spread</em> - it shrinks - and the <em>skew</em> - it melts toward zero. That melting is the CLT happening in front of you.</p>
+      </div>
+
+      <div class="step">
+        <p><strong>Verify the standard error.</strong> The spread you just measured should match <code>sigma / sqrt(n)</code>.</p>
+        <div class="prompt-box good">
+          <span class="label">verify_se.py</span>
+<pre>sigma = ov.std()             # population SD ~ 38
+
+for n in (2, 10, 50):
+    means = sample_means(ov, n, REPS, rng)
+    observed = means.std()               # spread of the sampling distribution
+    formula  = sigma / np.sqrt(n)         # the SE formula
+    print(f"n={n:>2}  observed={observed:5.2f}  "
+          f"formula={formula:5.2f}  ratio={observed/formula:4.2f}")
+# ratios land near 1.00 - the formula and the simulation agree.
+# n=50: 38 / sqrt(50) ~= 5.37, and your histogram width ~= 5.3.</pre>
+        </div>
+        <div class="callout tip">
+          <strong>Why sqrt(n) and not n</strong>
+          Halving the standard error costs 4x the data, not 2x. This square-root wall is why big experiments are expensive - and exactly the arithmetic that sets the sample sizes you will compute in b7 and in the experimentation course.
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Bootstrap - a standard error with no formula.</strong> Resample the data <em>with replacement</em>, recompute the mean each time, and read the spread straight off the resamples.</p>
+        <div class="prompt-box good">
+          <span class="label">bootstrap.py</span>
+<pre>rng = np.random.default_rng(42)
+B = 2000
+n = ov.size
+
+boot_means = np.empty(B)
+for b in range(B):
+    resample = rng.choice(ov, size=n, replace=True)   # same size, WITH replacement
+    boot_means[b] = resample.mean()
+
+se_boot = boot_means.std()
+ci_lo, ci_hi = np.percentile(boot_means, [2.5, 97.5])   # 95% percentile CI
+
+print("bootstrap SE  :", round(se_boot, 3))          # ~ 0.17
+print("formula   SE  :", round(ov.std()/np.sqrt(n), 3))  # ~ 0.17  they agree
+print("95% CI for mean:", [round(ci_lo, 2), round(ci_hi, 2)])  # ~ [73.7, 74.3]</pre>
+        </div>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>The bootstrap is the practitioner's escape hatch. When you need a standard error for something with no clean formula - a median, a 90th percentile, a conversion-weighted average order value - you resample and measure the spread directly. No distributional assumption, no lookup table. It is the same engine as the CLT, run by brute force, and it is why every confidence interval and A/B readout in the rest of this course rests on the ideas you built today.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SEE IT ============ -->
+  <section class="section" id="seeit">
+    <div class="section-kicker">
+      <span class="klabel">See it live</span>
+      <h2>Push n up and watch the bell tighten <span class="tag demo">interactive</span></h2>
+    </div>
+    <p class="lede">The code you just ran, live in the page. Drag the sample size up and watch the sample-mean distribution tighten and normalize on Lumen's skewed order values - exactly the money demo above, now under your fingers.</p>
+    <div class="stat-live" data-tool="clt"></div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Before Session 6</span>
+      <h2>This week <span class="tag exercise">◐ 40 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Sample a proportion, not a mean.</strong> Build the <code>converted</code> flag at ~3.2% (<code>rng.random(N) &lt; 0.032</code>), then draw 2,000 samples of size n=1,000 and histogram the sample conversion rates. Confirm the spread matches <code>sqrt(.032*.968/1000)</code> ~= 0.56pp.</li>
+      <li><strong>Break the CLT (almost).</strong> Rerun the money demo at n=2 and n=5. How large does n have to get before the sample-mean histogram looks convincingly bell-shaped on this skewed data? Write one sentence.</li>
+      <li><strong>Bootstrap a median.</strong> Repeat the bootstrap but take <code>np.median</code> of each resample. You now have a standard error for the median - something with no simple formula.</li>
+      <li><strong>Optional:</strong> overlay <code>scipy.stats.norm.pdf</code> (with mean = ov.mean(), SD = sigma/sqrt(n)) on your n=50 histogram. The fit is the CLT, drawn.</li>
+    </ul>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · Lumen order values are strongly right-skewed. What does the Central Limit Theorem promise as sample size n grows?</p>
+      <button class="qopt" type="button">A · the order values themselves become normally distributed</button>
+      <button class="qopt" type="button">B · the distribution of the sample MEAN becomes normal, even though the data stays skewed</button>
+      <button class="qopt" type="button">C · the mean and median converge to the same value</button>
+      <p class="qwhy">The CLT is about the sampling distribution of the mean, not the raw data. Order values stay skewed forever; the average of a sample of them goes normal as n grows. That is the single most misread sentence in statistics.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · Your sample-mean histogram at n=10 has spread ~12. You move to n=40. Roughly what spread do you expect?</p>
+      <button class="qopt" type="button">A · about 3 (spread falls with n)</button>
+      <button class="qopt" type="button">B · about 12 (spread does not change)</button>
+      <button class="qopt" type="button">C · about 6 (spread falls with sqrt(n): 4x the data halves the SE)</button>
+      <p class="qwhy">SE = sigma / sqrt(n). Going from n=10 to n=40 multiplies n by 4, which multiplies sqrt(n) by 2, so the standard error is halved: 12 becomes about 6. Quadruple the data to halve the wobble.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · What is the defining feature of a bootstrap resample when estimating a standard error?</p>
+      <button class="qopt" type="button">A · draw the same number of points as the original, WITH replacement</button>
+      <button class="qopt" type="button">B · draw a smaller sample without replacement</button>
+      <button class="qopt" type="button">C · draw new points from a fitted normal distribution</button>
+      <p class="qwhy">Bootstrapping resamples the observed data itself at the original size, with replacement, so some points repeat and some drop out. The spread of the statistic across those resamples is the standard error - no formula and no distributional assumption required.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This builder session covers ~80% of the computational sampling-and-CLT content in the sources below, on the Lumen dataset. The formal proof of the theorem is theory you can read; the simulation is the intuition you keep.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Sampling distribution of a statistic; standard error SE = sigma/sqrt(n)</span><span class="note">Part 1 + demo</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">CLT shown by simulation; the bootstrap for SE and a CI</span><span class="note">demo + live tool</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 5 - Foundations for inference</span><span class="note">theory spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Google "The Power of Statistics" - sampling &amp; the CLT with Python</span><span class="note">module 3</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">StatQuest - Central Limit Theorem &amp; Standard Error</span><span class="note">two short videos; watch first</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder Session 5 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Sampling distribution</b><span>The spread of a statistic across many samples. It is what inference reasons about, not the raw data.</span></div>
+      <div class="cheat-item"><b>Standard error</b><span><code>SE = sigma / sqrt(n)</code>. Quadruple n to halve the SE. The square-root wall.</span></div>
+      <div class="cheat-item"><b>The CLT</b><span>The sample MEAN goes normal as n grows, whatever the population shape. Not the data - the mean.</span></div>
+      <div class="cheat-item"><b>The money demo</b><span>Draw 2,000 sample means; histogram them; watch skew melt as n rises 2 → 10 → 50.</span></div>
+      <div class="cheat-item"><b>Bootstrap</b><span><code>rng.choice(data, size=len(data), replace=True)</code> in a loop. SE and CI with no formula.</span></div>
+      <div class="cheat-item"><b>Why it matters</b><span>Every confidence interval (b7) and A/B test (b8) is the CLT plus arithmetic. This is the engine.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 5 of 10 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="b4-distributions-in-scipy.html">← Prev: Distributions in scipy</a> &nbsp;·&nbsp; <a href="b6-estimation-and-mle.html">Next: Estimation &amp; MLE →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/stat-live.js?v=1"></script>
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

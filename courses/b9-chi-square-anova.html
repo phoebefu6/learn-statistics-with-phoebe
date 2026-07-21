@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 9 · Chi-square and ANOVA - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Builder session 9 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Builder session 9 of 10</div>
+    <h1>Chi-square and ANOVA, <span class="accent">counts and groups</span></h1>
+    <p class="sub">The t-test compared two means. Now we handle the other two shapes of question: are these <em>counts</em> distributed the way we expected (chi-square), and do these three-plus <em>groups</em> share one mean (ANOVA)? We run a sample-ratio-mismatch check that reconciles with the experimentation course, test whether Lumen conversion depends on channel, compare order value across all four product categories at once, and reach for a nonparametric test when the assumptions wobble.</p>
+    <div class="chip-row">
+      <span class="chip level">🟠 Getting real</span>
+      <span class="chip audience">Builders · DA / DE / DS</span>
+      <span class="chip audience">Python · scipy / statsmodels</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:3">3-16 · Counts &amp; groups</span>
+      <span class="a3" style="flex:5">16-40 · Build the tests</span>
+      <span class="a4" style="flex:1">40-45 · Wrap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>When the question is counts, or more than two groups</h2>
+    </div>
+    <p class="lede">A t-test is for two means of continuous data. But plenty of real questions are not that shape. "Did our 50/50 experiment actually split 50/50?" is about counts. "Is conversion related to channel?" is about a table of counts. "Do our four product lines have different average order values?" is three-plus groups at once. Chi-square handles the first two; ANOVA handles the third - and doing it right means NOT firing off a pile of t-tests.</p>
+    <div class="legend">
+      <span class="pill solid">Live - built in session</span>
+      <span class="pill light">Self-study - run after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      Three families in code: chi-square goodness-of-fit and independence (<code>scipy.stats.chisquare</code>, <code>chi2_contingency</code>), one-way ANOVA (<code>f_oneway</code>), and the nonparametric fallbacks (<code>mannwhitneyu</code>, <code>kruskal</code>) for when normality or equal-variance fails. Plus the discipline behind them: chi-square eats counts not proportions, and ANOVA tells you <em>something</em> differs, not <em>which</em>.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: COUNTS & GROUPS ============ -->
+  <section class="section" id="theory">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the two families</span>
+      <h2>Chi-square on counts, ANOVA on group means <span class="tag concept">13 min live</span></h2>
+    </div>
+    <p class="lede">Two ideas, one figure. Chi-square compares what you observed to what you expected. ANOVA asks whether the gaps <em>between</em> group means are big relative to the noise <em>within</em> the groups.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Left panel: an observed-versus-expected count table for a chi-square test. Right panel: an ANOVA picture showing three group clusters spread apart, with between-group spread compared to within-group spread as the F ratio.">
+        <style>
+          .caL { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .caN { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .caW { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .caH { font: 800 12px Inter, sans-serif; fill: #0B5563; }
+        </style>
+        <defs>
+          <marker id="caAh" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#B4D2D9" stroke-width="1.6"/></marker>
+        </defs>
+        <!-- LEFT: chi-square observed vs expected -->
+        <text class="caH" x="40" y="40">CHI-SQUARE · observed vs expected</text>
+        <rect x="40" y="55" width="150" height="34" rx="6" fill="#0B5563"/>
+        <text class="caW" x="58" y="77">cell</text>
+        <rect x="192" y="55" width="100" height="34" rx="6" fill="#0E7C90"/>
+        <text class="caW" x="210" y="77">observed</text>
+        <rect x="294" y="55" width="100" height="34" rx="6" fill="#22A5B8"/>
+        <text class="caW" x="312" y="77">expected</text>
+        <rect x="40" y="91" width="150" height="30" rx="4" fill="#E6F6F9"/>
+        <text class="caN" x="52" y="111" style="fill:#10232A">variant</text>
+        <text class="caN" x="220" y="111" style="fill:#10232A">10,420</text>
+        <text class="caN" x="322" y="111" style="fill:#10232A">10,000</text>
+        <rect x="40" y="123" width="150" height="30" rx="4" fill="#E6F6F9"/>
+        <text class="caN" x="52" y="143" style="fill:#10232A">control</text>
+        <text class="caN" x="222" y="143" style="fill:#10232A">9,580</text>
+        <text class="caN" x="322" y="143" style="fill:#10232A">10,000</text>
+        <text class="caN" x="40" y="188">chi-sq = sum (O - E)&#178; / E</text>
+        <rect x="40" y="200" width="354" height="30" rx="6" fill="#F97362"/>
+        <text class="caW" x="52" y="220" style="fill:#4A1109">big gap, tiny p -&gt; the split is broken (SRM)</text>
+        <text class="caN" x="40" y="256" style="fill:#F97362;font-weight:700">counts, never percentages</text>
+        <!-- divider -->
+        <line x1="440" y1="40" x2="440" y2="290" stroke="#B4D2D9" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <!-- RIGHT: ANOVA -->
+        <text class="caH" x="470" y="40">ANOVA · between vs within</text>
+        <line x1="470" y1="250" x2="840" y2="250" stroke="#B4D2D9" stroke-width="2"/>
+        <!-- group A cluster -->
+        <circle cx="510" cy="200" r="5" fill="#7FD1DE"/><circle cx="525" cy="215" r="5" fill="#7FD1DE"/><circle cx="500" cy="220" r="5" fill="#7FD1DE"/><circle cx="518" cy="205" r="5" fill="#7FD1DE"/>
+        <line x1="490" y1="210" x2="540" y2="210" stroke="#0E7C90" stroke-width="2.4"/>
+        <text class="caN" x="500" y="270">A</text>
+        <!-- group B cluster -->
+        <circle cx="640" cy="150" r="5" fill="#22A5B8"/><circle cx="655" cy="165" r="5" fill="#22A5B8"/><circle cx="630" cy="170" r="5" fill="#22A5B8"/><circle cx="648" cy="155" r="5" fill="#22A5B8"/>
+        <line x1="620" y1="160" x2="670" y2="160" stroke="#0E7C90" stroke-width="2.4"/>
+        <text class="caN" x="630" y="270">B</text>
+        <!-- group C cluster -->
+        <circle cx="770" cy="110" r="5" fill="#0B5563"/><circle cx="785" cy="125" r="5" fill="#0B5563"/><circle cx="760" cy="130" r="5" fill="#0B5563"/><circle cx="778" cy="115" r="5" fill="#0B5563"/>
+        <line x1="750" y1="120" x2="800" y2="120" stroke="#0E7C90" stroke-width="2.4"/>
+        <text class="caN" x="760" y="270">C</text>
+        <!-- grand mean line -->
+        <line x1="470" y1="175" x2="840" y2="175" stroke="#F97362" stroke-width="2" stroke-dasharray="5 4"/>
+        <text class="caN" x="470" y="168" style="fill:#F97362">grand mean</text>
+        <text class="caN" x="470" y="300" style="fill:#10232A">F = between-group variance / within-group variance</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - chi-square weighs count gaps; ANOVA weighs between-group spread against within-group noise</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Chi-square: goodness-of-fit and independence<span class="mini">5 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Goodness-of-fit:</strong> one categorical variable against an expected split. "Did 20,000 assignments land 50/50?" Compares observed counts to expected counts, one row per category.</li>
+          <li><strong>Independence:</strong> two categorical variables in a contingency table. "Is conversion related to channel?" H0 is that the two are independent - the row and column proportions do not interact.</li>
+          <li><strong>The statistic:</strong> chi-sq = sum of (observed - expected)&#178; / expected across cells. Bigger = further from what the null predicts; scipy turns it into a p-value.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Counts, never proportions</strong>
+          Chi-square is defined on <em>raw counts</em>. Feed it 3.2% and 3.6% and the math is meaningless - it needs 320 and 360 out of 10,000. The whole test is built on how many, because a gap of 40 counts means something very different at n=200 than at n=20,000.
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>ANOVA: one F for many groups, and its assumptions<span class="mini">5 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Why not many t-tests:</strong> four groups make six pairwise t-tests. At alpha 0.05 each, the chance of at least one false positive climbs past 25%. ANOVA asks the one question - "are they all equal?" - at a single, controlled alpha.</li>
+          <li><strong>The F-statistic:</strong> between-group variance divided by within-group variance. If the group means are spread far apart relative to the noise inside each group, F is large and p is small.</li>
+          <li><strong>Assumptions:</strong> roughly normal residuals and roughly equal variances across groups. When those fail (skewed money data, wildly different spreads), switch to a nonparametric test.</li>
+          <li><strong>What it does NOT tell you:</strong> a significant ANOVA says "at least one group differs", not which one. That needs a post-hoc test (Tukey HSD) afterward.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Nonparametric fallbacks</strong>
+          <code>mannwhitneyu</code> is the rank-based stand-in for a two-sample t-test; <code>kruskal</code> (Kruskal-Wallis) is the stand-in for one-way ANOVA. They compare distributions by rank, so heavy skew and unequal variance stop being a problem.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo">
+    <div class="section-kicker">
+      <span class="klabel">★ everyone builds · on the Lumen data</span>
+      <h2>SRM check, an independence table, one-way ANOVA, and a rank test <span class="tag demo">★ 24 min · everyone builds</span></h2>
+    </div>
+    <p class="lede">Reload the Lumen dataset from b1 (with the <code>converted</code> flag). We add a <code>channel</code> column - the 9-value enum from the touchpoints table - so we can build a real contingency table.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Chi-square goodness-of-fit as a sample-ratio-mismatch check.</strong> A "50/50" A/B assignment of 20,000 users came back 10,420 / 9,580. Did randomization break?</p>
+        <div class="prompt-box good">
+          <span class="label">srm_check.py</span>
+<pre>from scipy import stats
+
+observed = [10_420, 9_580]          # counts landing in variant / control
+expected = [10_000, 10_000]         # a true 50/50 split of 20,000
+
+chi2, p = stats.chisquare(f_obs=observed, f_exp=expected)
+print(f"chi2 = {chi2:.1f}, p = {p:.6f}")   # p ~ 0.0000 -&gt; SRM, STOP
+# A 4.2%/-4.2% imbalance across 20,000 is far too big to be luck.
+# Do NOT read the conversion result off a broken split - fix the splitter first.</pre>
+        </div>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>This is the exact guardrail the experimentation course (b3) runs before it trusts any A/B result. If the assignment ratio itself fails a chi-square test, something upstream is dropping or double-counting users, and the shiny conversion lift downstream is not to be believed. One <code>chisquare</code> call, and you either proceed or you go debug the pipeline.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Chi-square test of independence.</strong> Is whether a session converts independent of which channel it came from? Build the channel-by-converted contingency table.</p>
+        <div class="prompt-box good">
+          <span class="label">independence.py</span>
+<pre>import numpy as np, pandas as pd
+
+df = pd.read_parquet("lumen_orders.parquet")
+rng = np.random.default_rng(42)
+channels = ["organic","paid_search","email","affiliate",
+            "social","display","referral","direct","sms"]
+df["channel"]   = rng.choice(channels, len(df))
+df["converted"] = rng.random(len(df)) &lt; 0.032     # ~3.2% overall
+
+table = pd.crosstab(df["channel"], df["converted"])   # COUNTS, not rates
+chi2, p, dof, expected = stats.chi2_contingency(table)
+print(table)
+print(f"chi2 = {chi2:.2f}, dof = {dof}, p = {p:.3f}")
+# assigned at random here -&gt; p large -&gt; no evidence conversion depends on channel</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>One-way ANOVA.</strong> Do the four product categories share one mean order value? One F, not six t-tests.</p>
+        <div class="prompt-box good">
+          <span class="label">anova.py</span>
+<pre>groups = [df.loc[df.product_category == c, "order_value"]
+          for c in ["cleanser", "serum", "moisturizer", "set"]]
+
+f, p = stats.f_oneway(*groups)
+print(f"F = {f:.2f}, p = {p:.3f}")
+# In our b1 sim order_value does not depend on category -&gt; p large.
+# If p WERE small, ANOVA says "some group differs" - then run Tukey HSD:
+#   from statsmodels.stats.multicomp import pairwise_tukeyhsd
+#   pairwise_tukeyhsd(df.order_value, df.product_category)  # which pair(s)?</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Nonparametric fallback.</strong> Order value is right-skewed, so a t-test's normality assumption is shaky. Compare cleanser vs serum by rank instead.</p>
+        <div class="prompt-box good">
+          <span class="label">nonparametric.py</span>
+<pre>cleanser = df.loc[df.product_category == "cleanser", "order_value"]
+serum    = df.loc[df.product_category == "serum",    "order_value"]
+
+u, p = stats.mannwhitneyu(cleanser, serum, alternative="two-sided")
+print(f"Mann-Whitney U = {u:.0f}, p = {p:.3f}")
+# ranks, not raw values -&gt; skew and unequal variance stop mattering.
+# The 3+ group version is Kruskal-Wallis:
+k, pk = stats.kruskal(*groups)
+print(f"Kruskal-Wallis H = {k:.2f}, p = {pk:.3f}")</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Before Session 10</span>
+      <h2>This week <span class="tag exercise">◐ 40 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Break the split on purpose.</strong> Change the SRM counts to 10,050 / 9,950 and re-run <code>chisquare</code>. At what imbalance does p cross 0.05? That is your SRM sensitivity.</li>
+      <li><strong>Make a real dependence.</strong> Give one channel a higher conversion rate when you build <code>converted</code>, then re-run <code>chi2_contingency</code>. Confirm p drops and the observed table diverges from <code>expected</code>.</li>
+      <li><strong>Force an ANOVA signal.</strong> Add $15 to <code>set</code> order values, re-run <code>f_oneway</code>, and if it is significant run <code>pairwise_tukeyhsd</code> to see which pair drives it.</li>
+      <li><strong>Optional:</strong> compare the t-test and Mann-Whitney p-values on the same two groups. When do they agree, and when does skew pull them apart?</li>
+    </ul>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · You want to chi-square test whether a 50/50 split held. What do you feed the test?</p>
+      <button class="qopt" type="button">A · the two proportions, 0.521 and 0.479</button>
+      <button class="qopt" type="button">B · the difference in percentages</button>
+      <button class="qopt" type="button">C · the raw counts, 10,420 and 9,580, against expected 10,000 and 10,000</button>
+      <p class="qwhy">Chi-square is defined on counts, never proportions. The same percentage gap means something completely different at n=200 versus n=20,000, and only the counts carry that information.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · Why run one ANOVA on four groups instead of six pairwise t-tests?</p>
+      <button class="qopt" type="button">A · six tests at alpha 0.05 inflate the chance of at least one false positive well past 5%</button>
+      <button class="qopt" type="button">B · t-tests cannot be run on more than two groups technically</button>
+      <button class="qopt" type="button">C · ANOVA is always more powerful</button>
+      <p class="qwhy">Every extra test is another roll at a false positive. Six independent tests at alpha 0.05 push the family-wise error past 25%. ANOVA asks the single question at one controlled alpha.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · A one-way ANOVA on four categories comes back p = 0.002. What can you conclude?</p>
+      <button class="qopt" type="button">A · category 'set' is the highest</button>
+      <button class="qopt" type="button">B · at least one group mean differs, but not which - run a post-hoc test to find out</button>
+      <button class="qopt" type="button">C · all four means are different from each other</button>
+      <p class="qwhy">ANOVA is an omnibus test: it flags that the groups are not all equal, without naming the culprit. A post-hoc test like Tukey HSD tells you which specific pair(s) differ.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This builder session covers ~80% of the introductory chi-square and ANOVA content in the sources below, on the Lumen dataset. Post-hoc tests and full experiment design live in the experimentation course; correlation and regression close this track in b10.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Chi-square goodness-of-fit + independence; one-way ANOVA; nonparametric fallbacks</span><span class="note">Part 1 + demo</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">SRM check, contingency tables, f_oneway, mannwhitneyu, kruskal in scipy</span><span class="note">demo</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 6-7 - inference for categorical data and ANOVA</span><span class="note">theory spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Khan Academy - chi-square tests</span><span class="note">intuition builder</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Khan Academy - analysis of variance (ANOVA)</span><span class="note">intuition builder</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder Session 9 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Goodness-of-fit</b><span><code>stats.chisquare(f_obs, f_exp)</code>. One category vs an expected split. The SRM check.</span></div>
+      <div class="cheat-item"><b>Independence</b><span><code>stats.chi2_contingency(crosstab)</code>. Two categoricals. H0: they are independent.</span></div>
+      <div class="cheat-item"><b>Counts only</b><span>Chi-square eats raw counts, never percentages. 320/10000, not 3.2%.</span></div>
+      <div class="cheat-item"><b>One-way ANOVA</b><span><code>stats.f_oneway(g1, g2, g3, ...)</code>. F = between-group var / within-group var.</span></div>
+      <div class="cheat-item"><b>Assumptions</b><span>ANOVA wants normal residuals + equal variance. Violated? Use Kruskal-Wallis / Mann-Whitney.</span></div>
+      <div class="cheat-item"><b>Omnibus</b><span>ANOVA says SOMETHING differs, not which. Follow a significant F with Tukey HSD.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 9 of 10 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="b8-hypothesis-testing.html">← Prev: Hypothesis testing</a> &nbsp;·&nbsp; <a href="b10-correlation-regression.html">Next: Correlation &amp; regression →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

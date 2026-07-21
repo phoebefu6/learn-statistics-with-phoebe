@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 4 · Distributions in scipy - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Builder session 4 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Builder session 4 of 10</div>
+    <h1>Distributions in scipy, <span class="accent">one API for every shape of randomness</span></h1>
+    <p class="sub">Here is the quiet superpower of <code>scipy.stats</code>: every distribution - normal, binomial, Poisson, lognormal, all of them - speaks the same five-verb language. Learn <code>.pdf</code>/<code>.pmf</code>, <code>.cdf</code>, <code>.ppf</code>, <code>.rvs</code>, and <code>.fit</code> once and you can work with any distribution you will ever meet. Then we do the honest thing with Lumen: order value is <em>not</em> normal, it is lognormal, and a Q-Q plot proves it.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Building up</span>
+      <span class="chip audience">Builders · DA / DE / DS</span>
+      <span class="chip audience">Python · scipy / matplotlib</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:3">3-16 · The scipy API</span>
+      <span class="a3" style="flex:5">16-40 · Fit &amp; check on Lumen</span>
+      <span class="a4" style="flex:1">40-45 · Wrap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Learn one API, get every distribution free</h2>
+    </div>
+    <p class="lede">Most people learn distributions as a pile of unrelated formulas. scipy takes a better view: a distribution is an object, and every object has the same methods. Ask any of them for its density, its cumulative probability, its quantiles, some random samples, or a fit to your data - the method names never change. That means the hard part is no longer the math, it is picking the <em>right</em> distribution for your data. That choice is what this session drills.</p>
+    <div class="legend">
+      <span class="pill solid">Live - built in session</span>
+      <span class="pill light">Self-study - run after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      The shared five-verb scipy API - <code>.pdf</code>/<code>.pmf</code>, <code>.cdf</code>, <code>.ppf</code> (the inverse cdf / quantile), <code>.rvs</code> (sample), and <code>.fit</code> (estimate params) - across normal, binomial, Poisson, uniform, exponential, and lognormal. You will model Lumen conversions as binomial and daily orders as Poisson, prove order value is lognormal not normal with a Q-Q plot, and use <code>.ppf</code> and <code>.cdf</code> to answer real business questions about order size.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: THE API ============ -->
+  <section class="section" id="api">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the vocabulary in code</span>
+      <h2>The five verbs, and which distribution to reach for <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">Two things to hold in your head. First, the five methods every scipy distribution shares. Second, a quick decision for which distribution fits your data - is it a continuous symmetric measurement, a count of yes/no trials, a count of events per period, or right-skewed money? The map below is the whole decision.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A which-distribution decision map. From a central question, four branches lead to Normal for continuous symmetric data, Binomial for counts of yes-no trials, Poisson for events per period, and Lognormal for right-skewed money.">
+        <style>
+          .bwdL { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .bwdC { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .bwdApi { font: 600 11px Inter, sans-serif; fill: #E6F6F9; }
+          .bwdCond { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .bwdA { stroke: #B4D2D9; stroke-width: 2.5; fill: none; marker-end: url(#bwdAh); }
+        </style>
+        <defs>
+          <marker id="bwdAh" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#B4D2D9" stroke-width="1.6"/></marker>
+        </defs>
+        <!-- root -->
+        <rect x="330" y="18" width="220" height="54" rx="12" fill="#0B5563"/>
+        <text class="bwdC" x="352" y="42">What shape is</text>
+        <text class="bwdC" x="352" y="60">your data?</text>
+        <!-- branch arrows -->
+        <line class="bwdA" x1="380" y1="72" x2="115" y2="196"/>
+        <line class="bwdA" x1="420" y1="72" x2="335" y2="196"/>
+        <line class="bwdA" x1="460" y1="72" x2="545" y2="196"/>
+        <line class="bwdA" x1="500" y1="72" x2="765" y2="196"/>
+        <!-- conditions -->
+        <text class="bwdCond" x="30" y="150">continuous, symmetric</text>
+        <text class="bwdCond" x="250" y="150">n yes/no trials</text>
+        <text class="bwdCond" x="470" y="150">events per period</text>
+        <text class="bwdCond" x="690" y="130">right-skewed</text>
+        <text class="bwdCond" x="700" y="146">money</text>
+        <!-- leaves -->
+        <rect x="20" y="200" width="190" height="96" rx="12" fill="#0E7C90"/>
+        <text class="bwdL" x="42" y="228">Normal</text>
+        <text class="bwdApi" x="42" y="252">st.norm(mu, sigma)</text>
+        <text class="bwdApi" x="42" y="276">heights, errors</text>
+        <rect x="240" y="200" width="190" height="96" rx="12" fill="#22A5B8"/>
+        <text class="bwdL" x="262" y="228">Binomial</text>
+        <text class="bwdApi" x="262" y="252">st.binom(n, p)</text>
+        <text class="bwdApi" x="262" y="276">conversions</text>
+        <rect x="460" y="200" width="190" height="96" rx="12" fill="#0E7C90"/>
+        <text class="bwdL" x="482" y="228">Poisson</text>
+        <text class="bwdApi" x="482" y="252">st.poisson(lam)</text>
+        <text class="bwdApi" x="482" y="276">orders / day</text>
+        <rect x="680" y="200" width="190" height="96" rx="12" fill="#22A5B8"/>
+        <text class="bwdL" x="702" y="228">Lognormal</text>
+        <text class="bwdApi" x="702" y="252">st.lognorm(s, scale)</text>
+        <text class="bwdApi" x="702" y="276">order value</text>
+        <!-- api footer -->
+        <rect x="20" y="316" width="850" height="34" rx="9" fill="#E6F6F9" stroke="#7FD1DE" stroke-width="1.5"/>
+        <text class="bwdCond" x="40" y="338" style="fill:#10232A">every one answers: .pdf/.pmf (height) · .cdf (P below) · .ppf (quantile) · .rvs (sample) · .fit (estimate params)</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - pick the distribution by shape; the five verbs are always the same</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The five verbs every distribution shares<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong><code>.pdf(x)</code> / <code>.pmf(k)</code>:</strong> the height. pdf for continuous (a density), pmf for discrete (a real probability).</li>
+          <li><strong><code>.cdf(x)</code>:</strong> P(X &lt;= x). "What fraction sits at or below here." Answers "P(order &lt; $100)".</li>
+          <li><strong><code>.ppf(q)</code>:</strong> the inverse cdf, a quantile. "What value has q of the mass below it." Answers "the 95th-percentile order".</li>
+          <li><strong><code>.rvs(size)</code>:</strong> draw random samples. Your simulation engine from b2 and b3, built in.</li>
+          <li><strong><code>.fit(data)</code>:</strong> estimate the distribution's parameters from data by maximum likelihood. Turns raw numbers into a fitted model.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>cdf and ppf are inverses</strong>
+          <code>cdf</code> takes a value and returns a probability; <code>ppf</code> takes a probability and returns a value. So <code>rv.ppf(rv.cdf(100))</code> gives you 100 back. Whenever a question says "what value" you want ppf; whenever it says "what fraction" or "what probability" you want cdf.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo">
+    <div class="section-kicker">
+      <span class="klabel">★ everyone builds · fit and check on Lumen</span>
+      <h2>Model conversions, then prove order value is lognormal <span class="tag demo">★ 22 min · everyone builds</span></h2>
+    </div>
+    <p class="lede">First the easy fits: conversions as binomial, daily orders as Poisson. Then the honest one - hold order value up against both a normal and a lognormal, and let the Q-Q plot decide. Finally use ppf and cdf to answer questions the business actually asks.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Conversions and daily orders.</strong> Binomial for "successes out of 4,000 sessions", Poisson for "orders per day". They center on the same ~128.</p>
+        <div class="prompt-box good">
+          <span class="label">discrete_models.py</span>
+<pre>import numpy as np, scipy.stats as st, matplotlib.pyplot as plt
+
+orders = st.binom(4000, 0.032)     # conversions among 4,000 daily sessions
+daily  = st.poisson(128)           # daily orders, lambda = 4000 * 0.032 = 128
+
+print("binomial mean:", orders.mean(), " Poisson mean:", daily.mean())  # ~128 both
+
+k = np.arange(90, 170)
+fig, ax = plt.subplots(1, 2, figsize=(11, 4))
+ax[0].bar(k, orders.pmf(k), color="#7FD1DE"); ax[0].set_title("Binomial(4000, 0.032)")
+ax[1].bar(k, daily.pmf(k),  color="#7FD1DE"); ax[1].set_title("Poisson(128)")
+plt.tight_layout(); plt.show()
+# Poisson is the binomial's large-n, small-p limit - the two pmfs nearly overlay</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>The honest fit.</strong> Order value is right-skewed money, so fit lognormal AND normal, overlay both, then let a Q-Q plot expose which one fails.</p>
+        <div class="prompt-box good">
+          <span class="label">lognormal_vs_normal.py</span>
+<pre>import pandas as pd, numpy as np, scipy.stats as st, matplotlib.pyplot as plt
+
+df = pd.read_parquet("lumen_orders.parquet")
+ov = df["order_value"].values
+
+shape, loc, scale = st.lognorm.fit(ov, floc=0)   # fit lognormal (fix loc=0)
+mu, sigma         = st.norm.fit(ov)              # fit normal
+
+x = np.linspace(ov.min(), ov.max(), 300)
+fig, ax = plt.subplots(1, 2, figsize=(11, 4))
+ax[0].hist(ov, bins=60, density=True, color="#7FD1DE", edgecolor="white")
+ax[0].plot(x, st.lognorm.pdf(x, shape, loc, scale), color="#0E7C90", lw=2, label="lognormal")
+ax[0].plot(x, st.norm.pdf(x, mu, sigma),            color="#F97362", lw=2, label="normal")
+ax[0].legend(); ax[0].set_title("Order value - lognormal hugs it, normal does not")
+
+st.probplot(ov, dist="norm", plot=ax[1])         # normal Q-Q plot
+ax[1].set_title("Normal Q-Q - points peel off in the right tail")
+plt.tight_layout(); plt.show()</pre>
+        </div>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>A Lumen analyst once built a "flag orders more than 2 standard deviations above the mean" rule, assuming normality. On lognormal data that rule flags almost nothing on the low side and a flood of ordinary large orders on the high side, because the normal model puts the mean and SD in the wrong place. The Q-Q plot above is the 10-second check that would have caught it: when the tail points bend away from the line, stop assuming normal.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Answer business questions with ppf and cdf.</strong> How big is a "big" order, and how many orders come in under $100?</p>
+        <div class="prompt-box good">
+          <span class="label">ppf_and_cdf.py</span>
+<pre>import scipy.stats as st
+
+# reuse the fitted lognormal params: shape, loc, scale
+p95 = st.lognorm.ppf(0.95, shape, loc, scale)   # ppf = quantile / inverse cdf
+print("95th-percentile order:", round(p95, 2))  # the size of a top-5% order
+
+p_under_100 = st.lognorm.cdf(100, shape, loc, scale)
+print("P(order &lt; $100):", round(p_under_100, 3))
+
+# sanity: cdf and ppf are inverses
+print(round(st.lognorm.cdf(p95, shape, loc, scale), 2))   # 0.95</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SEE IT LIVE ============ -->
+  <section class="section" id="seeit">
+    <div class="section-kicker">
+      <span class="klabel">See it live</span>
+      <h2>The sampler - watch samples fill the curve <span class="tag concept">interactive</span></h2>
+    </div>
+    <p class="lede">This is the code you just ran, made draggable. Flip between Normal, Binomial, and Poisson, drag the parameters, and watch the random samples pile up into the theoretical pmf / pdf. More samples, tighter fit - the law of large numbers from b2 and the distributions from today, in one widget.</p>
+    <div class="stat-live" data-tool="sampler"></div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Before Session 5</span>
+      <h2>This week <span class="tag exercise">◐ 40 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Fit and sample.</strong> Use <code>st.lognorm.rvs(shape, loc, scale, size=50_000)</code> to draw synthetic order values from your fitted model, then compare their mean and median to the real Lumen numbers (~$74 and ~$63).</li>
+      <li><strong>Poisson for support.</strong> Freeze <code>st.poisson(5)</code> for support tickets per hour. Use <code>.cdf</code> to find P(more than 8 tickets in an hour) as <code>1 - cdf(8)</code>.</li>
+      <li><strong>ppf for SLAs.</strong> If order value is lognormal, what order size is the 99th percentile? One <code>.ppf(0.99)</code> call. Write one sentence on how a warehouse would use it.</li>
+      <li><strong>Optional:</strong> add an exponential fit for time-between-orders and an <code>st.uniform</code> baseline, and note which real Lumen columns each does or does not suit.</li>
+    </ul>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · You want the order value below which 95% of orders fall. Which scipy method?</p>
+      <button class="qopt" type="button">A · .cdf(0.95)</button>
+      <button class="qopt" type="button">B · .ppf(0.95) - the quantile / inverse cdf</button>
+      <button class="qopt" type="button">C · .pdf(0.95)</button>
+      <p class="qwhy">ppf maps a probability to a value (the quantile), which is exactly "the value with 95% of the mass below it." cdf goes the other way (value to probability); pdf gives a density height.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · A normal Q-Q plot of Lumen order value shows the points bending away from the line in the upper tail. What does that tell you?</p>
+      <button class="qopt" type="button">A · the data is perfectly normal</button>
+      <button class="qopt" type="button">B · scipy computed it wrong</button>
+      <button class="qopt" type="button">C · the data has a heavier right tail than normal - it is skewed, so lognormal fits better</button>
+      <p class="qwhy">Q-Q points that peel off the line in the tail mean the data departs from the reference distribution there. For right-skewed money the upper tail is heavier than normal, which is exactly why lognormal is the honest choice.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · Why can Lumen's daily orders be modeled as Poisson(128) when there are ~4,000 sessions at 3.2%?</p>
+      <button class="qopt" type="button">A · Poisson is the large-n, small-p limit of the binomial, and lambda = n x p = 128</button>
+      <button class="qopt" type="button">B · Poisson and binomial are unrelated; it is a coincidence</button>
+      <button class="qopt" type="button">C · because order value is lognormal</button>
+      <p class="qwhy">When n is large and p is small, the binomial(n, p) is very well approximated by a Poisson with lambda = n x p. Here 4,000 x 0.032 = 128, so both pmfs center and overlay on ~128 orders/day.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This builder session covers ~80% of the named-distributions content in the sources below, using the shared scipy API on Lumen data. Sampling distributions and the central limit theorem - why sample means go normal even when the data does not - come next in b5.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">scipy.stats API: pdf/pmf, cdf, ppf, rvs, fit across normal, binomial, Poisson, lognormal</span><span class="note">Part 1 + demo</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Lognormal vs normal fit, Q-Q plot with probplot, ppf/cdf for business questions</span><span class="note">demo + live sampler</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 4 - The normal distribution and friends</span><span class="note">theory spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Google "The Power of Statistics" - module 2, probability distributions</span><span class="note">module 2</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">StatQuest - The main ideas behind probability distributions</span><span class="note">video, distribution intuition</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder Session 4 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>One API</b><span>Every dist: <code>.pdf</code>/<code>.pmf</code>, <code>.cdf</code>, <code>.ppf</code>, <code>.rvs</code>, <code>.fit</code>. Learn once, use everywhere.</span></div>
+      <div class="cheat-item"><b>cdf vs ppf</b><span>cdf: value to probability (P below). ppf: probability to value (quantile). They are inverses.</span></div>
+      <div class="cheat-item"><b>Pick by shape</b><span>Symmetric measure = normal. Yes/no counts = binomial. Events/period = Poisson. Skewed money = lognormal.</span></div>
+      <div class="cheat-item"><b>Q-Q plot</b><span><code>st.probplot(data, dist="norm", plot=ax)</code>. Tail bends off the line = not that distribution.</span></div>
+      <div class="cheat-item"><b>Poisson limit</b><span>Binomial(4000, 0.032) ≈ Poisson(128). lambda = n x p when n big, p small.</span></div>
+      <div class="cheat-item"><b>Lumen truth</b><span>Order value is lognormal, not normal. Never apply "mean ± 2 SD" rules to it.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 4 of 10 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="b3-random-variables.html">← Prev: Random variables</a> &nbsp;·&nbsp; <a href="b5-sampling-and-clt.html">Next: Sampling &amp; the CLT →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/stat-live.js?v=1"></script>
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 7 · Confidence intervals - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Builder session 7 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Builder session 7 of 10</div>
+    <h1>Confidence intervals, <span class="accent">the honest error bar</span></h1>
+    <p class="sub">A point estimate without a range is a false precision. This session turns the standard error from b5 and the estimates from b6 into confidence intervals - the range you actually report. You will build t-intervals for a mean, Wald and Wilson intervals for Lumen's conversion rate, and land on the canonical result that explains why the experimentation course needs tens of thousands of sessions per arm.</p>
+    <div class="chip-row">
+      <span class="chip level">🟠 Getting real</span>
+      <span class="chip audience">Builders · DA / DE / DS</span>
+      <span class="chip audience">Python · scipy / statsmodels</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:3">3-15 · z, t, Wald, Wilson</span>
+      <span class="a3" style="flex:5">15-40 · Build the intervals</span>
+      <span class="a4" style="flex:1">40-45 · Wrap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Report the range, not just the point</h2>
+    </div>
+    <p class="lede">"Conversion is 3.2%" is a point estimate. "Conversion is 3.2%, 95% CI [2.71%, 3.69%]" is a claim you can defend - and, crucially, a claim that tells you what you cannot yet see. The interval carries the sample size, the noise, and the honesty all at once. Today you compute intervals for means and for proportions, learn when the textbook Wald interval quietly fails, and read the interval correctly - which is harder than it looks.</p>
+    <div class="legend">
+      <span class="pill solid">Live - built in session</span>
+      <span class="pill light">Self-study - run after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      The z vs t distinction (and why t has fatter tails), Wald vs Wilson intervals for a proportion (and why Wilson wins when n*p is small), the bootstrap percentile CI, and the correct frequentist reading of "95% confidence." Plus the canonical Lumen result - a 95% CI of [2.71%, 3.69%] at n=5,000 - and why the variant's 3.6% sitting inside it is the whole reason experiments need to be big.
+    </div>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="theory">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the vocabulary in code</span>
+      <h2>z vs t, Wald vs Wilson, and what 95% means <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">Which interval you reach for depends on what you know and how much data you have. Four tools, one correct interpretation.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two overlaid bell curves: a narrow z distribution and a wider t distribution with fatter tails, showing that the t interval is wider when the population standard deviation is unknown and n is small.">
+        <style>
+          .ciL { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .ciN { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .ciZ { font: 700 12px Inter, sans-serif; fill: #0B5563; }
+          .ciT { font: 700 12px Inter, sans-serif; fill: #F97362; }
+        </style>
+        <defs>
+          <marker id="ciAh" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#B4D2D9" stroke-width="1.6"/></marker>
+        </defs>
+        <!-- axis -->
+        <line x1="60" y1="250" x2="820" y2="250" stroke="#B4D2D9" stroke-width="1.5"/>
+        <line x1="440" y1="60" x2="440" y2="250" stroke="#B4D2D9" stroke-width="1.2" stroke-dasharray="4 4"/>
+        <!-- z curve: taller, narrower -->
+        <path d="M120,250 C260,250 360,80 440,80 C520,80 620,250 760,250" fill="none" stroke="#0B5563" stroke-width="3"/>
+        <!-- t curve: shorter peak, fatter tails -->
+        <path d="M80,250 C240,244 350,120 440,120 C530,120 640,244 800,250" fill="none" stroke="#F97362" stroke-width="3"/>
+        <text class="ciZ" x="470" y="96">z (sigma known)</text>
+        <text class="ciN" x="470" y="112" style="fill:#0B5563">tall, thin tails</text>
+        <text class="ciT" x="600" y="150">t (sigma unknown, small n)</text>
+        <text class="ciN" x="600" y="166" style="fill:#F97362">lower peak, fatter tails - wider CI</text>
+        <!-- tail emphasis -->
+        <text class="ciN" x="90" y="238">fatter left tail</text>
+        <text class="ciN" x="700" y="238">fatter right tail</text>
+        <rect x="60" y="286" width="14" height="14" rx="3" fill="#F97362"/>
+        <text class="ciN" x="82" y="297" style="fill:#10232A">When sigma is unknown and n is small, use t: its fatter tails widen the interval to pay for the extra uncertainty of estimating sigma. As n grows, t converges to z.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the t distribution has fatter tails than z, so a t-interval is wider for the same confidence when n is small</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The four tools, and when each applies<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>z-interval (sigma known).</strong> When you somehow know the population standard deviation, the sampling distribution is normal and you use z critical values (1.96 for 95%). Rare in practice - you almost never know sigma.</li>
+          <li><strong>t-interval (sigma unknown, small n).</strong> The realistic case: you estimate sigma from the sample, which adds uncertainty, so you use the t distribution. Its fatter tails give a slightly wider interval. As n grows, t converges to z and the difference vanishes.</li>
+          <li><strong>Wald vs Wilson (for a proportion).</strong> The Wald interval, <code>p-hat +/- z*sqrt(p-hat(1-p-hat)/n)</code>, is the textbook formula - but it behaves badly when <code>n*p</code> is small (few "successes"), producing intervals that are too narrow or run past 0 or 1. The Wilson interval fixes this and is the better default for rare events.</li>
+          <li><strong>Bootstrap CI.</strong> Resample with replacement, recompute the statistic, and read the 2.5th and 97.5th percentiles. Works for any statistic, no formula needed - the b5 tool, applied.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>What "95% confidence" actually means</strong>
+          It is NOT "a 95% chance the true value is in this interval" - the true value is fixed, not random. It means the <em>procedure</em> captures the true value 95% of the time over many repeated samples. Build 100 intervals from 100 samples and about 95 of them will contain the truth. This is the frequentist reading from leader session a5, and getting it right separates people who understand intervals from people who quote them.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo">
+    <div class="section-kicker">
+      <span class="klabel">★ everyone builds · four intervals</span>
+      <h2>Build every interval on Lumen's numbers <span class="tag demo">★ 22 min · everyone builds</span></h2>
+    </div>
+    <p class="lede">A t-interval for mean order value, Wald and Wilson for the 3.2% conversion rate, the canonical [2.71%, 3.69%] result, and a bootstrap CI to tie it all back to b5.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>t-interval for the mean.</strong> sigma is unknown (we estimate it from the sample), so t is correct.</p>
+        <div class="prompt-box good">
+          <span class="label">t_interval.py</span>
+<pre>import numpy as np, pandas as pd
+from scipy import stats
+
+df = pd.read_parquet("lumen_orders.parquet")
+ov = df["order_value"].to_numpy()
+
+n   = ov.size
+m   = ov.mean()                 # ~ 74
+se  = ov.std(ddof=1) / np.sqrt(n)   # SE = s / sqrt(n),  s ~ 38
+
+lo, hi = stats.t.interval(0.95, df=n - 1, loc=m, scale=se)
+print(f"mean order value : {m:.2f}")
+print(f"95% t-interval   : [{lo:.2f}, {hi:.2f}]")   # ~ [73.7, 74.3] at n=50000
+# At huge n the interval is razor thin - and t is indistinguishable from z.</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Wald vs Wilson for the conversion rate.</strong> 3.2% of 5,000 sessions = 160 conversions. Compare the two intervals.</p>
+        <div class="prompt-box good">
+          <span class="label">proportion_ci.py</span>
+<pre>from statsmodels.stats.proportion import proportion_confint
+
+count, nobs = 160, 5000          # 3.2% observed conversion at n = 5000
+
+wald   = proportion_confint(count, nobs, alpha=0.05, method='normal')
+wilson = proportion_confint(count, nobs, alpha=0.05, method='wilson')
+
+print("Wald  :", [round(100*x, 2) for x in wald])    # ~ [2.71, 3.69] %
+print("Wilson:", [round(100*x, 2) for x in wilson])  # ~ [2.74, 3.73] %
+# At n=5000 with 160 successes they nearly agree. Now shrink the sample...
+
+for nobs_small in (100, 50):
+    c = round(0.032 * nobs_small)
+    w  = proportion_confint(c, nobs_small, method='normal')
+    wl = proportion_confint(c, nobs_small, method='wilson')
+    print(f"n={nobs_small:>3}  Wald {[round(100*x,2) for x in w]}  "
+          f"Wilson {[round(100*x,2) for x in wl]}")
+# Small n*p: Wald turns too narrow / can dip below 0; Wilson stays sensible.</pre>
+        </div>
+        <div class="callout tip">
+          <strong>Wilson beats Wald when n*p is small</strong>
+          With only a handful of conversions the Wald interval leans on a normal approximation that has not kicked in yet - it can be too narrow or spill below zero. The Wilson interval is built to stay inside [0, 1] and keeps its coverage honest for rare events. For conversion work, reach for Wilson by default.
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>The canonical result.</strong> State the assumptions, then read the punchline out loud.</p>
+        <div class="prompt-box good">
+          <span class="label">canonical.py</span>
+<pre># Assumptions: n = 5000 sessions, observed conversion 3.2% (160 conversions),
+# 95% confidence, Wald (normal) interval.
+p, n, z = 0.032, 5000, 1.96
+se = (p * (1 - p) / n) ** 0.5          # ~ 0.00249  (0.25pp)
+lo, hi = p - z*se, p + z*se
+print(f"95% Wald CI: [{100*lo:.2f}%, {100*hi:.2f}%]")   # [2.71%, 3.69%]
+
+variant = 0.036
+print("variant 3.6% inside the control CI?", lo &lt; variant &lt; hi)   # True
+# 3.6% sits INSIDE [2.71%, 3.69%] at n=5000 - the data cannot yet tell
+# 3.2% and 3.6% apart. That is exactly why experimentation needs ~32,000/arm.</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Bootstrap percentile CI.</strong> Formula-free, straight from b5 - a sanity check on the t-interval.</p>
+        <div class="prompt-box good">
+          <span class="label">boot_ci.py</span>
+<pre>rng = np.random.default_rng(42)
+B = 2000
+boot = np.array([rng.choice(ov, size=ov.size, replace=True).mean()
+                 for _ in range(B)])
+
+lo, hi = np.percentile(boot, [2.5, 97.5])
+print("bootstrap 95% CI :", [round(lo, 2), round(hi, 2)])   # ~ [73.7, 74.3]
+print("t-interval  95% CI: matches - two roads, one destination")</pre>
+        </div>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Here is the bridge to the whole experimentation course. Lumen's control converts at 3.2%; a proposed variant is hoped to hit 3.6%. At n=5,000 the control's 95% CI is [2.71%, 3.69%] - and 3.6% sits comfortably inside it. The interval is telling you, before you spend a cent, that this sample is far too small to separate the two rates. Pushing that overlap apart to a confident "the variant wins" is what forces ~32,000 sessions per arm in the experimentation course. The confidence interval is not a footnote - it is the sample-size calculator in disguise.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Before Session 8</span>
+      <h2>This week <span class="tag exercise">◐ 40 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Watch coverage happen.</strong> Draw 100 samples of size n=200 from <code>ov</code>, build a t-interval from each, and count how many contain the true population mean. You should land near 95 - that is the correct interpretation, measured.</li>
+      <li><strong>Wald breaks, Wilson holds.</strong> Simulate n=30 with a true 3.2% rate many times. How often does the Wald interval dip below 0% or miss the truth versus Wilson? Report both coverage rates.</li>
+      <li><strong>Shrink the interval.</strong> Recompute the conversion Wald CI at n = 5,000, 10,000, and 32,000. At which n does 3.6% finally fall outside the control CI? Connect it to the experimentation handoff.</li>
+      <li><strong>Optional:</strong> compute the t-interval by hand (<code>m +/- stats.t.ppf(0.975, n-1) * se</code>) and confirm it matches <code>stats.t.interval</code>.</li>
+    </ul>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · What does a 95% confidence interval actually mean?</p>
+      <button class="qopt" type="button">A · there is a 95% probability the true value lies inside this specific interval</button>
+      <button class="qopt" type="button">B · the procedure captures the true value 95% of the time over many repeated samples</button>
+      <button class="qopt" type="button">C · 95% of the data falls inside the interval</button>
+      <p class="qwhy">The true value is fixed, not random, so it is not "95% likely" to be in one given interval. Confidence is a property of the procedure: repeat the sampling many times and about 95% of the intervals you build will contain the truth.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · You estimate a mean from a small sample and do not know the population sigma. Which interval, and why?</p>
+      <button class="qopt" type="button">A · the t-interval - it has fatter tails to pay for estimating sigma from the sample</button>
+      <button class="qopt" type="button">B · the z-interval - t is only for large samples</button>
+      <button class="qopt" type="button">C · it makes no difference at any sample size</button>
+      <p class="qwhy">When sigma is unknown you estimate it, adding uncertainty. The t distribution's fatter tails widen the interval to account for that. As n grows, t converges to z and the two agree.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">3 · Lumen's control converts at 3.2%; at n=5,000 its 95% CI is [2.71%, 3.69%]. The variant hopes for 3.6%. What does the interval tell you?</p>
+      <button class="qopt" type="button">A · the variant is already proven better</button>
+      <button class="qopt" type="button">B · the control is broken</button>
+      <button class="qopt" type="button">C · 3.6% sits inside the CI, so this sample cannot yet separate the two rates - you need more data</button>
+      <p class="qwhy">Because 3.6% falls inside the control's confidence interval at n=5,000, the data cannot distinguish it from 3.2%. That overlap is exactly why the experimentation course sizes tests at ~32,000 per arm to detect the effect.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This builder session covers ~80% of the computational confidence-interval content in the sources below, on the Lumen dataset. The interpretation - what "95%" does and does not mean - is the part most courses rush; we do not.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">z vs t intervals for a mean; Wald vs Wilson for a proportion; bootstrap CI</span><span class="note">Part 1 + demo</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The canonical [2.71%, 3.69%] result; correct frequentist interpretation</span><span class="note">demo + callouts</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 5-7 - inference for means &amp; proportions</span><span class="note">theory spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">365 Data Science - Confidence Intervals</span><span class="note">applied module</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Google "The Power of Statistics" - constructing CIs in Python</span><span class="note">module 4</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder Session 7 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>z vs t</b><span>Know sigma → z. Estimate sigma (the usual case) → t, with fatter tails. Big n → they agree.</span></div>
+      <div class="cheat-item"><b>t-interval</b><span><code>stats.t.interval(0.95, df=n-1, loc=mean, scale=s/sqrt(n))</code>.</span></div>
+      <div class="cheat-item"><b>Wald vs Wilson</b><span><code>proportion_confint(k, n, method='normal' | 'wilson')</code>. Small n*p → use Wilson.</span></div>
+      <div class="cheat-item"><b>Canonical CI</b><span>3.2% at n=5000 → 95% CI [2.71%, 3.69%]. Variant 3.6% sits inside it.</span></div>
+      <div class="cheat-item"><b>Correct reading</b><span>The procedure covers the truth 95% of the time. NOT "95% chance the truth is here."</span></div>
+      <div class="cheat-item"><b>Bridge to experiments</b><span>Overlap at n=5000 is why A/B tests need ~32,000/arm to separate 3.2% from 3.6%.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 7 of 10 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="b6-estimation-and-mle.html">← Prev: Estimation &amp; MLE</a> &nbsp;·&nbsp; <a href="b8-hypothesis-testing.html">Next: Hypothesis testing →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 10 · Correlation, regression and fallacies - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Builder session 10 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Builder session 10 of 10 · capstone</div>
+    <h1>Correlation, regression <span class="accent">and the fallacies that bite</span></h1>
+    <p class="sub">The finale. We measure association two ways (Pearson for linear, Spearman for monotonic), fit simple and multiple regression to Lumen order value, and read the output like a practitioner. Then the capstone: the traps that make smart people wrong - a correlation of zero hiding a perfect curve, p-hacking twenty noise features, and Simpson's paradox reversing a verdict when you group. Everything here is the on-ramp the experimentation course drives on.</p>
+    <div class="chip-row">
+      <span class="chip level">🔴 Capstone</span>
+      <span class="chip audience">Builders · DA / DE / DS</span>
+      <span class="chip audience">Python · scipy / statsmodels</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:3">3-16 · Correlation &amp; OLS</span>
+      <span class="a3" style="flex:5">16-40 · Regression + the fallacy capstone</span>
+      <span class="a4" style="flex:1">40-45 · Wrap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Relationships - and the ways they lie to you</h2>
+    </div>
+    <p class="lede">"Prior spend predicts this order." "This channel converts best." Correlation and regression are how you make claims like that with numbers behind them - and they are also where confident people go badly wrong. A single correlation coefficient can hide a curve. Twenty random features will hand you a "significant" one by pure luck. A channel that wins overall can lose inside every single segment. This capstone teaches the tools and the traps together, because in practice they arrive together.</p>
+    <div class="legend">
+      <span class="pill solid">Live - built in session</span>
+      <span class="pill light">Self-study - run after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      Pearson and Spearman correlation, simple and multiple OLS with <code>statsmodels</code> (reading R-squared, coefficients, and residuals), and the three fallacy defenses: Anscombe's warning that r measures linear only, multiple-comparison correction (Bonferroni + FDR), and a worked Simpson's paradox on Lumen. The r ~ 0.6 you measure here is the exact CUPED covariate the experimentation course uses to shrink variance.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: CORRELATION & OLS ============ -->
+  <section class="section" id="theory">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · association and the line</span>
+      <h2>Pearson vs Spearman, and reading a regression <span class="tag concept">13 min live</span></h2>
+    </div>
+    <p class="lede">Correlation is one number for "do these move together". Regression is the line (or plane) that quantifies how. The danger is that the single number can look identical across wildly different pictures - which is what the figure shows.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Four small scatterplots in the style of Anscombe's quartet, each with the same correlation but very different shapes: a clean linear cloud, a smooth curve, a tight line with one outlier, and a vertical stack with one distant point.">
+        <style>
+          .anT { font: 800 12px Inter, sans-serif; fill: #0B5563; }
+          .anN { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .anAx { stroke: #B4D2D9; stroke-width: 1.6; }
+          .anFit { stroke: #F97362; stroke-width: 2.2; }
+        </style>
+        <text class="anN" x="30" y="26">Same r ~ 0.6 in all four - the number alone tells you almost nothing about the shape</text>
+        <!-- panel 1: linear cloud -->
+        <text class="anT" x="60" y="52">1 · linear</text>
+        <line class="anAx" x1="55" y1="160" x2="215" y2="160"/><line class="anAx" x1="55" y1="60" x2="55" y2="160"/>
+        <line class="anFit" x1="65" y1="150" x2="205" y2="80"/>
+        <circle cx="75" cy="148" r="4" fill="#0E7C90"/><circle cx="100" cy="132" r="4" fill="#0E7C90"/><circle cx="120" cy="128" r="4" fill="#0E7C90"/><circle cx="145" cy="108" r="4" fill="#0E7C90"/><circle cx="170" cy="98" r="4" fill="#0E7C90"/><circle cx="195" cy="84" r="4" fill="#0E7C90"/>
+        <!-- panel 2: curve -->
+        <text class="anT" x="290" y="52">2 · a curve</text>
+        <line class="anAx" x1="285" y1="160" x2="445" y2="160"/><line class="anAx" x1="285" y1="60" x2="285" y2="160"/>
+        <line class="anFit" x1="295" y1="150" x2="435" y2="80"/>
+        <circle cx="300" cy="145" r="4" fill="#0E7C90"/><circle cx="325" cy="110" r="4" fill="#0E7C90"/><circle cx="350" cy="90" r="4" fill="#0E7C90"/><circle cx="375" cy="82" r="4" fill="#0E7C90"/><circle cx="405" cy="95" r="4" fill="#0E7C90"/><circle cx="430" cy="120" r="4" fill="#0E7C90"/>
+        <!-- panel 3: line + outlier -->
+        <text class="anT" x="515" y="52">3 · outlier</text>
+        <line class="anAx" x1="510" y1="160" x2="670" y2="160"/><line class="anAx" x1="510" y1="60" x2="510" y2="160"/>
+        <line class="anFit" x1="520" y1="150" x2="660" y2="85"/>
+        <circle cx="525" cy="148" r="4" fill="#0E7C90"/><circle cx="545" cy="140" r="4" fill="#0E7C90"/><circle cx="565" cy="132" r="4" fill="#0E7C90"/><circle cx="585" cy="124" r="4" fill="#0E7C90"/><circle cx="605" cy="116" r="4" fill="#0E7C90"/>
+        <circle cx="650" cy="70" r="5" fill="#F97362"/>
+        <!-- panel 4: vertical + far point -->
+        <text class="anT" x="740" y="52">4 · leverage</text>
+        <line class="anAx" x1="735" y1="160" x2="855" y2="160"/><line class="anAx" x1="735" y1="60" x2="735" y2="160"/>
+        <line class="anFit" x1="745" y1="150" x2="845" y2="90"/>
+        <circle cx="760" cy="145" r="4" fill="#0E7C90"/><circle cx="760" cy="125" r="4" fill="#0E7C90"/><circle cx="760" cy="105" r="4" fill="#0E7C90"/><circle cx="760" cy="90" r="4" fill="#0E7C90"/>
+        <circle cx="835" cy="80" r="5" fill="#F97362"/>
+        <text class="anN" x="30" y="300">Always plot before you trust an r. Panels 2, 3, 4 would each mislead a coefficient-only reader.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - Anscombe's lesson: four identical r values, four stories only a scatterplot reveals</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Pearson, Spearman, and what r cannot see<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Pearson r:</strong> measures <em>linear</em> association only, from -1 to +1. A strong curve can sit at r ~ 0 - the relationship is real, just not straight.</li>
+          <li><strong>Spearman:</strong> Pearson on the ranks. Captures any <em>monotonic</em> relationship (as one goes up the other consistently goes up), robust to outliers and nonlinearity.</li>
+          <li><strong>r-squared:</strong> the square of r for a simple regression - the share of variance in the outcome the predictor explains. r ~ 0.6 means r-squared ~ 0.36, so ~36% explained.</li>
+          <li><strong>The cardinal rule:</strong> correlation is not causation. A tight r can come from a lurking third variable, reverse causation, or pure coincidence.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Plot first, coefficient second</strong>
+          Anscombe's quartet is four datasets with the same mean, variance, correlation, and regression line - and four completely different shapes. The coefficient is a summary, and summaries hide things. One scatterplot catches the curve, the outlier, and the leverage point that r never will.
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Reading an OLS regression: coefficients, R-squared, residuals<span class="mini">5 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Coefficients:</strong> in <code>order_value ~ prior_30d_spend</code>, the slope is "dollars of order value per extra dollar of prior spend, holding other terms fixed". The intercept is the fitted value when predictors are zero.</li>
+          <li><strong>R-squared:</strong> share of order-value variance the model explains. Adjusted R-squared penalizes adding useless predictors.</li>
+          <li><strong>Residuals:</strong> observed minus predicted. Plot them against the fitted values - a shapeless cloud is healthy; a funnel or a curve means the model is missing structure.</li>
+          <li><strong>Multiple regression:</strong> add categorical terms with <code>C(product_category)</code> and each coefficient becomes a comparison to the baseline category, adjusted for prior spend.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>A coefficient is a conditional statement</strong>
+          "Holding everything else in the model fixed." Drop a relevant variable and the remaining coefficients can swing or flip - which is exactly the machinery behind Simpson's paradox in the capstone below.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo">
+    <div class="section-kicker">
+      <span class="klabel">★ everyone builds · the capstone</span>
+      <h2>Correlate, regress, then walk into every trap on purpose <span class="tag demo">★ 24 min · everyone builds</span></h2>
+    </div>
+    <p class="lede">Reload the Lumen dataset from b1. First measure and model the prior-spend relationship, then run the three fallacy demos that separate a careful analyst from a confident wrong one.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Pearson + Spearman.</strong> How does prior-30-day spend relate to this order's value? This r is the variance-reduction covariate the experimentation course reuses.</p>
+        <div class="prompt-box good">
+          <span class="label">correlate.py</span>
+<pre>import numpy as np, pandas as pd
+from scipy import stats
+
+df = pd.read_parquet("lumen_orders.parquet")   # from b1
+r_p, p_p = stats.pearsonr(df.prior_30d_spend, df.order_value)
+r_s, p_s = stats.spearmanr(df.prior_30d_spend, df.order_value)
+print(f"Pearson  r = {r_p:.2f}  (r^2 = {r_p**2:.2f})")   # ~ 0.60, r^2 ~ 0.36
+print(f"Spearman r = {r_s:.2f}")                          # similar - monotonic
+# r^2 ~ 0.36 means prior spend explains ~36% of order-value variance.
+# That is exactly the CUPED covariate that shrinks A/B variance in experimentation b7.</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Simple and multiple OLS.</strong> Fit the line, then add product category and read the full summary.</p>
+        <div class="prompt-box good">
+          <span class="label">regress.py</span>
+<pre>import statsmodels.formula.api as smf
+
+simple = smf.ols("order_value ~ prior_30d_spend", df).fit()
+print(f"simple R^2 = {simple.rsquared:.3f}")   # ~ 0.36, matches r^2
+
+model = smf.ols("order_value ~ prior_30d_spend + C(product_category)", df).fit()
+print(model.summary())          # coefficients, R^2, p-values, CIs
+print(f"multiple R^2 = {model.rsquared:.3f}")
+
+# residual check: a shapeless cloud around 0 is healthy
+import matplotlib.pyplot as plt
+plt.scatter(model.fittedvalues, model.resid, s=6, color="#7FD1DE")
+plt.axhline(0, color="#F97362"); plt.xlabel("fitted"); plt.ylabel("residual")
+plt.title("Residuals vs fitted"); plt.show()</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Fallacy 1 - p-hacking, and the fix.</strong> Correlate 20 pure-noise features with order value. About one clears p &lt; 0.05 by luck alone. Then correct for the 20 looks.</p>
+        <div class="prompt-box good">
+          <span class="label">phacking.py</span>
+<pre>from statsmodels.stats.multitest import multipletests
+
+rng = np.random.default_rng(7)
+pvals = []
+for _ in range(20):                       # 20 features that are pure noise
+    noise = rng.normal(size=len(df))
+    _, p = stats.pearsonr(noise, df.order_value)
+    pvals.append(p)
+
+pvals = np.array(pvals)
+print("raw hits (p&lt;0.05):", int((pvals &lt; 0.05).sum()))   # ~ 1 by chance
+
+bonf = multipletests(pvals, alpha=0.05, method="bonferroni")[0]
+fdr  = multipletests(pvals, alpha=0.05, method="fdr_bh")[0]
+print("after Bonferroni:", int(bonf.sum()))   # ~ 0
+print("after FDR (BH)  :", int(fdr.sum()))     # ~ 0
+# Test 20 things at alpha 0.05 and ~1 fake "win" is EXPECTED. Correct for the count.</pre>
+        </div>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>This is the single most common way dashboards lie. A growth analyst slices conversion by 20 audience traits, one comes back "significant", and a whole campaign is built on noise. The defense is not intuition - it is <code>multipletests</code>. Bonferroni divides your alpha by the number of tests (strict); FDR controls the expected share of false discoveries (more forgiving at scale). Either one erases the phantom win.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Fallacy 2 - Simpson's paradox on Lumen.</strong> A channel that looks better overall is worse inside every product category once you group. Watch the verdict reverse.</p>
+        <div class="prompt-box good">
+          <span class="label">simpson.py</span>
+<pre># Two channels, conversion counts by product category (authored to reverse).
+# 'social' looks better OVERALL, yet loses WITHIN every category.
+data = pd.DataFrame([
+    #  channel   category      conversions  sessions
+    ["social",   "cleanser",     18,  1000],
+    ["social",   "serum",        90,  3000],   # social sits mostly in easy categories
+    ["email",    "cleanser",     75,  3000],
+    ["email",    "serum",        36,  1000],   # email sits mostly in hard categories
+], columns=["channel","category","conv","sessions"])
+
+overall = data.groupby("channel").apply(
+    lambda g: g.conv.sum() / g.sessions.sum())
+print("OVERALL rate:\n", (overall*100).round(2))     # social ~2.70% &gt; email ~2.78%? check below
+
+bycat = data.assign(rate=lambda d: (d.conv/d.sessions*100).round(2))
+print("\nWITHIN each category:\n",
+      bycat.pivot(index="category", columns="channel", values="rate"))
+# Within cleanser AND serum, email's rate is HIGHER - the aggregate flipped it
+# because social's volume piles into the easy-converting category. Group before you rank.</pre>
+        </div>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Simpson's paradox is not a math curiosity - it is why "channel X has the best overall conversion" can be exactly backwards. The aggregate is a weighted average, and the weights (how much traffic each channel sends to easy vs hard categories) can dominate the real per-segment performance. The habit that saves you: before you rank anything, ask what confounder the groups differ on, and group by it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Capstone · put it all together</span>
+      <h2>Your capstone this week <span class="tag exercise">◐ 60 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Fit and defend a model.</strong> Build a multiple OLS predicting <code>order_value</code> from prior spend and category, report R-squared, and write two sentences a stakeholder would trust - including one caveat about what the model does NOT prove (causation).</li>
+      <li><strong>Reproduce Anscombe.</strong> Load <code>seaborn.load_dataset("anscombe")</code>, compute Pearson r for all four sets (nearly identical), then plot them. Write the one-line lesson.</li>
+      <li><strong>Scale the p-hack.</strong> Push the noise loop to 100 features. How many raw hits now, and does FDR keep more than Bonferroni? Explain the trade-off in one sentence.</li>
+      <li><strong>Author your own Simpson's reversal.</strong> Change the volumes in <code>simpson.py</code> until the overall winner and the per-category winner disagree, and name the confounder that drives it.</li>
+    </ul>
+    <div class="callout win">
+      <strong>★ Where this goes next</strong>
+      You now have the full foundations - descriptive stats, probability, distributions, sampling, confidence intervals, hypothesis tests, chi-square, ANOVA, correlation, and regression. The sequel, <strong>learn-experimentation-with-phoebe</strong>, is where all of it gets used for real: the two-proportion z-test becomes an A/B readout, the r ~ 0.6 covariate becomes CUPED variance reduction, the SRM chi-square becomes a launch guardrail, and the power calculation sizes the test before it runs. Same Lumen brand, same numbers - you just built the toolkit that course assumes.
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · A dataset has Pearson r ~ 0 but a clear U-shape in the scatterplot. What is true?</p>
+      <button class="qopt" type="button">A · there is no relationship at all</button>
+      <button class="qopt" type="button">B · there is a strong relationship, just not a linear one - r only measures linear association</button>
+      <button class="qopt" type="button">C · the data must be corrupted</button>
+      <p class="qwhy">Pearson r captures linear association only. A strong curve can average out to r near 0. Always plot; consider Spearman or a nonlinear model when the shape is not a line.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · You test 20 unrelated features against an outcome at alpha 0.05. About how many "significant" hits do you expect by chance?</p>
+      <button class="qopt" type="button">A · zero - noise is never significant</button>
+      <button class="qopt" type="button">B · about ten</button>
+      <button class="qopt" type="button">C · about one - so correct with Bonferroni or FDR before believing any of them</button>
+      <p class="qwhy">At alpha 0.05, each test has a 5% false-positive chance, so 20 tests yield about one by luck. Multiple-comparison corrections (Bonferroni, FDR) rein that in.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · A channel has the best overall conversion but the worst rate inside every product category. What is going on?</p>
+      <button class="qopt" type="button">A · Simpson's paradox - the aggregate is reversed by how traffic is distributed across categories</button>
+      <button class="qopt" type="button">B · the data is wrong</button>
+      <button class="qopt" type="button">C · correlation caused the conversion</button>
+      <p class="qwhy">Simpson's paradox: the overall rate is a weighted average, and uneven weights (a channel concentrated in easy-converting categories) can flip the aggregate against the per-segment truth. Group by the confounder before ranking.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This capstone covers ~80% of the introductory correlation and regression content in the sources below, on the Lumen dataset - plus the fallacy defenses that most intro courses skip.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Pearson vs Spearman, simple + multiple OLS, R-squared, residuals, coefficients</span><span class="note">Part 1 + demo</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anscombe, p-hacking + Bonferroni/FDR, Simpson's paradox worked on Lumen</span><span class="note">the fallacy capstone</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 8 - introduction to linear regression</span><span class="note">theory spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Khan Academy - bivariate data; advanced regression</span><span class="note">intuition builders</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">StatQuest - R-squared &amp; linear regression; FDR / p-hacking. Simpson's paradox authored fresh</span><span class="note">intuition + original</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder Session 10 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Pearson vs Spearman</b><span><code>stats.pearsonr</code> (linear), <code>stats.spearmanr</code> (monotonic, rank-based, robust).</span></div>
+      <div class="cheat-item"><b>r measures LINEAR</b><span>r ~ 0 can hide a strong curve. Plot before you trust a coefficient. Anscombe.</span></div>
+      <div class="cheat-item"><b>OLS</b><span><code>smf.ols("y ~ x + C(cat)", df).fit()</code>; read <code>.summary()</code>, R-squared, residuals vs fitted.</span></div>
+      <div class="cheat-item"><b>r^2 = variance explained</b><span>r ~ 0.6 -&gt; r^2 ~ 0.36. This is the CUPED covariate in experimentation b7.</span></div>
+      <div class="cheat-item"><b>Multiple comparisons</b><span>20 tests at 0.05 -&gt; ~1 fake hit. <code>multipletests(..., method="bonferroni"|"fdr_bh")</code>.</span></div>
+      <div class="cheat-item"><b>Simpson's paradox</b><span>Aggregate can reverse within every subgroup. Group by the confounder before ranking. Correlation != causation.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 10 of 10 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="b9-chi-square-anova.html">← Prev: Chi-square &amp; ANOVA</a> &nbsp;·&nbsp; <a href="../index.html">All sessions →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

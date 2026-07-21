@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 2 · Probability and simulation - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Builder session 2 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Builder session 2 of 10</div>
+    <h1>Probability and simulation, <span class="accent">when the formula is easier to run than to solve</span></h1>
+    <p class="sub">Probability has a reputation for being fiddly algebra. It does not have to be. In this session you learn the four rules that cover almost everything - addition, multiplication, conditional probability, and Bayes - and then you check every one of them by <em>simulating</em> it in numpy. When a Bayes problem makes your head hurt, you will draw 200,000 fake Lumen sessions and just count. Same answer, no anxiety.</p>
+    <div class="chip-row">
+      <span class="chip level">🟢 Start-adjacent</span>
+      <span class="chip audience">Builders · DA / DE / DS</span>
+      <span class="chip audience">Python · numpy / scipy</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:3">3-16 · The four rules</span>
+      <span class="a3" style="flex:5">16-40 · Simulate it in Python</span>
+      <span class="a4" style="flex:1">40-45 · Wrap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>A probability is a long-run frequency you can fake in code</h2>
+    </div>
+    <p class="lede">"Lumen converts at 3.2%" is a probability statement. It does not mean every 100th session buys - it means that over a very large number of sessions, about 3.2 in 100 do. That reframing is the whole trick: any probability you can write down, you can also <em>estimate</em> by generating a mountain of random outcomes and taking the average. This session teaches the rules and the simulation habit side by side, so you never again get stuck on a probability word problem.</p>
+    <div class="legend">
+      <span class="pill solid">Live - built in session</span>
+      <span class="pill light">Self-study - run after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      The four probability rules in plain language and in code, the difference between joint / marginal / conditional probability, a working definition of independence you can test with one line of numpy, and Bayes theorem done the painless way - with natural frequencies instead of fractions. You will also see the law of large numbers converge in front of you and understand base-rate neglect well enough to never fall for it.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: THE RULES ============ -->
+  <section class="section" id="rules">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the vocabulary in code</span>
+      <h2>Sample spaces, the four rules, and Bayes <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">Everything starts with a sample space - the set of things that can happen. A Lumen session either converts or it does not: the sample space is {convert, no convert} with probabilities {0.032, 0.968}. From there, four rules do the heavy lifting, and Bayes is the one people fear. The picture below shows why the fear is misplaced: count people, not fractions.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 390" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A natural-frequency box: 10,000 orders split into 400 high-value and 9,600 ordinary, the flag catches 360 of the high-value and 768 of the ordinary, so only 360 of 1,128 flagged orders are truly high-value, about 32 percent.">
+        <style>
+          .bnfL { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .bnfLs { font: 600 11px Inter, sans-serif; fill: #FFFFFF; }
+          .bnfK { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .bnfN { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .bnfA { stroke: #B4D2D9; stroke-width: 2.5; fill: none; marker-end: url(#bnfAh); }
+        </style>
+        <defs>
+          <marker id="bnfAh" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#B4D2D9" stroke-width="1.6"/></marker>
+        </defs>
+        <!-- root -->
+        <rect x="360" y="16" width="160" height="52" rx="12" fill="#0B5563"/>
+        <text class="bnfL" x="383" y="40">10,000 orders</text>
+        <text class="bnfLs" x="383" y="58">the base population</text>
+        <!-- split arrows -->
+        <line class="bnfA" x1="415" y1="68" x2="230" y2="118"/>
+        <line class="bnfA" x1="465" y1="68" x2="650" y2="118"/>
+        <!-- level 2 -->
+        <rect x="130" y="120" width="200" height="60" rx="12" fill="#0E7C90"/>
+        <text class="bnfL" x="152" y="146">400 high-value</text>
+        <text class="bnfLs" x="152" y="166">4% base rate</text>
+        <rect x="550" y="120" width="200" height="60" rx="12" fill="#557079"/>
+        <text class="bnfL" x="572" y="146">9,600 ordinary</text>
+        <text class="bnfLs" x="572" y="166">96%</text>
+        <!-- split arrows down -->
+        <line class="bnfA" x1="230" y1="180" x2="230" y2="228"/>
+        <line class="bnfA" x1="650" y1="180" x2="650" y2="228"/>
+        <!-- level 3 -->
+        <rect x="130" y="230" width="200" height="60" rx="12" fill="#22A5B8"/>
+        <text class="bnfL" x="152" y="256">360 get flagged</text>
+        <text class="bnfLs" x="152" y="276">90% sensitivity</text>
+        <rect x="550" y="230" width="200" height="60" rx="12" fill="#E6F6F9" stroke="#7FD1DE" stroke-width="1.5"/>
+        <text class="bnfK" x="572" y="256">768 get flagged</text>
+        <text class="bnfN" x="572" y="276" style="fill:#10232A">8% false-positive rate</text>
+        <!-- result -->
+        <rect x="235" y="322" width="410" height="56" rx="12" fill="#FFFFFF" stroke="#F97362" stroke-width="2"/>
+        <text class="bnfK" x="256" y="346">Flagged = 360 + 768 = 1,128</text>
+        <text class="bnfN" x="256" y="367" style="fill:#10232A">P(high-value | flag) = 360 / 1,128 = 32% - not 90%</text>
+        <rect x="130" y="352" width="14" height="14" rx="3" fill="#F97362"/>
+        <text class="bnfN" x="150" y="363" style="fill:#10232A">a 90%-sensitive flag on a</text>
+        <text class="bnfN" x="150" y="377" style="fill:#10232A">rare event is mostly false alarms</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - Bayes by counting people, not juggling fractions</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The four rules, in one card<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Addition (OR):</strong> P(A or B) = P(A) + P(B) - P(A and B). Subtract the overlap so you do not double-count. If A and B are mutually exclusive, the overlap is 0.</li>
+          <li><strong>Multiplication (AND):</strong> P(A and B) = P(A) x P(B | A). If A and B are independent, this collapses to P(A) x P(B).</li>
+          <li><strong>Conditional:</strong> P(A | B) = P(A and B) / P(B). "Given that B happened, how likely is A." Restricting to the world where B is true.</li>
+          <li><strong>Bayes:</strong> P(A | B) = P(B | A) x P(A) / P(B). It flips a conditional you know into the one you want. The natural-frequency box above <em>is</em> Bayes, just counted out.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Independence has a precise test</strong>
+          A and B are independent exactly when P(A and B) = P(A) x P(B). Not "they feel unrelated" - the multiplication has to hold. In the demo you will check two Lumen columns against this equation directly, no hand-waving.
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self</span>Why base rates dominate a rare event<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The flag above is genuinely good at its job - it catches 90% of high-value orders. Yet when it fires, the order is high-value only about a third of the time. The reason is arithmetic, not a broken flag: there are so many more ordinary orders (9,600 vs 400) that even a small 8% false-positive rate produces more false alarms (768) than the flag has true hits (360). When the thing you are hunting is rare, the base rate wins. This is the same math behind "a 99%-accurate test for a 1-in-1000 disease is wrong most times it fires."</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo">
+    <div class="section-kicker">
+      <span class="klabel">★ everyone builds · simulate the rules</span>
+      <h2>Estimate probabilities by counting fake outcomes <span class="tag demo">★ 22 min · everyone builds</span></h2>
+    </div>
+    <p class="lede">Four short scripts. Each takes a rule you just read and confirms it by generating random outcomes and averaging. If the simulation matches the formula, you understood the formula - and if you ever forget the formula, the simulation still works.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Simulate Lumen conversions.</strong> A boolean array is a probability estimator: its mean is P(true).</p>
+        <div class="prompt-box good">
+          <span class="label">simulate_convert.py</span>
+<pre>import numpy as np
+
+rng = np.random.default_rng(42)
+conv = rng.random(200_000) &lt; 0.032      # True with probability 0.032
+
+print("draws        :", conv.size)
+print("P(convert) est:", round(conv.mean(), 4))   # ~ 0.0319, close to 0.032
+print("count of True :", int(conv.sum()))          # ~ 6,380 conversions</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Watch the law of large numbers converge.</strong> The running estimate settles onto 0.032 as sessions pile up.</p>
+        <div class="prompt-box good">
+          <span class="label">law_of_large_numbers.py</span>
+<pre>import numpy as np, matplotlib.pyplot as plt
+
+running = np.cumsum(conv) / np.arange(1, conv.size + 1)
+
+fig, ax = plt.subplots(figsize=(9, 4))
+ax.plot(running, color="#0E7C90", lw=1)
+ax.axhline(0.032, color="#F97362", ls="--", label="true p = 0.032")
+ax.set_xscale("log")
+ax.set_xlabel("sessions seen"); ax.set_ylabel("running P(convert)")
+ax.set_title("Law of large numbers - noisy early, locked on 0.032 late")
+ax.legend(); plt.tight_layout(); plt.show()
+# early on the estimate swings wildly; by ~50,000 sessions it barely moves</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Do Bayes with natural frequencies.</strong> The rare "high-value" flag from the diagram, in code - and its answer is far below 90%.</p>
+        <div class="prompt-box good">
+          <span class="label">bayes_natural_freq.py</span>
+<pre>N    = 10_000
+base = 0.04     # 4% of orders are genuinely high-value
+sens = 0.90     # the flag catches 90% of high-value orders
+fpr  = 0.08     # the flag also fires on 8% of ordinary orders
+
+high      = N * base           # 400 high-value orders
+ordinary  = N * (1 - base)     # 9,600 ordinary orders
+flag_high = high * sens        # 360 true positives
+flag_ord  = ordinary * fpr     # 768 false positives
+
+p_hv_given_flag = flag_high / (flag_high + flag_ord)
+print("P(high-value | flag):", round(p_hv_given_flag, 3))   # 0.319
+
+# same thing straight from Bayes theorem
+p_flag = base * sens + (1 - base) * fpr
+print("via Bayes formula   :", round(base * sens / p_flag, 3))  # 0.319</pre>
+        </div>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>A Lumen growth PM wanted to auto-email every "high-value" flagged customer a VIP coupon. The flag was pitched as "90% accurate." The natural-frequency box says that of every 1,128 emails, only 360 land on a real high-value customer - two thirds are wasted on ordinary orders. Not because the flag is broken, but because high-value orders are rare. The fix is to raise the base rate first (segment before you flag), not to trust the 90%.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Test independence on two real columns.</strong> Is converting independent of buying a serum? Check P(A and B) against P(A) x P(B).</p>
+        <div class="prompt-box good">
+          <span class="label">independence_check.py</span>
+<pre>import numpy as np, pandas as pd
+
+df = pd.read_parquet("lumen_orders.parquet")
+rng = np.random.default_rng(42)
+df["converted"] = rng.random(len(df)) &lt; 0.032   # the b1 homework column
+
+A = df["converted"]
+B = df["product_category"].eq("serum")
+
+p_A, p_B = A.mean(), B.mean()
+print("P(A) P(B)  :", round(p_A * p_B, 5))
+print("P(A and B) :", round((A &amp; B).mean(), 5))   # ~ equal => independent
+
+# conditional sanity check: P(convert | serum) should ~ P(convert)
+print("P(convert | serum):", round(A[B].mean(), 4), "vs", round(p_A, 4))</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Before Session 3</span>
+      <h2>This week <span class="tag exercise">◐ 40 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Gambler's fallacy, simulated.</strong> Draw 1,000 sessions. After a run of 30 non-conversions, is the next session any more likely to convert? Show with a fresh <code>rng.random() &lt; 0.032</code> that the streak carries no memory.</li>
+      <li><strong>Move the base rate.</strong> Re-run the Bayes script with <code>base = 0.20</code> instead of 0.04, keeping sensitivity and false-positive rate fixed. Watch P(high-value | flag) jump. Write one sentence on why segmenting first helps.</li>
+      <li><strong>Addition rule by hand.</strong> Estimate P(order is a "set" OR order value &gt; $150) two ways: with the formula P(A) + P(B) - P(A and B), and by direct counting on the dataframe. Confirm they match.</li>
+      <li><strong>Optional:</strong> simulate the law of large numbers for the AOV mean instead of a proportion - draw order values and plot the running mean converging on ~$74.</li>
+    </ul>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · Lumen converts at 3.2%. A session has just failed to convert 30 times in a row. What is P(convert) on the next session?</p>
+      <button class="qopt" type="button">A · higher than 3.2% - it is "due"</button>
+      <button class="qopt" type="button">B · still 3.2% - independent trials have no memory</button>
+      <button class="qopt" type="button">C · lower than 3.2% - the streak will continue</button>
+      <p class="qwhy">Independent trials carry no memory of past outcomes. The gambler's fallacy is believing a run changes the next probability. Each session is a fresh 3.2% draw.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · A flag is 90% sensitive on a 4% base rate, with an 8% false-positive rate. When it fires, how often is the order truly high-value?</p>
+      <button class="qopt" type="button">A · about 90% - that is the sensitivity</button>
+      <button class="qopt" type="button">B · about 4% - that is the base rate</button>
+      <button class="qopt" type="button">C · about 32% - false positives from the large ordinary group swamp the true hits</button>
+      <p class="qwhy">Of 10,000 orders, 360 true positives and 768 false positives get flagged. 360 / 1,128 is about 32%. When the target is rare, base rate dominates - this is base-rate neglect.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · How do you test whether events A and B are independent in numpy?</p>
+      <button class="qopt" type="button">A · check that P(A and B) equals P(A) x P(B)</button>
+      <button class="qopt" type="button">B · check that P(A) equals P(B)</button>
+      <button class="qopt" type="button">C · check that A and B never happen together</button>
+      <p class="qwhy">Independence is defined by P(A and B) = P(A) x P(B). Option C describes mutually exclusive events, which is a different thing. Equal probabilities (B) is unrelated.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This builder session covers ~80% of the introductory-probability content in the sources below, but done as simulation on the Lumen dataset. Distributions as named objects come next, in b4.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Sample spaces, addition / multiplication / conditional rules, independence in numpy</span><span class="note">Part 1 + demo</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Bayes with natural frequencies; base-rate neglect; law of large numbers by simulation</span><span class="note">demo</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 3 - Probability</span><span class="note">theory spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Google "The Power of Statistics" - module 2, probability</span><span class="note">module 2</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">StatQuest - Bayes theorem, clearly explained</span><span class="note">video, natural-frequency intuition</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder Session 2 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Simulate = estimate</b><span><code>(rng.random(n) &lt; p).mean()</code> approximates P. Big n, close estimate. That is the law of large numbers.</span></div>
+      <div class="cheat-item"><b>Addition</b><span>P(A or B) = P(A) + P(B) - P(A and B). Subtract the overlap.</span></div>
+      <div class="cheat-item"><b>Multiplication</b><span>P(A and B) = P(A) x P(B | A). Independent: = P(A) x P(B).</span></div>
+      <div class="cheat-item"><b>Conditional</b><span>P(A | B) = P(A and B) / P(B). Restrict to the world where B is true.</span></div>
+      <div class="cheat-item"><b>Bayes</b><span>Count people, not fractions. Natural frequencies turn a scary flip into arithmetic.</span></div>
+      <div class="cheat-item"><b>Base-rate neglect</b><span>A 90%-sensitive flag on a rare event is mostly false alarms. Raise the base rate before you trust a flag.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 2 of 10 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="b1-describe-the-data.html">← Prev: Describe the data</a> &nbsp;·&nbsp; <a href="b3-random-variables.html">Next: Random variables →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

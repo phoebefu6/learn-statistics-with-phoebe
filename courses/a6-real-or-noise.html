@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leader session 6 · Real or noise? - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Leader session 6 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Leader session 6 of 6</div>
+    <h1>Real, or <span class="accent">noise?</span></h1>
+    <p class="sub">This is the capstone. Every session so far has been building toward one question that lands on your desk constantly: the number moved - is that a real effect, or is it just luck? This session gives you the logic of a statistical test in plain English, the correct meaning of a p-value (and what it is emphatically not), and a gauntlet of the fallacies that fool smart rooms every week - p-hacking, correlation-is-not-causation, Simpson's paradox, and base-rate neglect. It ends by handing you off to the experimentation course, where you learn to size a test before you launch it. No math you have to do, no code.</p>
+    <div class="chip-row">
+      <span class="chip level">🟠 Capstone</span>
+      <span class="chip audience">Leaders · C-level / PM / marketing</span>
+      <span class="chip audience">No code</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:4">3-22 · Is it real or luck?</span>
+      <span class="a3" style="flex:4">22-40 · The fallacy gauntlet</span>
+      <span class="a4" style="flex:1">40-45 · Handoff</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>"Conversion went from 3.2% to 3.6% - ship it!"</h2>
+    </div>
+    <p class="lede">Lumen's new checkout page shows 3.6% conversion against the old page's 3.2%. That is a +0.4 point lift, a 12.5% relative gain - the room is already celebrating. But hold on: with a small sample, a jump like that happens by pure luck more often than you would guess. The entire discipline of hypothesis testing exists to answer one question honestly: is this difference real, or is it the kind of wobble you would see even if the two pages were identical? Get the logic right and you stop shipping noise as if it were signal.</p>
+    <div class="legend">
+      <span class="pill solid">Live - covered in session</span>
+      <span class="pill light">Self-study - read after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      The exact logic a statistical test runs, the one-sentence correct definition of a p-value, and the reflex to separate "statistically significant" from "actually worth doing." Plus a working immune system against the four fallacies that turn confident dashboards into expensive mistakes - and a clear path into sizing your own tests properly.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: IS IT REAL OR LUCK ============ -->
+  <section class="section" id="test-logic">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the logic of a test</span>
+      <h2>Is it real, or is it luck? <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">A statistical test runs a simple thought experiment. Start by <em>assuming there is no real effect</em> - the two checkout pages are actually identical. Then ask: if that were true, how surprising would our data be? If a 3.2%-to-3.6% gap would almost never happen by chance alone, we doubt the "no effect" assumption and call it real. If a gap that size shows up all the time by luck, we stay unconvinced. That surprise, put on a number, is the p-value.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A two-by-two truth table. Columns are the two decisions, flag an effect or do not; rows are the two realities, an effect exists or none exists. The false-alarm cell is labelled Type I error and the missed-effect cell is labelled Type II error.">
+        <style>
+          .ttL { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .ttH { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .ttB { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .ttN { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .ttGood { fill: #E6F6F9; stroke: #0E7C90; stroke-width: 2; }
+          .ttErr { fill: #FFFFFF; stroke: #F97362; stroke-width: 2.5; }
+        </style>
+        <text class="ttL" x="30" y="28">Two ways to be right, two ways to be wrong</text>
+        <!-- column headers -->
+        <rect x="330" y="52" width="230" height="40" rx="6" fill="#0E7C90"/>
+        <text class="ttH" x="372" y="77">Test flags an effect</text>
+        <rect x="580" y="52" width="230" height="40" rx="6" fill="#0B5563"/>
+        <text class="ttH" x="600" y="77">Test flags nothing</text>
+        <!-- row headers -->
+        <rect x="70" y="104" width="250" height="100" rx="6" fill="#22A5B8"/>
+        <text class="ttH" x="92" y="150">Reality: an effect exists</text>
+        <text class="ttH" x="92" y="170" style="font:600 11px Inter,sans-serif">(the new page really is better)</text>
+        <rect x="70" y="216" width="250" height="100" rx="6" fill="#557079"/>
+        <text class="ttH" x="92" y="262">Reality: no effect</text>
+        <text class="ttH" x="92" y="282" style="font:600 11px Inter,sans-serif">(the pages are identical)</text>
+        <!-- cells -->
+        <rect class="ttGood" x="330" y="104" width="230" height="100" rx="6"/>
+        <text class="ttB" x="352" y="150">Correct - caught it</text>
+        <text class="ttN" x="352" y="172">this is statistical power</text>
+        <rect class="ttErr" x="580" y="104" width="230" height="100" rx="6"/>
+        <text class="ttB" x="602" y="145" style="fill:#F97362">Type II error</text>
+        <text class="ttN" x="602" y="167">missed a real effect</text>
+        <text class="ttN" x="602" y="185" style="fill:#F97362">(a false all-clear)</text>
+        <rect class="ttErr" x="330" y="216" width="230" height="100" rx="6"/>
+        <text class="ttB" x="352" y="257" style="fill:#F97362">Type I error</text>
+        <text class="ttN" x="352" y="279">flagged nothing real</text>
+        <text class="ttN" x="352" y="297" style="fill:#F97362">(a false alarm)</text>
+        <rect class="ttGood" x="580" y="216" width="230" height="100" rx="6"/>
+        <text class="ttB" x="602" y="262">Correct - all clear</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - Type I is a false alarm, Type II is a missed effect, power is catching the real one</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>What a p-value is - and the two things it is not<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The p-value answers exactly one question: <strong>if there were no real effect, how often would we see data at least this extreme just by chance?</strong> Written precisely, it is P(data this extreme | no real effect is true). A small p-value (say under 0.05) means "this data would be surprising if nothing were going on," so we doubt the "nothing" story.</p>
+        <ul>
+          <li><strong>It is NOT the probability the result is a fluke.</strong> The p-value already assumes no effect and measures the data's surprise - it does not tell you the odds your finding is fake.</li>
+          <li><strong>It is NOT the probability there is no effect.</strong> It is not P(no effect | data); it runs the other direction - P(data | no effect). Flipping those two is the single most common statistical error in business.</li>
+          <li><strong>Type I error (false alarm)</strong> - you flag an effect that is not there. The 0.05 threshold is your accepted false-alarm rate. <strong>Type II error (missed effect)</strong> - you miss a real one. <strong>Power</strong> is the chance of catching a real effect when it exists, and it is what sample size buys you.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Lumen's test reads 3.2% vs 3.6%. The team wants to declare victory. But at a modest sample the p-value comes back around 0.25 - meaning a gap this big would show up a quarter of the time even if the pages were identical. That is not a fluke-probability of 25%; it is "the data is not surprising under no-effect." Not significant. Shipping now would be flagging noise. The fix is not to argue - it is to gather enough data to give the test the power to see a real 0.4-point lift.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Significant is not the same as important<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Here is the trap on the other side. With a huge sample, <em>almost any</em> difference becomes "statistically significant" - even one far too small to matter. Significance says "this effect is probably real"; it says nothing about "this effect is big enough to care about."</p>
+        <ul>
+          <li><strong>Tiny effect, huge n, significant, worthless.</strong> A +0.01 point lift on ten million sessions can be significant and still not pay for the engineering to ship it.</li>
+          <li><strong>Always pair the p-value with an effect size and a confidence interval.</strong> The effect size says how big; the interval says how sure. Significance alone is half an answer.</li>
+          <li><strong>The exec question:</strong> not just "is it real?" but "is it real <em>and</em> big enough to change what we do?" Both have to be yes.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Your leverage is the pairing, not the p-value</strong>
+          When someone says "it is statistically significant," your reflex is "by how much, and with what interval?" A significant result with a trivial effect size is a green light to a place not worth going.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: THE FALLACY GAUNTLET ============ -->
+  <section class="section" id="fallacies">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · the one big idea</span>
+      <h2>The fallacy gauntlet <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">Even with the test logic right, four classic traps ambush good decisions every week. This is the ★ section - the leader's field guide to the statistical fallacies that look most convincing precisely when they are most wrong. The nastiest is Simpson's paradox, where an aggregate trend flatly reverses inside every subgroup.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simpson's paradox: an aggregate trend line slopes upward while every one of three subgroup lines slopes downward, showing the overall trend reversing once the data is split.">
+        <style>
+          .spL { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .spN { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .spAgg { stroke: #F97362; stroke-width: 4; }
+          .spSub { stroke: #0E7C90; stroke-width: 2.5; }
+          .spDot { fill: #0E7C90; }
+        </style>
+        <text class="spL" x="30" y="28">The channel looks better overall - but worse in every category</text>
+        <!-- axes -->
+        <line x1="90" y1="60" x2="90" y2="300" stroke="#B4D2D9" stroke-width="1.5"/>
+        <line x1="90" y1="300" x2="820" y2="300" stroke="#B4D2D9" stroke-width="1.5"/>
+        <text class="spN" x="30" y="180" transform="rotate(-90 40 180)">conversion</text>
+        <text class="spN" x="640" y="320">→ more ad spend</text>
+        <!-- aggregate upward trend -->
+        <line class="spAgg" x1="120" y1="250" x2="790" y2="110"/>
+        <text class="spN" x="600" y="100" style="fill:#F97362">aggregate trend ↑ (misleading)</text>
+        <!-- three subgroup lines, each downward -->
+        <!-- cleanser -->
+        <line class="spSub" x1="130" y1="120" x2="290" y2="175"/>
+        <circle class="spDot" cx="130" cy="120" r="5"/><circle class="spDot" cx="290" cy="175" r="5"/>
+        <text class="spN" x="150" y="112">cleanser ↓</text>
+        <!-- serum -->
+        <line class="spSub" x1="330" y1="175" x2="520" y2="235"/>
+        <circle class="spDot" cx="330" cy="175" r="5"/><circle class="spDot" cx="520" cy="235" r="5"/>
+        <text class="spN" x="360" y="168">serum ↓</text>
+        <!-- moisturizer -->
+        <line class="spSub" x1="560" y1="235" x2="780" y2="290"/>
+        <circle class="spDot" cx="560" cy="235" r="5"/><circle class="spDot" cx="780" cy="290" r="5"/>
+        <text class="spN" x="600" y="228">moisturizer ↓</text>
+        <rect x="90" y="330" width="14" height="14" rx="3" fill="#F97362"/>
+        <text class="spN" x="112" y="341" style="fill:#10232A">Each category converts worse as spend rises, yet the pooled line rises - because the high-spend points sit in naturally higher-converting categories. Split before you conclude.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the aggregate rises while every subgroup falls: Simpson's paradox</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The four traps, and how to disarm each one<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>P-hacking / multiple comparisons.</strong> Test 20 things at a 5% threshold and about 1 will look "significant" by pure chance - even if nothing is real. Disarm it by pre-registering what you will test before you look, and by correcting the threshold when you run many tests (Bonferroni, FDR). A "winner" found after slicing the data 20 ways is usually the chance one.</li>
+          <li><strong>Correlation is not causation.</strong> Two things moving together does not mean one causes the other - a hidden third factor often drives both. Disarm it by asking "what else could explain this?" and, when it matters, running a controlled experiment (the whole point of the sequel course).</li>
+          <li><strong>Simpson's paradox.</strong> An aggregate trend can reverse inside every subgroup (the chart above). A Lumen channel can look better overall yet convert worse in cleanser, serum, <em>and</em> moisturizer once you split by category - because its traffic is concentrated in a naturally strong category. Disarm it by always asking "does this hold when we break it down?"</li>
+          <li><strong>Base-rate neglect (callback to Session 2).</strong> A test that is 99% accurate for a condition that hits 1 in 1,000 is wrong most times it fires - because the rare true cases are swamped by false alarms. Disarm it by always asking "how common is the thing we are testing for in the first place?"</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>A Lumen analyst reports that Channel Nine has the best overall conversion and pushes to move budget into it. A leader asks the Simpson's question: does it win <em>within each product category?</em> Split the data and it converts worse than the alternatives in every single category - it only looked good because it happened to send most of its traffic to sets, which convert well for everyone. The aggregate reversed the truth. One question saved a six-figure misallocation.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Why pre-registration is the cheapest insurance you can buy<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The single habit that neutralizes most of the gauntlet is deciding <strong>what you will measure, and what counts as a win, before you see the data.</strong></p>
+        <ul>
+          <li><strong>It kills p-hacking</strong> - you cannot fish for a significant slice if you named your one metric in advance.</li>
+          <li><strong>It forces an honest effect size</strong> - committing to "we need at least a +0.3 point lift to bother" stops a trivial-but-significant result from being spun as a win.</li>
+          <li><strong>It makes the test sizeable</strong> - once you know the effect you care about, you can compute how much data you need. That computation is exactly where the experimentation course begins.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Decide the rules before you see the score</strong>
+          Pre-registration feels bureaucratic until the first time it stops your team from celebrating noise. It is the difference between a test that can teach you something and a story you told yourself after the fact.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ SEE IT ============ -->
+  <section class="section" id="see-it">
+    <div class="section-kicker">
+      <span class="klabel">See it move</span>
+      <h2>The same gap, significant or not - you decide with n <span class="tag demo">▶ interactive</span></h2>
+    </div>
+    <p class="lede">This is Lumen's actual A/B result: control at 3.2%, variant at 3.6%. Drag the users-per-arm slider and watch the exact same 0.4-point gap flip from "not significant" to "significant" as the sample grows. The effect never changes - only how much data you gave the test to see it. That is precisely why the experimentation course computes the required sample size <em>before</em> launching, instead of eyeballing a lift after the fact.</p>
+    <div class="stat-live" data-tool="test"></div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Capstone challenge</span>
+      <h2>Read a Lumen results deck like an exec <span class="tag exercise">◐ 30 min total</span></h2>
+    </div>
+    <p class="lede">Next time a team brings you a "the test worked, let us ship it" deck, run it through these five questions. If any answer is missing, the result is not ready to act on.</p>
+    <ul>
+      <li><strong>1 · Was there a control group?</strong> Compared to what? A number with nothing to compare against is not a result.</li>
+      <li><strong>2 · Was the test powered and the sample size pre-committed?</strong> Did they decide how much data to collect in advance, or stop the moment it looked good (which manufactures false wins)?</li>
+      <li><strong>3 · Do we have the p-value AND the effect size AND the confidence interval?</strong> All three. Significance without size is half an answer; size without an interval hides the uncertainty.</li>
+      <li><strong>4 · What happened to the guardrails?</strong> Did the "winning" change quietly hurt refunds, support load, or margin while lifting the headline metric?</li>
+      <li><strong>5 · How many things were tested?</strong> If they compared 20 segments and reported the one that won, that win is probably chance - ask for the correction.</li>
+    </ul>
+    <div class="callout tip">
+      <strong>Where this goes next</strong>
+      You now know how to <em>read</em> a test. The sequel, <a href="https://phoebefu6.github.io/learn-with-phoebe/">learn-experimentation-with-phoebe</a>, teaches you to <em>run</em> one properly - sizing it before launch, handling peeking and multiple comparisons, and turning the 3.2%-vs-3.6% question into a trustworthy decision. This course was the prequel; that is where the foundations get put to work.
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · A Lumen test comes back with p = 0.25 on the 3.2%-vs-3.6% gap. What does that number mean?</p>
+      <button class="qopt" type="button">A · there is a 25% chance the result is a fluke</button>
+      <button class="qopt" type="button">B · if the pages were truly identical, a gap this big or bigger would show up about 25% of the time by chance - so it is not surprising, not significant</button>
+      <button class="qopt" type="button">C · there is a 25% chance there is no effect</button>
+      <p class="qwhy">A p-value is P(data this extreme | no real effect). It is NOT the probability the result is a fluke (A) and NOT the probability there is no effect (C). At p = 0.25 the data is unsurprising under "no effect," so we do not call it real.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · A change is "statistically significant" at ten million sessions but lifts conversion by +0.01 points. The right response is...</p>
+      <button class="qopt" type="button">A · ship it - significant means it works</button>
+      <button class="qopt" type="button">B · reject it - significance is meaningless</button>
+      <button class="qopt" type="button">C · ask for the effect size and interval, then judge whether a +0.01-point lift is worth the cost to ship</button>
+      <p class="qwhy">Significance is not importance. At huge n almost anything is significant. Pair the p-value with effect size and CI, then decide if the effect is big enough to matter.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · A channel has the best conversion overall but converts worse inside every product category once you split. This is...</p>
+      <button class="qopt" type="button">A · Simpson's paradox - the aggregate reverses the subgroup truth, so split before you conclude</button>
+      <button class="qopt" type="button">B · a data error that should be ignored</button>
+      <button class="qopt" type="button">C · proof the channel is the best</button>
+      <p class="qwhy">Simpson's paradox: an aggregate trend can reverse within every subgroup because of how the groups are weighted. The channel only looked good because its traffic sat in a naturally strong category. Always ask "does it hold when we break it down?"</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This capstone leader session teaches the reading skills behind hypothesis testing and the fallacy gauntlet - the ~80% you need to judge whether a result is real and worth acting on. The hands-on computation (two-proportion z-tests, power analysis, corrections in statsmodels) lives in Builder Session 8; the sources below go deeper.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Test logic, correct p-value definition, Type I/II errors, power, significance vs importance</span><span class="note">Part 1</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Simpson's paradox + the fallacy gauntlet (p-hacking, causation, base rates)</span><span class="note">Part 2 · authored fresh for Lumen</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 5-7 - Inference for proportions and means</span><span class="note">the structural spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Google "The Power of Statistics" - module 5 (hypothesis testing)</span><span class="note">Python-first version - Builder Session 8</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">StatQuest - p-values and p-hacking, clearly explained</span><span class="note">the best intuition-first videos</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Leader Session 6 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Test logic</b><span>Assume no real effect, then ask how surprising the data would be if that were true. Very surprising = probably real.</span></div>
+      <div class="cheat-item"><b>P-value, correctly</b><span>P(data this extreme | no effect true). NOT the probability of a fluke, NOT the probability there is no effect.</span></div>
+      <div class="cheat-item"><b>Errors and power</b><span>Type I = false alarm (flag nothing real). Type II = missed real effect. Power = chance of catching a real effect; sample size buys it.</span></div>
+      <div class="cheat-item"><b>Significant ≠ important</b><span>At huge n tiny effects turn significant. Always pair p with an effect size and a confidence interval.</span></div>
+      <div class="cheat-item"><b>Fallacy gauntlet</b><span>P-hacking (pre-register + correct), correlation ≠ causation, Simpson's paradox (split before concluding), base-rate neglect.</span></div>
+      <div class="cheat-item"><b>The 5 exec questions</b><span>Control group? Powered/pre-committed n? p-value AND effect size AND CI? Guardrails? Multiple comparisons?</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Leader session 6 of 6 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="a5-the-number-and-its-error-bars.html">← Prev: The number and its error bars</a> &nbsp;·&nbsp; <a href="b1-describe-the-data.html">Builder track: Describe the data →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/stat-live.js?v=1"></script>
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

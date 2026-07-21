@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leader session 5 · The number and its error bars - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Leader session 5 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Leader session 5 of 6</div>
+    <h1>The number and its <span class="accent">error bars</span></h1>
+    <p class="sub">Every metric you are handed is a single number pretending to be the truth. "Conversion is 3.2%." But that 3.2% came from a sample, and a different week's sample would have said 3.1% or 3.4%. The honest version of any estimate carries an error bar - a range that says "here is our best guess, and here is how sure we are." This session teaches you to read that error bar, to demand it when a chart hides it, and to stop treating a point estimate as if it were carved in stone. No math you have to do, no code.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Building up</span>
+      <span class="chip audience">Leaders · C-level / PM / marketing</span>
+      <span class="chip audience">No code</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:4">3-22 · Point vs interval</span>
+      <span class="a3" style="flex:4">22-40 · What a 95% CI means</span>
+      <span class="a4" style="flex:1">40-45 · Wrap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>"Conversion is 3.2%" - to how many decimal places do you believe that?</h2>
+    </div>
+    <p class="lede">Lumen Skincare's dashboard shows a checkout conversion rate of 3.2%. It looks exact. It is not. That number was measured on a sample of sessions, and if you had watched a different slice of traffic you would have seen a slightly different figure. The real answer is not "3.2%" - it is "somewhere around 3.2%, and here is the range we are confident about." The width of that range is the honest part. A narrow range means we know it well; a wide range means we are guessing. Learn to read the range and you stop over-reacting to numbers that were never as precise as they looked.</p>
+    <div class="legend">
+      <span class="pill solid">Live - covered in session</span>
+      <span class="pill light">Self-study - read after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      The reflex to ask "what is the error bar?" the moment someone quotes a rate or an average, plus the correct reading of a 95% confidence interval - and, just as important, the three wrong readings that almost everyone carries by mistake. You will look at two overlapping error bars on a chart and know that "different" is probably just noise.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: POINT VS INTERVAL ============ -->
+  <section class="section" id="interval">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the honest number</span>
+      <h2>Point estimate vs interval estimate <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">A single number - "3.2% conversion" - is a <em>point estimate</em>. It is our single best guess. The honest version carries a margin of error: "3.2% +/- 0.5pp", which is the same as saying the true rate is somewhere in [2.7%, 3.7%]. That range is the <em>interval estimate</em>. The one rule that governs everything: bigger samples make the interval tighter. More data, more certainty, narrower error bar.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two studies both estimating 3.2% conversion: a small-sample study with a wide confidence interval and a large-sample study with a narrow confidence interval, plotted against the same point.">
+        <style>
+          .piL { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .piN { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .piBar { stroke: #0E7C90; stroke-width: 3; }
+          .piCap { stroke: #0E7C90; stroke-width: 3; }
+          .piDot { fill: #F97362; }
+          .piGuide { stroke: #B4D2D9; stroke-width: 1.5; stroke-dasharray: 4 4; }
+        </style>
+        <text class="piL" x="30" y="30">Same best guess, very different confidence</text>
+        <!-- shared point guide line -->
+        <line class="piGuide" x1="430" y1="60" x2="430" y2="250"/>
+        <text class="piN" x="392" y="278">point estimate: 3.2%</text>
+        <!-- small sample: wide CI -->
+        <text class="piN" x="70" y="118">small sample</text>
+        <line class="piBar" x1="230" y1="128" x2="630" y2="128"/>
+        <line class="piCap" x1="230" y1="114" x2="230" y2="142"/>
+        <line class="piCap" x1="630" y1="114" x2="630" y2="142"/>
+        <circle class="piDot" cx="430" cy="128" r="7"/>
+        <text class="piN" x="196" y="104" style="fill:#0E7C90">[2.0%</text>
+        <text class="piN" x="606" y="104" style="fill:#0E7C90">4.4%]</text>
+        <!-- large sample: narrow CI -->
+        <text class="piN" x="70" y="208">large sample</text>
+        <line class="piBar" x1="392" y1="218" x2="468" y2="218"/>
+        <line class="piCap" x1="392" y1="204" x2="392" y2="232"/>
+        <line class="piCap" x1="468" y1="204" x2="468" y2="232"/>
+        <circle class="piDot" cx="430" cy="218" r="7"/>
+        <text class="piN" x="332" y="194" style="fill:#0E7C90">[3.0%</text>
+        <text class="piN" x="474" y="194" style="fill:#0E7C90">3.4%]</text>
+        <rect x="70" y="296" width="14" height="14" rx="3" fill="#F97362"/>
+        <text class="piN" x="92" y="307" style="fill:#10232A">Both studies report the same 3.2%, but the small sample could be anywhere from 2.0% to 4.4% - four times as wide. More data narrows the bar.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the point is the same, the interval tells you how much to trust it</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The point is the guess, the interval is the honesty<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Two ways to report the same finding, one of them dangerously incomplete:</p>
+        <ul>
+          <li><strong>Point estimate</strong> - the single number. "3.2% conversion", "AOV is $74". Easy to say, easy to put on a slide, and silent about how sure we are.</li>
+          <li><strong>Interval estimate</strong> - the number plus its margin. "3.2% +/- 0.5pp" or "[2.7%, 3.7%]". It admits the guess has wiggle room and tells you exactly how much.</li>
+          <li><strong>Margin of error</strong> - the half-width of the interval. It shrinks as the sample grows, so a bigger, longer measurement buys you a tighter answer.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Two Lumen channels both "convert at 3.2%." A director wants to declare them equally good. But channel A was measured on a tiny slice of traffic and its interval is [2.0%, 4.4%]; channel B ran all quarter and its interval is [3.0%, 3.4%]. Same headline, completely different confidence. Channel A might truly be a 2% dud or a 4.4% star - we genuinely do not know yet. Reading the interval, not the point, stopped the room from betting on a coin flip.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Why bigger samples buy tighter intervals<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The link between sample size and confidence is not a nice-to-have - it is the whole reason we collect more data. The margin of error shrinks as the sample grows, though with diminishing returns: to halve the error bar you roughly need four times the data.</p>
+        <ul>
+          <li><strong>Small n, wide bar</strong> - a week of traffic gives a shaky estimate. The interval is broad because the sample could easily have landed elsewhere.</li>
+          <li><strong>Large n, narrow bar</strong> - a quarter of traffic pins the number down. The interval is tight because we have seen enough to rule out the extremes.</li>
+          <li><strong>The exec instinct:</strong> when a surprising number lands, the first question is not "is it true?" but "how many observations is it based on?" A big swing on a small sample is usually noise.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Your leverage is the question, not the calculation</strong>
+          You never compute a margin of error in a meeting. You ask "what is the range on that, and how many data points is it based on?" That single habit turns a room full of confident point estimates into an honest conversation about what is actually known.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: WHAT A 95% CI MEANS ============ -->
+  <section class="section" id="ci-meaning">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · the one big idea</span>
+      <h2>What a 95% confidence interval really means <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">Here is the phrase you will see everywhere and the meaning almost everyone gets wrong. A 95% confidence interval does <strong>not</strong> mean "95% chance the true value sits in this particular range." It means the <em>procedure</em> - the method of drawing a sample and building an interval around it - captures the true value 95% of the time across many repeated samples. Draw 20 samples, build 20 intervals, and about 19 of them will contain the truth. This is the ★ idea of the session, and unlearning the three wrong readings is where the real leverage is.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Twenty horizontal confidence intervals from twenty repeated samples, each drawn against a single vertical true-value line. Nineteen intervals cross the line and one misses it, illustrating 95% coverage.">
+        <style>
+          .cvL { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .cvN { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .cvHit { stroke: #22A5B8; stroke-width: 2.5; }
+          .cvMiss { stroke: #F97362; stroke-width: 2.5; }
+          .cvTrue { stroke: #0B5563; stroke-width: 2.5; stroke-dasharray: 6 4; }
+        </style>
+        <text class="cvL" x="30" y="28">20 samples, 20 intervals - about 19 catch the true value</text>
+        <!-- true value line -->
+        <line class="cvTrue" x1="440" y1="46" x2="440" y2="372"/>
+        <rect x="392" y="382" width="150" height="22" rx="6" fill="#0B5563"/>
+        <text x="404" y="398" style="font:700 12px Inter,sans-serif; fill:#FFFFFF">true value 3.2%</text>
+        <!-- 20 CIs: hit unless noted; row 13 misses (to the left) -->
+        <!-- each: line x1..x2 at y, caps -->
+        <g class="cvHit">
+          <line x1="330" y1="58" x2="560" y2="58"/>
+          <line x1="360" y1="74" x2="520" y2="74"/>
+          <line x1="300" y1="90" x2="600" y2="90"/>
+          <line x1="380" y1="106" x2="540" y2="106"/>
+          <line x1="350" y1="122" x2="580" y2="122"/>
+          <line x1="320" y1="138" x2="510" y2="138"/>
+          <line x1="400" y1="154" x2="620" y2="154"/>
+          <line x1="345" y1="170" x2="555" y2="170"/>
+          <line x1="310" y1="186" x2="530" y2="186"/>
+          <line x1="370" y1="202" x2="590" y2="202"/>
+          <line x1="335" y1="218" x2="545" y2="218"/>
+          <line x1="360" y1="234" x2="570" y2="234"/>
+        </g>
+        <!-- the miss: entirely left of the true line -->
+        <g class="cvMiss">
+          <line x1="250" y1="250" x2="415" y2="250"/>
+          <line x1="250" y1="242" x2="250" y2="258"/>
+          <line x1="415" y1="242" x2="415" y2="258"/>
+        </g>
+        <text class="cvN" x="600" y="254" style="fill:#F97362">← this one misses (bad luck of the draw)</text>
+        <g class="cvHit">
+          <line x1="330" y1="266" x2="560" y2="266"/>
+          <line x1="355" y1="282" x2="565" y2="282"/>
+          <line x1="315" y1="298" x2="525" y2="298"/>
+          <line x1="385" y1="314" x2="595" y2="314"/>
+          <line x1="340" y1="330" x2="550" y2="330"/>
+          <line x1="360" y1="346" x2="580" y2="346"/>
+          <line x1="325" y1="362" x2="535" y2="362"/>
+        </g>
+        <rect x="30" y="384" width="14" height="14" rx="3" fill="#F97362"/>
+        <text class="cvN" x="52" y="395" style="fill:#10232A">The interval moves from sample to sample; the true value does not. "95% confident" is a fact about the method, not about any one bar.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - 95% of the intervals cover the truth, one unlucky sample misses</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The three wrong readings to unlearn<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The correct reading is: <strong>the procedure that built this interval captures the true value 95% of the time over many repeated samples.</strong> The confidence is in the method. Now the three seductive misreadings that a careful leader refuses:</p>
+        <ul>
+          <li><strong>Wrong #1 - "there is a 95% chance the true value is inside THIS interval."</strong> Tempting, but no. The true value is a fixed number; it is either in this particular interval or it is not. The 95% describes how often the <em>procedure</em> succeeds, not this one bar.</li>
+          <li><strong>Wrong #2 - "95% of the data lies inside this interval."</strong> No. A confidence interval is about the location of an <em>estimate</em> (like a mean or a rate), not about where individual data points fall. The raw orders can be far more spread out than the interval.</li>
+          <li><strong>Wrong #3 - "95% of future results will land in this interval."</strong> No. It says nothing about individual future outcomes. Next week's rate could easily sit outside it. That is a different kind of range (a prediction interval), and it is much wider.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>On a Lumen dashboard, two channels show error bars that overlap heavily - one centered at 3.2%, one at 3.4%. A PM wants to crown the 3.4% channel the winner. But overlapping intervals are the visual signal that the "difference" is probably just noise; the data cannot yet tell them apart. The right move is not to declare a winner - it is to gather more data or, better, run a proper test (Session 6). Reading the overlap saved a budget shift built on a mirage.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Confidence level vs width, and why error bars belong on every exec chart<span class="mini">4 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>There is a knob on every confidence interval: <strong>how confident do you want to be?</strong> And it trades directly against how useful the answer is.</p>
+        <ul>
+          <li><strong>Higher confidence, wider interval.</strong> A 99% interval is <em>wider</em> than a 95% one, which is wider than a 90% one - because to be more sure of catching the truth, you have to cast a bigger net. There is no free lunch: certainty costs precision.</li>
+          <li><strong>95% is the convention</strong>, not a law of nature. It is a reasonable balance of "sure enough" against "narrow enough to be useful." Pick 99% when a miss is expensive; a wider bar is the price.</li>
+          <li><strong>Why error bars belong on every exec chart:</strong> a bar chart of point estimates invites the room to over-read tiny differences. Add the error bars and the honest story appears - which gaps are real and which are noise become visible at a glance.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>A number without a range is half a fact</strong>
+          When a chart shows bare bars with no error bars, it is not being clean - it is hiding its uncertainty. Ask for the intervals. If two bars' intervals overlap, treat "they are different" as unproven until a test says otherwise.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Before Session 6</span>
+      <h2>This week <span class="tag exercise">◐ 25 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Find one point estimate</strong> in a recent report - a rate, a conversion, an average. Ask its owner: what is the margin of error, and how many observations is it based on? Write down whether the answer changes how much you trust it.</li>
+      <li><strong>Practice the correct reading.</strong> Find a "95% confidence interval" anywhere (a report, a news article, a survey) and say out loud what it actually means - the procedure captures the truth 95% of the time - and catch yourself if you slip into one of the three wrong readings.</li>
+      <li><strong>Hunt overlapping error bars.</strong> Find a chart comparing two groups. If it has error bars, check whether they overlap. If it does not, note that the chart is hiding its uncertainty.</li>
+      <li><strong>Optional:</strong> pick one decision you would make on a 95% interval and ask whether you would want 99% instead - and whether you would accept the wider range that comes with it.</li>
+    </ul>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · A 95% confidence interval for Lumen's conversion is [2.7%, 3.7%]. Which reading is correct?</p>
+      <button class="qopt" type="button">A · there is a 95% chance the true rate is inside this exact interval</button>
+      <button class="qopt" type="button">B · 95% of sessions convert at a rate inside this interval</button>
+      <button class="qopt" type="button">C · the method used to build this interval captures the true rate 95% of the time over many samples</button>
+      <p class="qwhy">Confidence is a property of the procedure, not of any single interval. The true value is fixed; it is the interval that varies from sample to sample. A and B are two of the classic wrong readings.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · Two Lumen channels both estimate 3.2% conversion. Channel A's interval is [2.0%, 4.4%]; channel B's is [3.0%, 3.4%]. What is the honest takeaway?</p>
+      <button class="qopt" type="button">A · we know B's rate far more precisely - A was measured on much less data and could be anywhere</button>
+      <button class="qopt" type="button">B · they are identical because both point estimates are 3.2%</button>
+      <button class="qopt" type="button">C · A is riskier but has higher upside, so fund A</button>
+      <p class="qwhy">Same point estimate, very different confidence. A's wide interval means small sample and real uncertainty; B's narrow interval means we have pinned it down. Reading the width, not the point, is the whole skill.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · On a dashboard, two bars have error bars that overlap heavily. What should a careful leader conclude?</p>
+      <button class="qopt" type="button">A · the bigger bar is definitely the winner</button>
+      <button class="qopt" type="button">B · the difference is probably just noise - the data cannot yet tell them apart</button>
+      <button class="qopt" type="button">C · the chart is broken and should be redrawn</button>
+      <p class="qwhy">Overlapping intervals are the visual signal that a "difference" may be noise. Treat it as unproven until more data or a proper test (Session 6) settles it.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This leader session teaches the reading skills behind estimation and confidence intervals - the ~80% you need to interpret any error bar honestly. The hands-on computation (standard errors, Wald and bootstrap intervals in scipy) lives in Builder Session 7; the sources below go deeper.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Point vs interval estimate; margin of error; bigger samples, tighter intervals</span><span class="note">Part 1</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The correct reading of a 95% CI - plus the three wrong readings to unlearn</span><span class="note">Part 2 · leader-critical correction</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 5 - Foundations for inference</span><span class="note">the structural spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">365 Data Science - Confidence intervals</span><span class="note">step-by-step build-up</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Google "The Power of Statistics" - module 4 (confidence intervals)</span><span class="note">Python-first version - Builder Session 7</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Leader Session 5 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Point vs interval</b><span>"3.2%" is a point estimate - one guess. "3.2% +/- 0.5pp" = [2.7%, 3.7%] is the interval, and the width is the honesty.</span></div>
+      <div class="cheat-item"><b>Bigger sample, tighter bar</b><span>Margin of error shrinks as n grows (roughly 4x the data to halve the bar). Always ask how many observations a number rests on.</span></div>
+      <div class="cheat-item"><b>Correct 95% reading</b><span>The procedure captures the true value 95% of the time over many samples. Confidence is in the method, not in one interval.</span></div>
+      <div class="cheat-item"><b>Three wrong readings</b><span>NOT "95% chance the truth is in THIS interval", NOT "95% of the data is here", NOT "95% of future results land here".</span></div>
+      <div class="cheat-item"><b>Confidence vs width</b><span>99% is wider than 95% is wider than 90%. More certainty costs precision - there is no free lunch.</span></div>
+      <div class="cheat-item"><b>Overlap = not proven</b><span>Overlapping error bars mean the difference is probably noise. Demand error bars on every exec chart; a bare bar hides its uncertainty.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Leader session 5 of 6 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="a4-what-a-sample-can-say.html">← Prev: What a sample can say</a> &nbsp;·&nbsp; <a href="a6-real-or-noise.html">Next: Real or noise? →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

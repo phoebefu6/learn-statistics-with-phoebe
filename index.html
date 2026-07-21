@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>learn statistics with phoebe - leader + builder tracks</title>
+<link rel="stylesheet" href="assets/style.css?v=1">
+<style>
+  .stats-row { display: flex; gap: 2.4rem; margin-top: 1.5rem; flex-wrap: wrap; }
+  .stat b { display: block; font-size: 2.1rem; font-weight: 800; line-height: 1.05; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: .72rem; opacity: .85; text-transform: uppercase; letter-spacing: .09em; font-weight: 600; }
+
+  .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+  .course-card {
+    border: 1px solid var(--hairline);
+    border-top: 4px solid var(--diff, var(--indigo));
+    border-radius: var(--radius);
+    padding: 1.2rem 1.3rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    text-decoration: none;
+    color: var(--ink);
+    background: #fff;
+    transition: box-shadow .15s ease, border-color .15s ease, transform .15s ease;
+    position: relative;
+  }
+  .course-card:hover { border-color: var(--indigo-soft); border-top-color: var(--diff, var(--indigo)); box-shadow: 0 8px 28px rgba(14,124,144,.14); transform: translateY(-3px); }
+  .course-card .cicon { font-size: 1.7rem; line-height: 1; }
+  .course-card .cnum { font-size: .72rem; font-weight: 700; color: var(--indigo); text-transform: uppercase; letter-spacing: .1em; }
+  .course-card h3 { font-size: 1.05rem; font-weight: 800; line-height: 1.3; }
+  .course-card p { font-size: .85rem; color: var(--muted); flex: 1; }
+  .course-card .meta { display: flex; gap: .4rem; flex-wrap: wrap; }
+
+  .diff-legend { display: flex; gap: 1rem; margin-top: 1.6rem; font-size: .74rem; color: var(--muted); font-weight: 600; flex-wrap: wrap; }
+  .diff-legend i { display: inline-block; width: .85rem; height: .35rem; border-radius: 999px; margin-right: .35rem; vertical-align: middle; }
+
+  .paths { margin-top: 2.6rem; }
+  .paths h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: .3rem; }
+  .paths .plede { color: var(--muted); font-size: .92rem; margin-bottom: .8rem; }
+  .path { display: flex; gap: .55rem; align-items: center; padding: .75rem 0; border-bottom: .5px solid var(--hairline); flex-wrap: wrap; }
+  .path:last-child { border-bottom: none; }
+  .path b { min-width: 15.5rem; font-size: .9rem; }
+  .path .pstep { background: var(--indigo-50); color: var(--indigo); border-radius: 999px; padding: .16rem .68rem; font-weight: 700; font-size: .8rem; text-decoration: none; transition: all .12s ease; }
+  .path .pstep:hover { background: var(--indigo); color: #fff; }
+  .path .parr { color: var(--faint); font-weight: 700; }
+
+  .play-section { margin-top: 2.6rem; }
+  .play-section h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: .3rem; }
+  .play-section .plede { color: var(--muted); font-size: .92rem; margin-bottom: .4rem; }
+
+  .mm-section { margin-top: 1.6rem; }
+  .mm-section h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: .2rem; }
+  .mm-section .mm-lede { color: var(--muted); font-size: .92rem; margin-bottom: .4rem; }
+  .mm-wrap { border: 1px solid var(--hairline); border-radius: var(--radius); background: linear-gradient(180deg,#fff, #F5FBFC); padding: .6rem; overflow-x: auto; }
+  .mm-svg { width: 100%; height: auto; display: block; max-width: 60rem; margin: 0 auto; min-width: 34rem; }
+  .mm-link { cursor: pointer; text-decoration: none; }
+  .mm-node rect { transition: opacity .15s ease, filter .15s ease; }
+  .mm-node text { pointer-events: none; }
+  .mm-link:hover .mm-node rect { filter: brightness(1.06); }
+  .mm-edge { transition: opacity .15s ease; }
+
+  .noteband { margin-top: 2.4rem; background: var(--indigo-50); border: 1px solid var(--hairline); border-radius: var(--radius); padding: 1rem 1.2rem; font-size: .9rem; color: var(--ink); }
+  .noteband b { color: var(--indigo); }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe</div>
+    <h1>Is this real, or is it noise? <span class="accent">Statistics and probability</span>, the foundation under all of it.</h1>
+    <p class="sub">Two tracks, one running brand. The 6-session leader track teaches executives, PMs, and marketers to read statistics without being fooled - mean vs median, what a confidence interval and a p-value actually claim, and the fallacies that sink smart rooms - with no code. The 10-session builder track takes practitioners from descriptive stats and probability, through distributions, random variables, sampling and the Central Limit Theorem, estimation and maximum likelihood, confidence intervals, hypothesis testing, chi-square and ANOVA, to correlation and regression - built from scratch in Python with numpy, scipy, and statsmodels. This is the foundation the experimentation and machine-learning courses assume you already have. Learn it on Lumen Skincare, then walk straight into A/B testing.</p>
+    <div class="stats-row">
+      <div class="stat"><b data-count="16">16</b><span>sessions, 2 tracks</span></div>
+      <div class="stat"><b data-count="10">10</b><span>topic areas, descriptive to regression</span></div>
+      <div class="stat"><b data-count="3">3</b><span>live in-browser stat tools</span></div>
+      <div class="stat"><b data-count="1">1</b><span>running brand: Lumen</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section">
+    <div class="paths" style="margin-top:0">
+      <h2>The leader track 🤝 <span style="font-size:.85rem;font-weight:600;color:var(--muted)">· for execs, PMs &amp; marketers · 6 x 45 min · no code</span></h2>
+      <p class="plede">A statistic is only as good as the reading you give it. This track teaches you to interpret the numbers in any report - the center, the spread, the error bars, and the verdict - and to spot the fallacies that fool smart people, without opening a notebook. A friendly on-ramp for LinkedIn readers, too.</p>
+    </div>
+    <div class="course-grid">
+      <a class="course-card" href="courses/a1-reading-the-data.html" style="--diff:#34D399">
+        <span class="cicon">📊</span>
+        <span class="cnum">Leader session 1 · start here</span>
+        <h3>Reading the data</h3>
+        <p>Mean, median, spread, and shape - and why the average is the most over-trusted number in business. Read a boxplot and a "typical customer" claim without being fooled.</p>
+        <span class="meta"><span class="pill amber">▶ Start here</span><span class="pill light">No code</span></span>
+      </a>
+      <a class="course-card" href="courses/a2-thinking-in-odds.html" style="--diff:#34D399">
+        <span class="cicon">🎲</span>
+        <span class="cnum">Leader session 2</span>
+        <h3>Thinking in odds</h3>
+        <p>Probability in plain language - independence, conditional probability, base rates and Bayes - and why a 99%-accurate test can still be wrong most times it fires.</p>
+        <span class="meta"><span class="pill light">Read the odds</span></span>
+      </a>
+      <a class="course-card" href="courses/a3-the-bell-and-its-cousins.html" style="--diff:#FBBF24">
+        <span class="cicon">🔔</span>
+        <span class="cnum">Leader session 3</span>
+        <h3>The bell and its cousins</h3>
+        <p>The normal curve and the 68-95-99.7 rule, plus the binomial (counts of yes/no) and the Poisson (events per period) - what each shape tells you at a glance.</p>
+        <span class="meta"><span class="pill light">Distributions</span></span>
+      </a>
+      <a class="course-card" href="courses/a4-what-a-sample-can-say.html" style="--diff:#FBBF24">
+        <span class="cicon">🎯</span>
+        <span class="cnum">Leader session 4</span>
+        <h3>What a sample can say</h3>
+        <p>Why a sample of thousands can speak for millions - sampling error, the Central Limit Theorem, and the margin-of-error intuition behind every poll and dashboard.</p>
+        <span class="meta"><span class="pill light">Sampling &amp; CLT</span></span>
+      </a>
+      <a class="course-card" href="courses/a5-the-number-and-its-error-bars.html" style="--diff:#FBBF24">
+        <span class="cicon">📏</span>
+        <span class="cnum">Leader session 5</span>
+        <h3>The number and its error bars</h3>
+        <p>Point vs interval estimates, and what a 95% confidence interval really means - plus the three things people wrongly think it means. Why "3.2% ± 0.5" beats "3.2%".</p>
+        <span class="meta"><span class="pill light">Confidence intervals</span></span>
+      </a>
+      <a class="course-card" href="courses/a6-real-or-noise.html" style="--diff:#FB923C">
+        <span class="cicon">⚖️</span>
+        <span class="cnum">Leader session 6</span>
+        <h3>Real or noise?</h3>
+        <p>The logic of a test, the p-value (defined correctly), significance vs importance, and the fallacy gauntlet - p-hacking, Simpson's paradox, correlation vs causation. Capstone: read a Lumen A/B result like an exec.</p>
+        <span class="meta"><span class="pill light">Capstone</span></span>
+      </a>
+    </div>
+
+    <div class="paths">
+      <h2>The builder track 🛠️ <span style="font-size:.85rem;font-weight:600;color:var(--muted)">· for practitioners · 10 x 45 min · Python</span></h2>
+      <p class="plede">For DA, DE, DS, and anyone who needs the statistics under machine learning and experimentation. One running brand - Lumen Skincare - carried across every session: describe it, simulate it, fit distributions to it, sample from it, estimate its parameters, and test hypotheses on it - all from scratch with numpy, scipy, and statsmodels.</p>
+    </div>
+    <div class="course-grid">
+      <a class="course-card" href="courses/b1-describe-the-data.html" style="--diff:#34D399">
+        <span class="cicon">📊</span>
+        <span class="cnum">Builder session 1 · start here</span>
+        <h3>Describe the data</h3>
+        <p>Build the Lumen dataset once (seed 42), then center, spread, and shape in numpy/pandas - and why <code>.describe()</code> can quietly mislead you on skewed money.</p>
+        <span class="meta"><span class="pill amber">▶ Start here</span><span class="pill light">Python</span></span>
+      </a>
+      <a class="course-card" href="courses/b2-probability-and-simulation.html" style="--diff:#34D399">
+        <span class="cicon">🎲</span>
+        <span class="cnum">Builder session 2</span>
+        <h3>Probability and simulation</h3>
+        <p>Sample spaces, conditional probability and Bayes in code, and Monte Carlo simulation - watch the law of large numbers converge on Lumen's conversion rate.</p>
+        <span class="meta"><span class="pill light">Simulate it</span></span>
+      </a>
+      <a class="course-card" href="courses/b3-random-variables.html" style="--diff:#FBBF24">
+        <span class="cicon">🔢</span>
+        <span class="cnum">Builder session 3</span>
+        <h3>Random variables, E and Var</h3>
+        <p>Discrete vs continuous random variables, expectation and variance, covariance, and the pmf/pdf/cdf trio - expected revenue per session, from first principles.</p>
+        <span class="meta"><span class="pill light">Expectation</span></span>
+      </a>
+      <a class="course-card" href="courses/b4-distributions-in-scipy.html" style="--diff:#FBBF24">
+        <span class="cicon">🔔</span>
+        <span class="cnum">Builder session 4</span>
+        <h3>Distributions in scipy</h3>
+        <p>Normal, binomial, Poisson (and uniform, exponential, lognormal) via scipy.stats - pdf/pmf/cdf/ppf, Q-Q plots, and fitting the right shape to Lumen's data.</p>
+        <span class="meta"><span class="pill light">scipy.stats</span></span>
+      </a>
+      <a class="course-card" href="courses/b5-sampling-and-clt.html" style="--diff:#FBBF24">
+        <span class="cicon">🎯</span>
+        <span class="cnum">Builder session 5</span>
+        <h3>Sampling and the CLT</h3>
+        <p>Sampling distributions, standard error, and the Central Limit Theorem demonstrated by resampling - watch skewed order values average into a normal. Plus the bootstrap.</p>
+        <span class="meta"><span class="pill light">The money demo</span></span>
+      </a>
+      <a class="course-card" href="courses/b6-estimation-and-mle.html" style="--diff:#FB923C">
+        <span class="cicon">🎛️</span>
+        <span class="cnum">Builder session 6</span>
+        <h3>Estimation and MLE</h3>
+        <p>Estimators, bias and consistency, why we divide by N-1, and maximum likelihood - derive it, then let scipy find the parameter that makes Lumen's data most probable.</p>
+        <span class="meta"><span class="pill light">Maximum likelihood</span></span>
+      </a>
+      <a class="course-card" href="courses/b7-confidence-intervals.html" style="--diff:#FB923C">
+        <span class="cicon">📏</span>
+        <span class="cnum">Builder session 7</span>
+        <h3>Confidence intervals</h3>
+        <p>z and t intervals for a mean, Wald and Wilson for a proportion, and the bootstrap CI - build the interval on Lumen's conversion rate that sets up the A/B test.</p>
+        <span class="meta"><span class="pill light">Error bars in code</span></span>
+      </a>
+      <a class="course-card" href="courses/b8-hypothesis-testing.html" style="--diff:#FB923C">
+        <span class="cicon">⚖️</span>
+        <span class="cnum">Builder session 8</span>
+        <h3>Hypothesis testing</h3>
+        <p>Null vs alternative, the test statistic, p-value, Type I/II error and power - the one and two-sample t-test and the two-proportion z-test. Is 3.6% really above 3.2%?</p>
+        <span class="meta"><span class="pill light">The verdict</span></span>
+      </a>
+      <a class="course-card" href="courses/b9-chi-square-anova.html" style="--diff:#FB923C">
+        <span class="cicon">🧮</span>
+        <span class="cnum">Builder session 9</span>
+        <h3>Chi-square and ANOVA</h3>
+        <p>Chi-square goodness-of-fit and independence (channel vs convert), one-way ANOVA across product categories, and the nonparametric fallback when assumptions break.</p>
+        <span class="meta"><span class="pill light">More tests</span></span>
+      </a>
+      <a class="course-card" href="courses/b10-correlation-regression.html" style="--diff:#F87171">
+        <span class="cicon">📈</span>
+        <span class="cnum">Builder session 10</span>
+        <h3>Correlation, regression &amp; fallacies</h3>
+        <p>Pearson and Spearman, simple and multiple OLS, R-squared and residuals - then the fallacy capstone: p-hacking simulated, multiple comparisons corrected, Simpson's paradox in code.</p>
+        <span class="meta"><span class="pill light">Capstone</span></span>
+      </a>
+    </div>
+    <div class="diff-legend">
+      <span><i style="background:#34D399"></i>start here - foundations</span>
+      <span><i style="background:#FBBF24"></i>building up - the core craft</span>
+      <span><i style="background:#FB923C"></i>getting real - inference</span>
+      <span><i style="background:#F87171"></i>hardest - regression &amp; fallacies</span>
+    </div>
+
+    <div class="paths">
+      <h2>Choose your path 🗺️</h2>
+      <p class="plede">Leaders start at Leader session 1; practitioners start at Builder session 1. The fast-tracks fit a specific gap.</p>
+      <div class="path"><b>🤝 Leader journey (no code)</b>
+        <a class="pstep" href="courses/a1-reading-the-data.html">A1</a><span class="parr">→</span>
+        <a class="pstep" href="courses/a2-thinking-in-odds.html">A2</a><span class="parr">→</span>
+        <a class="pstep" href="courses/a3-the-bell-and-its-cousins.html">A3</a><span class="parr">→</span>
+        <a class="pstep" href="courses/a4-what-a-sample-can-say.html">A4</a><span class="parr">→</span>
+        <a class="pstep" href="courses/a5-the-number-and-its-error-bars.html">A5</a><span class="parr">→</span>
+        <a class="pstep" href="courses/a6-real-or-noise.html">A6</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b1-describe-the-data.html">curious? Builder session 1</a>
+      </div>
+      <div class="path"><b>🛠️ Full builder journey</b>
+        <a class="pstep" href="courses/b1-describe-the-data.html">1</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b2-probability-and-simulation.html">2</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b3-random-variables.html">3</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b4-distributions-in-scipy.html">4</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b5-sampling-and-clt.html">5</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b6-estimation-and-mle.html">6</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b7-confidence-intervals.html">7</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b8-hypothesis-testing.html">8</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b9-chi-square-anova.html">9</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b10-correlation-regression.html">10</a>
+      </div>
+      <div class="path"><b>⚡ Inference fast-track (feeds A/B testing)</b>
+        <a class="pstep" href="courses/b1-describe-the-data.html">1</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b5-sampling-and-clt.html">5</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b7-confidence-intervals.html">7</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b8-hypothesis-testing.html">8</a>
+      </div>
+      <div class="path"><b>🎲 Probability fast-track</b>
+        <a class="pstep" href="courses/b2-probability-and-simulation.html">2</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b3-random-variables.html">3</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b4-distributions-in-scipy.html">4</a>
+      </div>
+      <div class="path"><b>👔 Leader crash course (60 min)</b>
+        <a class="pstep" href="courses/a1-reading-the-data.html">A1</a><span class="parr">→</span>
+        <a class="pstep" href="courses/a4-what-a-sample-can-say.html">A4</a><span class="parr">→</span>
+        <a class="pstep" href="courses/a6-real-or-noise.html">A6</a>
+      </div>
+    </div>
+
+    <section class="play-section">
+      <h2>Try the statistics playground 🎛️</h2>
+      <p class="plede">Three live tools, no install, seeded from Lumen's real numbers. Drag the dials and watch the math move - the same tools are embedded in the sessions that teach them.</p>
+      <div class="stat-live" data-tool="sampler"></div>
+      <div class="stat-live" data-tool="clt"></div>
+      <div class="stat-live" data-tool="test"></div>
+    </section>
+
+    <div class="noteband">
+      <b>One brand, both tracks.</b> Every session works on <b>Lumen Skincare</b> - a synthetic $18M direct-to-consumer skincare label. Its numbers are the teaching examples: order values average ~$74 (median $63, right-skewed), checkout converts at ~3.2%, ~4,000 sessions a day, and prior spend correlates ~0.6 with order value. Leaders learn to read those numbers honestly; builders compute, simulate, and test them from scratch - and every figure lines up with the <b>experimentation</b> course, so this is the prequel that makes A/B testing click.
+    </div>
+
+    <div class="noteband">
+      <b>Honest about scope.</b> Sessions distill the leading foundational material - OpenIntro Statistics (the structural spine), Google's "The Power of Statistics", 365 Data Science's Statistics, Khan Academy, StatQuest, and Coursera's Basic Statistics (Amsterdam). Certificates, graded exams, and lecture videos stay with their official sources. Deeper Bayesian inference, full regression modelling, and causal inference are pointed to their own courses. Content verified July 2026.
+    </div>
+  </section>
+
+  <section class="section mm-section">
+    <h2>The knowledge map 🧠</h2>
+    <p class="mm-lede">The builder track at a glance - hover a session to spotlight its concepts, click any node to jump in.</p>
+    <div class="mm-wrap"><div id="mindmap"></div></div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a> · sequels: <a href="https://phoebefu6.github.io/learn-experimentation-with-phoebe/">learn-experimentation</a> · <a href="https://phoebefu6.github.io/learn-python-data-analysis-with-phoebe/">learn-python-data-analysis</a></span>
+  </footer>
+</main>
+
+<script>
+window.MINDMAP_DATA = {
+  title: "Statis-\ntics",
+  centerColor: "#0B5563",
+  sessions: [
+    { label: "Describe\nthe data", href: "courses/b1-describe-the-data.html", color: "#34D399",
+      concepts: [
+        { label: "Mean vs median", href: "courses/b1-describe-the-data.html" },
+        { label: "Std, IQR, skew", href: "courses/b1-describe-the-data.html" },
+        { label: "describe() gotchas", href: "courses/b1-describe-the-data.html" } ] },
+    { label: "Probability\n+ simulation", href: "courses/b2-probability-and-simulation.html", color: "#34D399",
+      concepts: [
+        { label: "Conditional + Bayes", href: "courses/b2-probability-and-simulation.html" },
+        { label: "Monte Carlo", href: "courses/b2-probability-and-simulation.html" },
+        { label: "Law of large numbers", href: "courses/b2-probability-and-simulation.html" } ] },
+    { label: "Random\nvariables", href: "courses/b3-random-variables.html", color: "#FBBF24",
+      concepts: [
+        { label: "E[X] and Var[X]", href: "courses/b3-random-variables.html" },
+        { label: "Covariance", href: "courses/b3-random-variables.html" },
+        { label: "pmf / pdf / cdf", href: "courses/b3-random-variables.html" } ] },
+    { label: "Distributions\nin scipy", href: "courses/b4-distributions-in-scipy.html", color: "#FBBF24",
+      concepts: [
+        { label: "Normal / binomial", href: "courses/b4-distributions-in-scipy.html" },
+        { label: "Poisson", href: "courses/b4-distributions-in-scipy.html" },
+        { label: "Fit + Q-Q plots", href: "courses/b4-distributions-in-scipy.html" } ] },
+    { label: "Sampling\n+ CLT", href: "courses/b5-sampling-and-clt.html", color: "#FBBF24",
+      concepts: [
+        { label: "Sampling distribution", href: "courses/b5-sampling-and-clt.html" },
+        { label: "Standard error", href: "courses/b5-sampling-and-clt.html" },
+        { label: "Bootstrap", href: "courses/b5-sampling-and-clt.html" } ] },
+    { label: "Estimation\n+ MLE", href: "courses/b6-estimation-and-mle.html", color: "#FB923C",
+      concepts: [
+        { label: "Bias / consistency", href: "courses/b6-estimation-and-mle.html" },
+        { label: "Why N-1", href: "courses/b6-estimation-and-mle.html" },
+        { label: "Maximum likelihood", href: "courses/b6-estimation-and-mle.html" } ] },
+    { label: "Confidence\nintervals", href: "courses/b7-confidence-intervals.html", color: "#FB923C",
+      concepts: [
+        { label: "z and t intervals", href: "courses/b7-confidence-intervals.html" },
+        { label: "Wald / Wilson", href: "courses/b7-confidence-intervals.html" },
+        { label: "Bootstrap CI", href: "courses/b7-confidence-intervals.html" } ] },
+    { label: "Hypothesis\ntesting", href: "courses/b8-hypothesis-testing.html", color: "#FB923C",
+      concepts: [
+        { label: "p-value done right", href: "courses/b8-hypothesis-testing.html" },
+        { label: "Type I / II + power", href: "courses/b8-hypothesis-testing.html" },
+        { label: "t-test / z-test", href: "courses/b8-hypothesis-testing.html" } ] },
+    { label: "Chi-square\n+ ANOVA", href: "courses/b9-chi-square-anova.html", color: "#FB923C",
+      concepts: [
+        { label: "Goodness of fit", href: "courses/b9-chi-square-anova.html" },
+        { label: "Independence table", href: "courses/b9-chi-square-anova.html" },
+        { label: "One-way ANOVA", href: "courses/b9-chi-square-anova.html" } ] },
+    { label: "Correlation\n+ regression", href: "courses/b10-correlation-regression.html", color: "#F87171",
+      concepts: [
+        { label: "Pearson / Spearman", href: "courses/b10-correlation-regression.html" },
+        { label: "OLS + R-squared", href: "courses/b10-correlation-regression.html" },
+        { label: "Simpson + p-hacking", href: "courses/b10-correlation-regression.html" } ] }
+  ]
+};
+</script>
+<script src="assets/stat-live.js?v=1"></script>
+<script src="assets/mindmap.js?v=1"></script>
+<script src="assets/app.js?v=1"></script>
+</body>
+</html>

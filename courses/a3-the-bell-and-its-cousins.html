@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leader session 3 · The bell and its cousins - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Leader session 3 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Leader session 3 of 6</div>
+    <h1>The bell and its cousins, <span class="accent">the three shapes your data takes</span></h1>
+    <p class="sub">Almost every number a business tracks falls into one of three shapes, and once you can name the shape you can read the number properly. The famous bell curve is only one of them - it is joined by a shape for counting successes out of tries, and a shape for counting events per stretch of time. Knowing which one you are looking at tells you what is typical, what is surprising, and how wide the swings should be. No math you have to do, no code.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Building up</span>
+      <span class="chip audience">Leaders · C-level / PM / marketing</span>
+      <span class="chip audience">No code</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:4">3-22 · The normal curve</span>
+      <span class="a3" style="flex:4">22-38 · Binomial &amp; Poisson</span>
+      <span class="a4" style="flex:2">38-45 · See it &amp; wrap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Three shapes cover most of what you track</h2>
+    </div>
+    <p class="lede">A distribution is just a picture of how often each outcome shows up - where the values pile up and how far they spread. For Lumen Skincare, the brand we follow through this course, three shapes do almost all the work. Order values pile into a lopsided hill. The count of conversions out of a batch of sessions has its own shape. The count of orders per day, or support tickets per hour, has another. Learn to recognise these three and you can look at any metric and know what "normal" and "surprising" should look like - before anyone hands you a number.</p>
+    <div class="legend">
+      <span class="pill solid">Live - covered in session</span>
+      <span class="pill light">Self-study - read after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      A quick mental match: continuous measurements that cluster around a middle tend toward the <em>normal</em> bell (and the 68-95-99.7 rule tells you what is rare); a count of yes/no successes out of N tries is <em>binomial</em>; a count of events in a fixed window of time or space is <em>Poisson</em>. Name the shape, and you instantly know roughly how big a swing should worry you.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: THE NORMAL CURVE ============ -->
+  <section class="section" id="normal">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the famous one</span>
+      <h2>The normal curve and the 68-95-99.7 rule <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">The bell curve is the most recognised shape in statistics for a reason: enormous numbers of things cluster symmetrically around a center, with rarer values trailing off evenly on both sides. Its real gift to a leader is a built-in ruler for "how unusual is this?" - the 68-95-99.7 rule - and a single portable number, the z-score, that says how far from normal any value sits.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A symmetric bell curve with shaded bands showing 68 percent of values within one standard deviation, 95 percent within two, and 99.7 percent within three, with standard-deviation ticks along the base.">
+        <style>
+          .beL-L { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .beL-T { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .beL-N { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .beL-b1 { fill: #0E7C90; }
+          .beL-b2 { fill: #22A5B8; }
+          .beL-b3 { fill: #7FD1DE; }
+          .beL-curve { fill: none; stroke: #0B5563; stroke-width: 3; }
+        </style>
+        <text class="beL-L" x="30" y="28">The 68-95-99.7 rule: how far from the mean is "rare"?</text>
+        <!-- baseline -->
+        <line x1="60" y1="250" x2="820" y2="250" stroke="#B4D2D9" stroke-width="1.5"/>
+        <!-- band fills (from center out): 3 within 3sd, 2 within 2sd, 1 within 1sd -->
+        <!-- outer band -2 to -3 and +2 to +3 -->
+        <rect class="beL-b3" x="180" y="235" width="120" height="15"/>
+        <rect class="beL-b3" x="580" y="235" width="120" height="15"/>
+        <!-- mid band -1 to -2 and +1 to +2 -->
+        <rect class="beL-b2" x="300" y="150" width="120" height="100"/>
+        <rect class="beL-b2" x="460" y="150" width="120" height="100"/>
+        <!-- inner band -1 to +1 -->
+        <rect class="beL-b1" x="420" y="90" width="40" height="160"/>
+        <rect class="beL-b1" x="380" y="105" width="40" height="145"/>
+        <rect class="beL-b1" x="460" y="105" width="40" height="145"/>
+        <!-- bell curve outline -->
+        <path class="beL-curve" d="M60 250 C 240 250, 300 240, 340 200 C 380 150, 400 95, 440 90 C 480 95, 500 150, 540 200 C 580 240, 640 250, 820 250"/>
+        <!-- mean line -->
+        <line x1="440" y1="90" x2="440" y2="250" stroke="#FFFFFF" stroke-width="2"/>
+        <!-- SD ticks -->
+        <g>
+          <line x1="300" y1="246" x2="300" y2="258" stroke="#557079" stroke-width="1.5"/>
+          <line x1="380" y1="246" x2="380" y2="258" stroke="#557079" stroke-width="1.5"/>
+          <line x1="440" y1="246" x2="440" y2="262" stroke="#10232A" stroke-width="2"/>
+          <line x1="500" y1="246" x2="500" y2="258" stroke="#557079" stroke-width="1.5"/>
+          <line x1="580" y1="246" x2="580" y2="258" stroke="#557079" stroke-width="1.5"/>
+        </g>
+        <text class="beL-N" x="286" y="276">-2 SD</text>
+        <text class="beL-N" x="366" y="276">-1 SD</text>
+        <text class="beL-N" x="422" y="276">mean</text>
+        <text class="beL-N" x="486" y="276">+1 SD</text>
+        <text class="beL-N" x="566" y="276">+2 SD</text>
+        <!-- band labels -->
+        <rect x="392" y="120" width="96" height="20" rx="5" fill="#0B5563"/>
+        <text class="beL-T" x="404" y="135">68% within 1 SD</text>
+        <text class="beL-N" x="300" y="180" style="fill:#10232A">95% within 2 SD</text>
+        <text class="beL-N" x="600" y="230" style="fill:#10232A">99.7% within 3 SD</text>
+        <rect x="60" y="300" width="14" height="14" rx="3" fill="#F97362"/>
+        <text class="beL-N" x="82" y="311" style="fill:#10232A">A z-score = how many SDs from the mean. Beyond 2 SD is roughly the outer 5% (unusual); beyond 3 SD is the outer 0.3% (rare).</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the bell curve comes with a built-in ruler for what counts as rare</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The bell, the rule, and the z-score<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Three things to carry out of the normal curve:</p>
+        <ul>
+          <li><strong>The bell shape.</strong> Symmetric, single peak at the mean, thinning tails on both sides. Mean and median sit together in the middle. Heights, measurement noise, and - crucially for later - averages of samples all lean this way.</li>
+          <li><strong>The 68-95-99.7 rule.</strong> About 68% of values land within 1 standard deviation of the mean, about 95% within 2, and about 99.7% within 3. That is your instant sense of "normal range" versus "worth a look".</li>
+          <li><strong>The z-score</strong> - "how many SDs from the mean is this value?" A z of 0 is dead average; a z of +2 is out near the unusual edge; a z beyond 3 is genuinely rare. It lets you compare wildly different metrics on one honest scale.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Lumen's order values are roughly bell-ish but right-skewed - a callback to Session 1, where the mean ($74) sat above the median ($63) because a tail of big gift-set orders pulls the average right. So the plain 68-95-99.7 rule is a decent rough guide near the middle but understates the fat right tail: genuinely large orders show up more often than a perfect bell would predict. The shape is close to normal, not exactly normal, and that gap is the whole reason we care about shape.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: BINOMIAL & POISSON ============ -->
+  <section class="section" id="cousins">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · the two cousins</span>
+      <h2>The binomial and the Poisson <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">The bell is for continuous measurements. But a lot of what a business tracks is a count - how many of something happened. Two shapes cover most counts: the binomial (how many successes out of a fixed number of tries) and the Poisson (how many events in a fixed stretch of time or space). Match the metric to the shape and the "expected" number falls right out.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three small distributions side by side: a continuous bell curve labelled use for measurements, a binomial bar chart labelled use for successes out of N tries, and a Poisson bar chart labelled use for events per period.">
+        <style>
+          .cnZ-L { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .cnZ-H { font: 700 12px Inter, sans-serif; fill: #0B5563; }
+          .cnZ-N { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .cnZ-bar { fill: #22A5B8; }
+          .cnZ-bar2 { fill: #7FD1DE; }
+          .cnZ-curve { fill: #E6F6F9; stroke: #0B5563; stroke-width: 2.5; }
+        </style>
+        <text class="cnZ-L" x="30" y="28">Same idea, three shapes - pick the one that matches the metric</text>
+        <!-- panel 1: continuous bell -->
+        <text class="cnZ-H" x="60" y="70">Normal</text>
+        <path class="cnZ-curve" d="M60 230 C 120 230, 130 220, 150 185 C 170 145, 180 95, 200 95 C 220 95, 230 145, 250 185 C 270 220, 280 230, 340 230 Z"/>
+        <line x1="60" y1="230" x2="340" y2="230" stroke="#B4D2D9" stroke-width="1.5"/>
+        <text class="cnZ-N" x="60" y="256">use for: a measurement that</text>
+        <text class="cnZ-N" x="60" y="272">clusters around a middle</text>
+        <text class="cnZ-N" x="60" y="290" style="fill:#0E7C90">e.g. order value, time on site</text>
+        <!-- panel 2: binomial bars -->
+        <text class="cnZ-H" x="380" y="70">Binomial</text>
+        <line x1="380" y1="230" x2="600" y2="230" stroke="#B4D2D9" stroke-width="1.5"/>
+        <g class="cnZ-bar">
+          <rect x="392" y="205" width="20" height="25" rx="2"/>
+          <rect x="416" y="170" width="20" height="60" rx="2"/>
+          <rect x="440" y="120" width="20" height="110" rx="2"/>
+          <rect x="464" y="135" width="20" height="95" rx="2"/>
+          <rect x="488" y="175" width="20" height="55" rx="2"/>
+          <rect x="512" y="200" width="20" height="30" rx="2"/>
+          <rect x="536" y="215" width="20" height="15" rx="2"/>
+        </g>
+        <text class="cnZ-N" x="380" y="256">use for: how many successes</text>
+        <text class="cnZ-N" x="380" y="272">out of N yes/no tries (mean = N x p)</text>
+        <text class="cnZ-N" x="380" y="290" style="fill:#0E7C90">e.g. conversions out of N sessions</text>
+        <!-- panel 3: poisson bars -->
+        <text class="cnZ-H" x="640" y="70">Poisson</text>
+        <line x1="640" y1="230" x2="850" y2="230" stroke="#B4D2D9" stroke-width="1.5"/>
+        <g class="cnZ-bar2">
+          <rect x="648" y="200" width="18" height="30" rx="2"/>
+          <rect x="670" y="150" width="18" height="80" rx="2"/>
+          <rect x="692" y="120" width="18" height="110" rx="2"/>
+          <rect x="714" y="140" width="18" height="90" rx="2"/>
+          <rect x="736" y="170" width="18" height="60" rx="2"/>
+          <rect x="758" y="195" width="18" height="35" rx="2"/>
+          <rect x="780" y="210" width="18" height="20" rx="2"/>
+          <rect x="802" y="220" width="18" height="10" rx="2"/>
+        </g>
+        <text class="cnZ-N" x="640" y="256">use for: how many events in a</text>
+        <text class="cnZ-N" x="640" y="272">fixed period (mean = lambda)</text>
+        <text class="cnZ-N" x="640" y="290" style="fill:#0E7C90">e.g. orders/day, tickets/hour</text>
+        <rect x="60" y="310" width="14" height="14" rx="3" fill="#F97362"/>
+        <text class="cnZ-N" x="82" y="321" style="fill:#10232A">Rule of thumb: measuring -> normal; counting successes out of tries -> binomial; counting events per stretch of time -> Poisson.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - three shapes, three jobs: measure, count-of-tries, count-per-period</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Binomial: counting successes out of N tries<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The <strong>binomial</strong> shape shows up whenever you count how many "yes" outcomes you get out of a fixed number of independent yes/no tries, each with the same chance of yes.</p>
+        <ul>
+          <li>Ingredients: a number of tries N, and a per-try chance p. The expected count is simply <strong>N x p</strong>.</li>
+          <li>For Lumen: out of N = 1000 checkout sessions at p = 3.2%, you expect about <strong>32 conversions</strong> - but with normal wobble around that, exactly the clumping we saw in Session 2.</li>
+          <li>Bigger N makes the count more predictable in relative terms - the reason small campaigns swing wildly and big ones settle down.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>The leader read</strong>
+          Any "X out of N" metric - conversions, defect rate, opt-ins, pass/fail - is binomial-shaped. Expect the count near N x p, and expect it to be jumpier when N is small. That single instinct stops a lot of over-reactions to tiny-sample results.
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Poisson: counting events per period<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The <strong>Poisson</strong> shape shows up when you count how many events land in a fixed window of time (or space), when events happen independently at some steady average rate.</p>
+        <ul>
+          <li>One ingredient: the average count per window, called <strong>lambda</strong>. That average is also the peak of the shape.</li>
+          <li>For Lumen: at ~4,000 sessions a day converting at 3.2%, you get about <strong>128 orders per day</strong> (lambda = 128). Support tickets arrive at about <strong>lambda = 5 per hour</strong>.</li>
+          <li>The Poisson tells you the natural spread of those counts - so you know whether "9 tickets this hour" is a normal busy patch or a genuine spike worth staffing for.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Lumen's support lead sees 9 tickets in one hour against a usual 5 and wants to pull someone off another queue. But with lambda = 5, an hour of 9 is well inside normal Poisson swing - busy hours and quiet hours are baked into a random arrival process. Staffing to every busy hour would over-hire; staffing to the average with a little slack for the real spikes is the honest read. Knowing the shape turns "that felt like a lot" into "that is within normal".</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Skew, and why real money and time data is never a perfect bell<span class="mini">4 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The bell is a beautiful idealisation, but most real business data is <strong>skewed</strong> - lopsided, with a long tail on one side.</p>
+        <ul>
+          <li><strong>Money is floored at zero and open-ended above.</strong> Order value, revenue per account, and deal size cannot go negative but can go very large, so they pile up low and trail off high - a right skew, mean above median.</li>
+          <li><strong>Time is the same.</strong> Response times and session lengths have a hard floor and a long tail of slow cases, which is why "average latency" hides the painful p95.</li>
+          <li><strong>The practical consequence:</strong> the 68-95-99.7 rule is a rough guide near the middle of skewed data but underestimates how often big values appear. Use it as a sanity check, not a promise, on money and time.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Why the bell still matters</strong>
+          Even when the raw data is skewed, the <em>average</em> of a sample of it drifts toward a bell - which is the single most important idea in the whole course, and exactly where Session 4 goes next.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ SEE IT ============ -->
+  <section class="section" id="seeit">
+    <div class="section-kicker">
+      <span class="klabel">See it live</span>
+      <h2>Play with the three shapes <span class="tag concept">3 min live</span></h2>
+    </div>
+    <p class="lede">Do not take the shapes on faith - move them around. Flip the sampler between Normal, Binomial, and Poisson, then drag the parameters: push the mean and SD on the bell, change N and p on the binomial, slide lambda on the Poisson. Watch how the peak moves and how the spread widens or tightens. A minute of dragging builds more intuition than a page of description.</p>
+    <div class="stat-live" data-tool="sampler"></div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Before Session 4</span>
+      <h2>This week <span class="tag exercise">◐ 25 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Name the shape.</strong> Pick three metrics your org watches and label each: a measurement (normal-ish), a count out of tries (binomial), or a count per period (Poisson). Notice how the label sets your expectation for the typical value.</li>
+      <li><strong>Apply the 68-95-99.7 rule.</strong> Find a roughly bell-shaped metric with a known average and spread. Sketch the range you would call "normal" (within 2 SD) and the value that would make you look twice (beyond 3 SD).</li>
+      <li><strong>Check a "spike".</strong> Take a per-period count you track (tickets/hour, sign-ups/day). Estimate its average, then judge whether a recent "busy" reading is really outside normal Poisson swing or just a busy patch.</li>
+      <li><strong>Optional:</strong> find a money or time metric someone described with the average and note where the skew likely hides a fat tail the average glosses over.</li>
+    </ul>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · A metric is roughly bell-shaped with mean 100 and SD 10. Roughly what share of values land between 80 and 120?</p>
+      <button class="qopt" type="button">A · about 68%</button>
+      <button class="qopt" type="button">B · about 50%</button>
+      <button class="qopt" type="button">C · about 95%</button>
+      <p class="qwhy">80 to 120 is the mean plus or minus 2 SD (2 x 10 = 20). The 68-95-99.7 rule puts about 95% of values within 2 SD of the mean.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · You want to model how many conversions Lumen gets out of 1000 sessions at a 3.2% rate. Which shape fits, and what is the expected count?</p>
+      <button class="qopt" type="button">A · binomial - counting successes out of N tries; expect about N x p = 32</button>
+      <button class="qopt" type="button">B · Poisson - it is a count, so lambda = 3.2</button>
+      <button class="qopt" type="button">C · normal - conversions are a measurement</button>
+      <p class="qwhy">"How many successes out of a fixed N yes/no tries" is the binomial. The expected count is N x p = 1000 x 0.032 = 32, with normal wobble around it.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · Support tickets arrive at about 5 per hour. One hour brings 9. What shape describes this count, and how should you read the 9?</p>
+      <button class="qopt" type="button">A · binomial - and 9 means the rate doubled</button>
+      <button class="qopt" type="button">B · Poisson (events per period, lambda = 5) - and 9 is within normal hour-to-hour swing</button>
+      <button class="qopt" type="button">C · normal - and 9 is a clear emergency</button>
+      <p class="qwhy">Counting events in a fixed window is Poisson, with lambda = 5. Poisson counts swing naturally, so an occasional 9 against an average of 5 is a busy patch, not proof the rate changed.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This leader session teaches how to recognise the three distributions and read them - the ~80% you need to interpret any metric's shape. The hands-on computation (fitting and simulating these in code) lives in Builder Session 4; the sources below go deeper.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The normal curve, the 68-95-99.7 rule, and z-scores</span><span class="note">Part 1</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The binomial (successes out of N) and the Poisson (events per period)</span><span class="note">Part 2</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 4 - Distributions of random variables</span><span class="note">the structural spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Google "The Power of Statistics" - module 2, distributions</span><span class="note">Python-first version - Builder Session 4</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Khan Academy - Modeling data distributions</span><span class="note">short videos, no code, great for the z-score</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Leader Session 3 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Normal (the bell)</b><span>Symmetric, clusters around a middle. Use for measurements. 68-95-99.7: that share of values sit within 1, 2, 3 SD of the mean.</span></div>
+      <div class="cheat-item"><b>z-score</b><span>How many SDs from the mean a value is. z beyond 2 is unusual, beyond 3 is rare. Puts different metrics on one honest scale.</span></div>
+      <div class="cheat-item"><b>Binomial</b><span>Count of successes out of N yes/no tries. Expected count = N x p. Jumpier when N is small (why tiny samples swing).</span></div>
+      <div class="cheat-item"><b>Poisson</b><span>Count of events per period, set by lambda (the average). Lumen: ~128 orders/day, ~5 tickets/hour. Counts swing naturally.</span></div>
+      <div class="cheat-item"><b>Match the metric</b><span>Measuring -> normal; successes out of tries -> binomial; events per stretch of time -> Poisson.</span></div>
+      <div class="cheat-item"><b>Skew warning</b><span>Real money and time data is right-skewed, not a perfect bell. The 68-95-99.7 rule undercounts the fat tail there.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Leader session 3 of 6 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="a2-thinking-in-odds.html">← Prev: Thinking in odds</a> &nbsp;·&nbsp; <a href="a4-what-a-sample-can-say.html">Next: What a sample can say →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/stat-live.js?v=1"></script>
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

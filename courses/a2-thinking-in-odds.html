@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leader session 2 · Thinking in odds - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Leader session 2 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Leader session 2 of 6</div>
+    <h1>Thinking in odds, <span class="accent">without reaching for a formula</span></h1>
+    <p class="sub">You read probabilities all day and probably do not notice: a 3.2% conversion rate, a 70% forecast, a "low-risk" flag, a churn score. Every one of them is a claim about something you do not yet know. Probability is not the scary chapter of a maths book - it is disciplined thinking about uncertainty, and getting the instinct right protects you from two traps that fool very smart rooms: expecting randomness to behave tidily, and trusting a rare-event alarm the moment it fires. No math you have to do, no code.</p>
+    <div class="chip-row">
+      <span class="chip level">🟢 Core idea</span>
+      <span class="chip audience">Leaders · C-level / PM / marketing</span>
+      <span class="chip audience">No code</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:4">3-22 · What a probability claims</span>
+      <span class="a3" style="flex:4">22-40 · Base rates &amp; Bayes</span>
+      <span class="a4" style="flex:1">40-45 · Wrap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>You are already a probability reader</h2>
+    </div>
+    <p class="lede">Look at any dashboard for Lumen Skincare, the direct-to-consumer brand we follow through this course, and it is wall-to-wall probability: conversion at 3.2%, a forecast that "we will likely hit target", a fraud flag on an order, a model that scores a shopper "high-value". None of those are facts about the past - they are statements about what we do not yet know. Probability is simply the language for reasoning about the uncertain on purpose, instead of by gut. Get the instinct right and you stop being surprised by normal randomness, and you stop over-trusting alarms that are wrong most of the time they go off.</p>
+    <div class="legend">
+      <span class="pill solid">Live - covered in session</span>
+      <span class="pill light">Self-study - read after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      Two instincts that outperform most formulas. First, a probability is an average over the long run, not a schedule - so streaks and clumps are normal, not signals. Second, and this is the big one, a rare-event alarm can be "99% accurate" and still be wrong almost every time it fires, because the base rate is tiny. You will learn to ask "how common is the thing before the test even ran?" before you trust any flag.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: WHAT A PROBABILITY CLAIMS ============ -->
+  <section class="section" id="claims">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the reading skill</span>
+      <h2>What a probability really claims <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">When Lumen reports a 3.2% conversion rate, what is it actually promising? Not that every 100th session buys, and not that the next 100 sessions will hand you 3.2 orders on cue. It is a long-run average - and long-run averages are perfectly happy to clump, streak, and go quiet for a while. Reading that correctly is the difference between reacting to noise and reading a real change.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Forty session squares in a row, a few filled to mark conversions, spaced irregularly with two sitting back to back, showing that a 3.2% rate produces clumps and gaps rather than one conversion every thirty-one sessions.">
+        <style>
+          .odA-L { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .odA-T { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .odA-N { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .odA-sq { fill: #E6F6F9; stroke: #B4D2D9; stroke-width: 1.5; }
+          .odA-hit { fill: #0E7C90; stroke: #0B5563; stroke-width: 1.5; }
+        </style>
+        <text class="odA-L" x="30" y="30">40 Lumen sessions - the conversions do not arrive on a timetable</text>
+        <!-- row of 40 squares, 20 per row; hits at irregular positions incl. a back-to-back pair -->
+        <g>
+          <rect class="odA-sq" x="40"  y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="80"  y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-hit" x="120" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="160" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="200" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="240" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="280" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="320" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="360" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="400" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="440" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="480" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="520" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-hit" x="560" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-hit" x="600" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="640" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="680" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="720" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="760" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="800" y="70" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="40"  y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="80"  y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="120" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="160" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="200" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="240" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="280" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="320" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-hit" x="360" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="400" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="440" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="480" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="520" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="560" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="600" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="640" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="680" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="720" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="760" y="120" width="30" height="30" rx="4"/>
+          <rect class="odA-sq" x="800" y="120" width="30" height="30" rx="4"/>
+        </g>
+        <text class="odA-N" x="560" y="182" style="fill:#F97362">two conversions back to back - still perfectly normal</text>
+        <rect x="40" y="210" width="16" height="16" rx="3" class="odA-hit"/>
+        <text class="odA-N" x="64" y="222" style="fill:#10232A">= a conversion</text>
+        <rect x="40" y="238" width="14" height="14" rx="3" fill="#F97362"/>
+        <text class="odA-N" x="62" y="249" style="fill:#10232A">3.2% means about 3 in every 100 sessions convert ON AVERAGE. Over any short stretch the hits clump and gap - a quiet run is not a crisis, a busy run is not a trend.</text>
+        <text class="odA-N" x="62" y="270" style="fill:#10232A">Randomness looks lumpy. Truly evenly-spaced events would be the surprising thing.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - a real 3.2% rate arrives in clumps and gaps, never on a schedule</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Probability is a long-run average, and independent events have no memory<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A probability is a number between 0 (never) and 1 (always) that names how often something happens over the long run. Two ideas do most of the work for a leader:</p>
+        <ul>
+          <li><strong>It is an average, not a schedule.</strong> "3.2% convert" means about 3.2 in every 100 sessions across the long run - not one every 31 sessions, and not exactly 32 in your next thousand. Small batches wobble a lot around the true rate.</li>
+          <li><strong>Independent events have no memory.</strong> If each session converts on its own, a long quiet streak does not make the next visitor "due" to buy. The sessions do not know what came before. Believing they do is the gambler's fallacy - the same instinct that says a coin that landed heads five times is "owed" a tail.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Lumen has a slow Tuesday morning - zero orders in the first hour, against a normal pace. The growth channel pings the room: "conversion is broken." But at roughly 128 orders a day, an empty hour here and there is exactly what a random 3.2% rate produces. By lunch the day is on pace. Nothing was broken; the team just read normal clumping as a signal and nearly rolled back a healthy campaign over noise.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The gambler's fallacy in a business suit<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The gambler's fallacy is expecting the future to "balance out" the recent past on independent events. It rarely shows up wearing a casino visor - it shows up in meetings:</p>
+        <ul>
+          <li><strong>"We have lost three deals in a row, we are due a win."</strong> If the deals are independent, the streak changes nothing about the next one.</li>
+          <li><strong>"The site has been quiet all morning, orders will surge this afternoon to catch up."</strong> The morning does not owe the afternoon anything.</li>
+          <li><strong>The flip side - the hot-hand overread:</strong> a few good days becomes "we have cracked it", and a campaign gets scaled on a lucky run.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Your leverage is the time window</strong>
+          You almost never fix this with a calculation - you fix it by refusing to judge a random process on a tiny window. Ask "over how many sessions / days / deals?" before reacting. Small samples swing wildly; that swing is not information.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: BASE RATES & BAYES ============ -->
+  <section class="section" id="bayes">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · the one big idea</span>
+      <h2>Conditional probability, base rates, and Bayes <span class="tag concept">9 min live</span></h2>
+    </div>
+    <p class="lede">Here is the trap that fools the smartest people in the room. A flag, a test, a model fires and says "this is fraud" or "this is a high-value customer" - and it is right 99% of the time. Should you trust it? Usually not, and the reason is the base rate: if the thing you are hunting is genuinely rare, most of the alarms are false alarms, no matter how accurate the test sounds. This is the highest-value idea in the whole session.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A natural-frequency tree starting from 1000 people, splitting into 1 true case and 999 healthy, then into 1 true positive caught and about 10 false alarms, so a positive result is right fewer than one time in ten.">
+        <style>
+          .baR-L  { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .baR-T  { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .baR-N  { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .baR-box{ fill: #E6F6F9; stroke: #0E7C90; stroke-width: 2; }
+          .baR-arm{ stroke: #B4D2D9; stroke-width: 2; fill: none; }
+        </style>
+        <text class="baR-L" x="30" y="28">A test that is "99% accurate" for a 1-in-1000 thing, run on 1000 people</text>
+        <!-- root -->
+        <rect x="360" y="45" width="160" height="46" rx="8" fill="#0B5563"/>
+        <text class="baR-T" x="392" y="74">1000 people</text>
+        <!-- arms to level 1 -->
+        <path class="baR-arm" d="M420 91 L180 140"/>
+        <path class="baR-arm" d="M460 91 L700 140"/>
+        <!-- level 1: 1 true case / 999 healthy -->
+        <rect class="baR-box" x="90" y="140" width="200" height="52" rx="8"/>
+        <text class="baR-L" x="112" y="164">1 truly has it</text>
+        <text class="baR-N" x="112" y="182">the base rate: 1 in 1000</text>
+        <rect class="baR-box" x="600" y="140" width="210" height="52" rx="8"/>
+        <text class="baR-L" x="622" y="164">999 are healthy</text>
+        <text class="baR-N" x="622" y="182">the other 99.9%</text>
+        <!-- arms to level 2 -->
+        <path class="baR-arm" d="M190 192 L150 250"/>
+        <path class="baR-arm" d="M705 192 L620 250"/>
+        <path class="baR-arm" d="M705 192 L790 250"/>
+        <!-- level 2 outcomes -->
+        <rect x="60" y="250" width="200" height="58" rx="8" fill="#0E7C90"/>
+        <text class="baR-T" x="82" y="274">1 tests positive</text>
+        <text class="baR-N" x="82" y="294" style="fill:#FFFFFF">the true catch</text>
+        <rect x="510" y="250" width="200" height="58" rx="8" fill="#F97362"/>
+        <text class="baR-T" x="532" y="274">~10 test positive</text>
+        <text class="baR-N" x="532" y="294" style="fill:#FFFFFF">false alarms (1% of 999)</text>
+        <rect class="baR-box" x="730" y="250" width="120" height="58" rx="8"/>
+        <text class="baR-N" x="748" y="283" style="fill:#10232A">~989 clear</text>
+        <!-- punchline box -->
+        <rect x="60" y="330" width="790" height="34" rx="8" fill="#E6F6F9" stroke="#F97362" stroke-width="2"/>
+        <text class="baR-L" x="80" y="352">Of the ~11 alarms, only 1 is real - so a positive is right about 1 in 11 (under 10%). The rare base rate drowns the "99% accurate" test.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - count the people, not the percentages: a rare-event alarm is mostly false alarms</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Conditional probability: the odds change once you know something<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>P(A given B)</strong> - read "the probability of A, once we know B is true" - is just how the odds shift when new information lands. It is the everyday move behind every model score, every segment, every "customers who did X are more likely to do Y".</p>
+        <ul>
+          <li>P(buys) across all sessions is 3.2%. P(buys given they added to cart) is much higher - the condition changed the odds.</li>
+          <li>The order matters and people flip it. P(positive test given sick) is not the same as P(sick given positive test) - and confusing the two is exactly the base-rate trap.</li>
+          <li>A leader rarely needs the arithmetic. You need to notice <em>which</em> conditional a number is, and whether it is the one you actually care about.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>The tell to listen for</strong>
+          When someone says "this flag is 99% accurate", they are quoting P(flag fires given it is really fraud). The question you actually care about is the reverse - P(really fraud given the flag fired) - and that depends on how rare fraud is. Different number, often a very different answer.
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Base-rate neglect, and the fix: count the people <span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Base-rate neglect is forgetting how common the thing was <em>before</em> the test ran. The cure is not a formula (that formula is Bayes' theorem) - it is a natural-frequency box: stop thinking in percentages and count actual people.</p>
+        <ul>
+          <li>Take 1000 people. The condition affects 1 in 1000, so <strong>1 truly has it</strong> and 999 do not.</li>
+          <li>The test catches the real case: <strong>1 true positive</strong>.</li>
+          <li>But "99% accurate" means it wrongly flags 1% of the healthy - 1% of 999 is <strong>about 10 false alarms</strong>.</li>
+          <li>So a positive result is right about 1 in 11 - <strong>under 10% of the time it fires</strong>. The test is not broken; the base rate is just tiny.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>Lumen turns on a "high-value customer" predictor that is 99% accurate, hunting the rare shopper who will spend like a whale - say 1 in 1000 visitors. Marketing wants to roll out white-glove concierge treatment to everyone it flags. But run the box: for every real whale it catches, it tags roughly 10 ordinary shoppers as VIPs. Nine in ten "VIP" alerts are ordinary customers. The same maths sinks a rarely-true fraud flag: block every order it flags and you mostly block good customers. The flag is a starting point for a look, never a verdict.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Probability vs odds, and why "correlation" is a probability statement<span class="mini">4 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Two footnotes that clear up a lot of confused meetings:</p>
+        <ul>
+          <li><strong>Probability vs odds.</strong> Probability is "chances out of the whole" - 3.2% is 3.2 out of 100. Odds is "for vs against" - the same event is odds of about 3.2 to 96.8, or roughly 1 to 30. Betting markets and some models talk in odds; dashboards talk in probability. Same reality, different phrasing - just know which one you are reading.</li>
+          <li><strong>Correlation is a probability statement in disguise.</strong> When we later say prior-30-day spend is correlated with order value, we are really saying knowing one shifts the probable range of the other - a conditional probability with a number attached. That is the whole bridge to Session 6, where correlation (and its famous warning, "not causation") gets its own treatment.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Carry this into every dashboard</strong>
+          Before you trust any flag, alarm, or score, ask one question out loud: "how common is this thing before the test even runs?" If it is rare, assume most of the alarms are false until someone shows you the natural-frequency count.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Before Session 3</span>
+      <h2>This week <span class="tag exercise">◐ 25 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Catch a gambler's fallacy in the wild.</strong> Find a claim from your team or your feed that a streak "must" reverse or continue ("we are due", "we have cracked it"). Write one sentence on whether the events are really independent.</li>
+      <li><strong>Run a natural-frequency box.</strong> Pick any alarm your org trusts (a fraud flag, a churn-risk score, a security alert). Estimate how rare the real thing is, imagine 1000 cases, and count the true catches versus false alarms. Notice how many "hits" are noise.</li>
+      <li><strong>Find a flipped conditional.</strong> Spot a place where "X% of A did B" gets quietly read as "X% of B did A". They are different numbers - name the gap.</li>
+      <li><strong>Optional:</strong> pick one metric quoted as a percentage and rephrase it as "about N out of 1000". See how differently the room reacts to counts than to percentages.</li>
+    </ul>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · Lumen converts at 3.2%. The first hour of a Tuesday brings zero orders. What is the safest reading?</p>
+      <button class="qopt" type="button">A · conversion is broken, roll the campaign back now</button>
+      <button class="qopt" type="button">B · a quiet hour is normal clumping in a random 3.2% process - judge it over a longer window before reacting</button>
+      <button class="qopt" type="button">C · the site will surge this afternoon to make up the shortfall</button>
+      <p class="qwhy">A probability is a long-run average, not a schedule. Small windows swing wildly, so a zero-order hour is expected noise. Option C is the gambler's fallacy - the afternoon owes the morning nothing.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · A "high-value customer" predictor is 99% accurate, hunting a shopper who is 1 in 1000. It flags someone. How much should you trust that single flag?</p>
+      <button class="qopt" type="button">A · 99% - that is the accuracy</button>
+      <button class="qopt" type="button">B · completely, the model is basically always right</button>
+      <button class="qopt" type="button">C · not much - among ~11 flags only ~1 is real, so a flag is right under 10% of the time</button>
+      <p class="qwhy">Count the people: in 1000, there is 1 real case (caught) plus ~10 false alarms from 1% of the 999. About 1 in 11 flags is real. When the base rate is tiny, even a very accurate test fires mostly false alarms.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · "99% of fraudulent orders trigger our flag." A leader wants to auto-block every flagged order. What is the missing question?</p>
+      <button class="qopt" type="button">A · of the orders that trigger the flag, what share are actually fraud? (the reverse conditional, which depends on how rare fraud is)</button>
+      <button class="qopt" type="button">B · how fast does the flag run?</button>
+      <button class="qopt" type="button">C · nothing - 99% is high enough to auto-block</button>
+      <p class="qwhy">"99% of fraud triggers the flag" is P(flag given fraud). Auto-blocking needs the reverse, P(fraud given flag), which collapses when fraud is rare. Without the base rate you would block mostly good customers.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This leader session teaches the reading skills behind probability - the ~80% you need to reason about uncertainty honestly. The hands-on computation (simulations, distributions in code) lives in Builder Session 2; the sources below go deeper.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">What a probability claims: long-run average, independence, the gambler's fallacy</span><span class="note">Part 1</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Conditional probability, base rates, and Bayes by natural frequencies</span><span class="note">Part 2</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 3 - Probability</span><span class="note">the structural spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Google "The Power of Statistics" - module 2, probability</span><span class="note">Python-first version - Builder Session 2</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">The base-rate / natural-frequency worked example (Lumen framing)</span><span class="note">authored fresh for this course</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Leader Session 2 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>A probability is an average</b><span>3.2% means ~3 in 100 over the long run, not one every 31 sessions. Small windows swing; streaks and gaps are normal.</span></div>
+      <div class="cheat-item"><b>Independence has no memory</b><span>Independent events do not "even out". "We are due a win" and "quiet now so it will surge" are the gambler's fallacy.</span></div>
+      <div class="cheat-item"><b>Conditional probability</b><span>P(A given B) is how the odds shift once you know B. P(A given B) is NOT P(B given A) - people flip these constantly.</span></div>
+      <div class="cheat-item"><b>Base rate first</b><span>Ask "how common is this before the test ran?" A rare thing means most alarms are false, however accurate the test.</span></div>
+      <div class="cheat-item"><b>Count the people</b><span>1000 people, 1-in-1000 condition, 99% accurate test: 1 true catch + ~10 false alarms. A positive is right under 10%.</span></div>
+      <div class="cheat-item"><b>Probability vs odds</b><span>Probability = out of the whole (3.2 in 100). Odds = for vs against (~1 to 30). Same event, different phrasing.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Leader session 2 of 6 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="a1-reading-the-data.html">← Prev: Reading the data</a> &nbsp;·&nbsp; <a href="a3-the-bell-and-its-cousins.html">Next: The bell and its cousins →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

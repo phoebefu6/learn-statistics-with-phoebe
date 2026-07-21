@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 3 · Random variables, E and Var - learn statistics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-statistics-with-phoebe</a> / Builder session 3 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn Statistics with Phoebe · Builder session 3 of 10</div>
+    <h1>Random variables, <span class="accent">and the two numbers that summarize any of them</span></h1>
+    <p class="sub">A random variable is just a number whose value is decided by chance - an order's value, whether a session converts, how many orders arrive today. Once you have one, two numbers describe it almost completely: the expected value (where it balances) and the variance (how far it spreads). This session builds both from the definition in numpy, then shows the scipy shortcut that gives them to you for free. The headline result: Lumen earns about $2.37 of expected revenue per session.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Building up</span>
+      <span class="chip audience">Builders · DA / DE / DS</span>
+      <span class="chip audience">Python · numpy / scipy</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Setup</span>
+      <span class="a2" style="flex:3">3-16 · E, Var, the trio</span>
+      <span class="a3" style="flex:5">16-40 · Compute it in Python</span>
+      <span class="a4" style="flex:1">40-45 · Wrap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Expectation is a balance point, not a prediction</h2>
+    </div>
+    <p class="lede">The single most misused idea in this session is the expected value. "Expected revenue per session is $2.37" does not mean any session earns $2.37 - almost none do. A session earns $0 (no purchase) or roughly $74 (a purchase), never $2.37. The expectation is the long-run average, the point where the distribution balances. Get that straight now and the rest of probability, all the way to confidence intervals, stays honest.</p>
+    <div class="legend">
+      <span class="pill solid">Live - built in session</span>
+      <span class="pill light">Self-study - run after</span>
+      <span class="pill amber">★ The one big idea</span>
+      <span class="pill inkpill">The case: Lumen Skincare</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      Discrete vs continuous random variables, the pmf / pdf / cdf trio and when each applies, expectation E[X] = sum of x times p(x), variance Var[X] = E[(X - mu) squared], and standard deviation as its square root. You will compute all of them from the definition with <code>np.average(values, weights=probs)</code>, cross-check against <code>np.mean</code> / <code>np.var</code>, peek at covariance, and meet the scipy frozen distribution that hands you <code>.mean()</code>, <code>.var()</code>, <code>.pmf()</code>, and <code>.cdf()</code> in one line.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: E AND VAR ============ -->
+  <section class="section" id="evar">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · the vocabulary in code</span>
+      <h2>Expectation, variance, and the pmf / pdf / cdf trio <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">Picture a distribution as weights sitting on a ruler. The expected value E[X] is the fulcrum - the spot where the ruler balances. The variance is how far, on average, the weights sit from that fulcrum. Everything below is those two ideas plus the three functions (pmf, pdf, cdf) that describe the distribution itself.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A probability mass function drawn as bars over the values 0 to 5. The expected value 2.6 is marked by a triangular fulcrum under the axis, the point where the bars balance, and a double-headed arrow shows plus or minus one standard deviation of about 1.3 around it.">
+        <style>
+          .bpmB { fill: #7FD1DE; }
+          .bpmL { font: 700 12px Inter, sans-serif; fill: #10232A; }
+          .bpmN { font: 600 11px Inter, sans-serif; fill: #557079; }
+          .bpmE { font: 700 13px Inter, sans-serif; fill: #0E7C90; }
+          .bpmS { font: 700 12px Inter, sans-serif; fill: #F97362; }
+          .bpmAxis { stroke: #10232A; stroke-width: 2; }
+          .bpmSpread { stroke: #F97362; stroke-width: 2.5; fill: none; marker-start: url(#bpmL2); marker-end: url(#bpmR2); }
+        </style>
+        <defs>
+          <marker id="bpmL2" markerWidth="9" markerHeight="9" refX="3" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6" fill="none" stroke="#F97362" stroke-width="1.6"/></marker>
+          <marker id="bpmR2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#F97362" stroke-width="1.6"/></marker>
+        </defs>
+        <!-- bars: baseline y=280 -->
+        <rect class="bpmB" x="110" y="250" width="70" height="30" rx="3"/>
+        <rect class="bpmB" x="220" y="190" width="70" height="90" rx="3"/>
+        <rect class="bpmB" x="330" y="100" width="70" height="180" rx="3"/>
+        <rect class="bpmB" x="440" y="130" width="70" height="150" rx="3"/>
+        <rect class="bpmB" x="550" y="190" width="70" height="90" rx="3"/>
+        <rect class="bpmB" x="660" y="220" width="70" height="60" rx="3"/>
+        <!-- prob labels -->
+        <text class="bpmN" x="128" y="242">.05</text>
+        <text class="bpmN" x="238" y="182">.15</text>
+        <text class="bpmN" x="348" y="92">.30</text>
+        <text class="bpmN" x="458" y="122">.25</text>
+        <text class="bpmN" x="568" y="182">.15</text>
+        <text class="bpmN" x="678" y="212">.10</text>
+        <!-- axis -->
+        <line class="bpmAxis" x1="90" y1="280" x2="760" y2="280"/>
+        <text class="bpmL" x="141" y="300">0</text>
+        <text class="bpmL" x="251" y="300">1</text>
+        <text class="bpmL" x="361" y="300">2</text>
+        <text class="bpmL" x="471" y="300">3</text>
+        <text class="bpmL" x="581" y="300">4</text>
+        <text class="bpmL" x="691" y="300">5</text>
+        <text class="bpmN" x="620" y="326">x = items in order</text>
+        <!-- fulcrum at E[X]=2.6 -> x = 145 + 2.6*110 = 431 -->
+        <path d="M431,284 L419,308 L443,308 Z" fill="#0E7C90"/>
+        <text class="bpmE" x="398" y="330">E[X] = 2.6</text>
+        <!-- spread arrow +/- sd (1.32*110=145) at y=70 -->
+        <line class="bpmSpread" x1="286" y1="70" x2="576" y2="70"/>
+        <text class="bpmS" x="360" y="60">mean ± 1 SD (≈ 1.3)</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - E[X] is the balance point, variance is the spread around it</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The definitions, and the functions that compute them<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>Discrete vs continuous:</strong> a discrete RV takes countable values (orders per day: 0, 1, 2, ...); a continuous RV takes any value in a range (order value: any dollar amount). Discrete uses a pmf; continuous uses a pdf.</li>
+          <li><strong>Expectation:</strong> E[X] = sum of x times p(x) for discrete, an integral for continuous. In code it is a probability-weighted average: <code>np.average(values, weights=probs)</code>.</li>
+          <li><strong>Variance:</strong> Var[X] = E[(X - mu) squared] = E[X squared] - (E[X]) squared. The average squared distance from the mean.</li>
+          <li><strong>Standard deviation:</strong> sigma = sqrt(Var[X]). Same units as X, which is why we report it instead of variance.</li>
+          <li><strong>The trio:</strong> <code>pmf</code>/<code>pdf</code> gives the height at a value, <code>cdf</code> gives P(X &lt;= value), and they are two views of the same distribution.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>pmf for counts, pdf for measures</strong>
+          A pmf value is a real probability - <code>binom.pmf(7)</code> is literally P(X = 7). A pdf value is a density, not a probability: for a continuous RV, P(X = exactly 74.00) is 0, so you always ask for a range via the cdf, e.g. P(X &lt; 100) = <code>cdf(100)</code>. Mixing these up is the classic continuous-variable trap.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO ============ -->
+  <section class="section" id="demo">
+    <div class="section-kicker">
+      <span class="klabel">★ everyone builds · E and Var by hand and by scipy</span>
+      <h2>Compute expectation and variance four ways <span class="tag demo">★ 22 min · everyone builds</span></h2>
+    </div>
+    <p class="lede">Start with the number that pays the bills - expected revenue per session - then build E and Var from the definition, cross-check against numpy, peek at covariance, and finish with the scipy frozen distribution that does it all for you.</p>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Expected revenue per session.</strong> Probability of converting times average order value. This is an expectation, not a guarantee.</p>
+        <div class="prompt-box good">
+          <span class="label">expected_revenue.py</span>
+<pre>p_convert = 0.032      # Lumen checkout conversion rate
+aov       = 74.0       # average order value in dollars
+
+exp_rev = p_convert * aov
+print("expected revenue / session:", round(exp_rev, 2))   # 2.37
+
+# scale it up: ~4,000 sessions a day
+print("expected revenue / day    :", round(exp_rev * 4000, 2))  # ~ 9,472
+# NOTE: no single session earns $2.37 - each earns $0 or ~$74.
+# $2.37 is the long-run average, the balance point.</pre>
+        </div>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p>When Lumen's finance team models a paid-traffic campaign, $2.37 per session is the number that decides the bid ceiling: if a click costs more than about $2.37, the campaign loses money on average. But an analyst who promised "every visitor is worth $2.37" would be wrong about every individual visitor - the value is either $0 or a full order. The expectation guides the budget; it never describes a person.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>E and Var from the definition.</strong> Use a probability-weighted average, then confirm by simulating draws.</p>
+        <div class="prompt-box good">
+          <span class="label">e_and_var.py</span>
+<pre>import numpy as np
+
+values = np.array([0, 1, 2, 3, 4, 5])          # items per order
+probs  = np.array([.05, .15, .30, .25, .15, .10])
+
+EX  = np.average(values, weights=probs)        # 2.6  = sum x*p(x)
+EX2 = np.average(values**2, weights=probs)     # 8.5
+var = EX2 - EX**2                              # 1.74 = E[X^2] - E[X]^2
+print("E[X] :", round(EX, 3), " Var[X] :", round(var, 3), " SD :", round(var**0.5, 3))
+
+# cross-check by drawing 500,000 samples from this pmf
+rng   = np.random.default_rng(42)
+draws = rng.choice(values, size=500_000, p=probs)
+print("np.mean:", round(draws.mean(), 3), " np.var:", round(draws.var(), 3))
+# the sample mean/var land on 2.6 and 1.74 - the definition and the data agree</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>Covariance - a preview of correlation.</strong> How order value and prior spend move together, on the real Lumen columns.</p>
+        <div class="prompt-box good">
+          <span class="label">covariance.py</span>
+<pre>import numpy as np, pandas as pd
+
+df = pd.read_parquet("lumen_orders.parquet")
+
+cov = np.cov(df["order_value"], df["prior_30d_spend"])
+print("covariance matrix:\n", np.round(cov, 1))
+# the off-diagonal is the covariance - positive, so they rise together
+
+r = np.corrcoef(df["order_value"], df["prior_30d_spend"])[0, 1]
+print("correlation preview:", round(r, 2))   # ~ 0.6  (full story in b10)</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <p><strong>The scipy frozen distribution.</strong> Bake the parameters in once, then ask it anything. No hand formulas.</p>
+        <div class="prompt-box good">
+          <span class="label">scipy_frozen.py</span>
+<pre>import scipy.stats as st
+
+rv = st.binom(25, 0.3)      # 25 trials, success prob 0.3 - a "frozen" distribution
+
+print("mean :", rv.mean())      # 7.5  = n*p
+print("var  :", rv.var())       # 5.25 = n*p*(1-p)
+print("pmf 7:", round(rv.pmf(7), 4))    # P(X = 7)
+print("cdf 7:", round(rv.cdf(7), 4))    # P(X &lt;= 7)
+# .mean() and .var() match n*p and n*p*(1-p) - scipy did the E and Var for you</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Before Session 4</span>
+      <h2>This week <span class="tag exercise">◐ 40 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Expected value of an order.</strong> Compute E[order_value] directly with <code>df["order_value"].mean()</code> and confirm it lands near $74. Then compute expected revenue per session as P(convert) x E[order_value] yourself.</li>
+      <li><strong>Linearity of expectation.</strong> Show that E[2X + 10] = 2 E[X] + 10 on the items-per-order pmf, both by transforming values first and by transforming E[X]. They must match.</li>
+      <li><strong>Variance is not linear.</strong> Show Var[2X] = 4 Var[X], not 2 Var[X]. Write one sentence on why variance scales with the square.</li>
+      <li><strong>Optional:</strong> freeze <code>st.poisson(128)</code> for daily orders and read off its mean and variance. Notice they are equal - that is the Poisson signature, and it sets up b4.</li>
+    </ul>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · Lumen's expected revenue per session is $2.37. What does that mean for a single session?</p>
+      <button class="qopt" type="button">A · that session will earn about $2.37</button>
+      <button class="qopt" type="button">B · every session earns between $2 and $3</button>
+      <button class="qopt" type="button">C · a single session earns $0 or ~$74; $2.37 is the long-run average</button>
+      <p class="qwhy">Expectation is a balance point, not a prediction for any one outcome. Each session earns $0 (no purchase) or a full order value; the $2.37 only appears as an average over many sessions.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · Which numpy call computes E[X] from a list of values and their probabilities?</p>
+      <button class="qopt" type="button">A · np.average(values, weights=probs)</button>
+      <button class="qopt" type="button">B · np.mean(values)</button>
+      <button class="qopt" type="button">C · np.sum(values)</button>
+      <p class="qwhy">E[X] is a probability-weighted average, so you weight the values by their probabilities: np.average(values, weights=probs). np.mean would treat every value as equally likely, which is wrong unless the pmf is uniform.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · For <code>rv = scipy.stats.binom(25, 0.3)</code>, what does <code>rv.pmf(7)</code> return?</p>
+      <button class="qopt" type="button">A · P(X &lt;= 7)</button>
+      <button class="qopt" type="button">B · P(X = 7), the probability of exactly 7 successes</button>
+      <button class="qopt" type="button">C · the 7th percentile</button>
+      <p class="qwhy">pmf is the probability mass function: for a discrete distribution it gives the probability of exactly that value. P(X &lt;= 7) would be rv.cdf(7); a percentile would come from rv.ppf.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ OFFICIAL SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>What this session covers</h2>
+    </div>
+    <p class="lede">This builder session covers ~80% of the random-variables content in the sources below, computed on Lumen. Named distributions as scipy objects - normal, binomial, Poisson, lognormal - get their own session in b4.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Discrete vs continuous RVs, E[X], Var[X], SD, pmf / pdf / cdf, covariance</span><span class="note">Part 1 + demo</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">E and Var from the definition with np.average; scipy frozen distributions</span><span class="note">demo</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">OpenIntro Statistics ch. 3 - Distributions of random variables</span><span class="note">theory spine; free PDF</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Khan Academy - Random variables and probability distributions</span><span class="note">unit refresher</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">StatQuest - Expected values, clearly explained</span><span class="note">video, balance-point intuition</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder Session 3 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Expectation</b><span>E[X] = sum x*p(x). In code: <code>np.average(values, weights=probs)</code>. It is a balance point, not a prediction.</span></div>
+      <div class="cheat-item"><b>Variance</b><span>Var[X] = E[(X-mu)^2] = E[X^2] - E[X]^2. Average squared distance from the mean.</span></div>
+      <div class="cheat-item"><b>Std deviation</b><span>sigma = sqrt(Var). Same units as X - report this, not variance.</span></div>
+      <div class="cheat-item"><b>pmf vs pdf</b><span>pmf = real probability (discrete). pdf = density (continuous); for a range use the cdf.</span></div>
+      <div class="cheat-item"><b>Frozen dist</b><span><code>rv = st.binom(25, .3)</code> then <code>rv.mean()</code>, <code>rv.var()</code>, <code>rv.pmf(k)</code>, <code>rv.cdf(k)</code>.</span></div>
+      <div class="cheat-item"><b>Lumen number</b><span>Expected revenue / session = 0.032 x $74 = $2.37. The bid ceiling, not a per-visitor promise.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 3 of 10 · learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="b2-probability-and-simulation.html">← Prev: Probability &amp; simulation</a> &nbsp;·&nbsp; <a href="b4-distributions-in-scipy.html">Next: Distributions in scipy →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>
