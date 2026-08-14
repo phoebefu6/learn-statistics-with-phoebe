@@ -658,3 +658,111 @@ details.card:hover::after { opacity: 1; }
   .toolbar, .copy-btn { display: none; }
   details.card { border: 1px solid #ccc; }
 }
+
+/* === LWP-PATCH v2 === */
+/* palette-agnostic aliases: 75 repos use --indigo/--amber, 1 uses --pine/--clay */
+:root {
+  --pv-accent: var(--indigo, var(--pine, #334155));
+  --pv-flag: var(--amber, var(--clay, #B45309));
+  --pv-flag-50: var(--amber-50, var(--clay-50, #FEF3E2));
+}
+
+/* ============================================================
+   v2 - readable on a phone + reading modes
+   Layout only. No palette tokens are changed.
+   ============================================================ */
+
+/* --- skip link --- */
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: 200;
+  background: var(--pv-accent); color: #fff;
+  padding: .7rem 1.1rem; border-radius: 0 0 var(--radius) 0;
+  font-weight: 700; font-size: .85rem; text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* --- visible keyboard focus everywhere --- */
+:focus-visible {
+  outline: 3px solid var(--pv-flag);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* --- diagrams: hold authored width, scroll instead of shrinking --- */
+.figscroll { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+.figscroll::-webkit-scrollbar { height: 6px; }
+.figscroll::-webkit-scrollbar-thumb { background: var(--faint); border-radius: 3px; }
+
+/* --- tables: scroll container + sticky row label --- */
+.tablescroll { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--radius); }
+
+/* --- section contents counter --- */
+.sec-meta {
+  display: block; margin-top: .3rem;
+  font-size: .72rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- study-mode switch --- */
+.btn.mode-on { background: var(--pv-flag); border-color: var(--pv-flag); color: #fff; }
+
+/* --- deep-linked card gets a moment of emphasis --- */
+details.card.linked { border-color: var(--pv-flag); box-shadow: 0 0 0 3px var(--pv-flag-50); }
+
+@media (max-width: 820px) {
+  /* labels keep the size they were drawn at; the figure scrolls */
+  figure.zoomable svg { min-width: 820px; }
+  .figscroll .mm-svg, .mindmap svg { min-width: 840px; }
+
+  table.clean { min-width: 620px; }
+  table.clean th:first-child,
+  table.clean td:first-child {
+    position: sticky; left: 0; background: #fff;
+    box-shadow: 1px 0 0 var(--hairline);
+  }
+
+  pre, .prompt-box { overflow-x: auto; }
+
+  /* 44px tap targets */
+  details.card summary { min-height: 44px; }
+  .qopt { min-height: 44px; display: flex; align-items: center; padding: .7rem .9rem; }
+  .toolbar .btn, .pagefoot a { min-height: 44px; display: inline-flex; align-items: center; }
+}
+
+@media (max-width: 640px) {
+  /* long inline code tokens and nowrap chips are the two things that still
+     forced the page sideways below 640px: let them break rather than push
+     the layout. Inside the media query only - desktop is untouched. */
+  :not(pre) > code, .prompt-box span, code span { overflow-wrap: anywhere; word-break: break-word; }
+  .chip, .syn-chip, .pill, .mode, .tag { white-space: normal; max-width: 100%; }
+
+  /* the agenda bar truncated its own labels into nonsense - stack it */
+  .agenda { flex-direction: column; align-items: stretch; gap: .3rem; }
+  .agenda span { font-size: .74rem; text-align: left; padding: .4rem .7rem; flex: none !important; }
+  .chip-row, .legend { flex-wrap: wrap; }
+  .journey { flex-wrap: wrap; row-gap: .45rem; }
+}
+
+/* --- print: a session should print as a complete handout --- */
+@media print {
+  .pagenav, #progress-bar, .skip-link, .journey, .lightbox { display: none !important; }
+  details.card > .body { display: block !important; }
+  details.card, figure, table.clean, .callout { break-inside: avoid; page-break-inside: avoid; }
+  figure.zoomable svg { min-width: 0; max-width: 100%; }
+  .figscroll, .tablescroll { overflow: visible; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .72rem; color: #555; }
+}
+
+/* swipe hint: own line, only when the diagram really does scroll */
+figure.zoomable.can-scroll figcaption { flex-wrap: wrap; }
+figure.zoomable.can-scroll figcaption::after {
+  content: "swipe the diagram \2192";
+  flex: 0 0 100%;
+  margin-top: .2rem;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--pv-flag);
+}
+/* === /LWP-PATCH === */

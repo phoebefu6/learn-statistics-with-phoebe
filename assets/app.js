@@ -272,3 +272,149 @@
     }
   }
 })();
+
+/* === LWP-PATCH v2 === */
+/* ============================================================
+   v3 - phone legibility, reading modes, deep links, a11y
+   Runs after the main IIFE. Adds behaviour, changes none.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var MODE_KEY = "lwp:study-mode";
+
+  /* ----- skip link ----- */
+  var main = document.querySelector("main.wrap, main");
+  if (main) {
+    if (!main.id) main.id = "content";
+    var skip = document.createElement("a");
+    skip.className = "skip-link";
+    skip.href = "#" + main.id;
+    skip.textContent = "Skip to content";
+    document.body.insertBefore(skip, document.body.firstChild);
+  }
+
+  /* ----- diagrams scroll instead of shrinking below 820px ----- */
+  var markScrollable = function () {
+    document.querySelectorAll("figure.zoomable").forEach(function (f) {
+      f.classList.add("figscroll");
+      f.classList.toggle("can-scroll", f.scrollWidth > f.clientWidth + 2);
+    });
+  };
+  markScrollable();
+  window.addEventListener("resize", markScrollable);
+  var mm = document.querySelector(".mindmap, #mindmap");
+  if (mm) mm.classList.add("figscroll");
+
+  /* ----- every table gets a scroll container ----- */
+  document.querySelectorAll("table").forEach(function (t) {
+    var p = t.parentElement;
+    if (!p || p.classList.contains("tablescroll")) return;
+    var w = document.createElement("div");
+    w.className = "tablescroll";
+    p.insertBefore(w, t);
+    w.appendChild(t);
+  });
+
+  /* ----- accordion cards: stable ids + aria-expanded + deep links ----- */
+  var slug = function (s) {
+    return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 48);
+  };
+  var used = {};
+  var cards = Array.prototype.slice.call(document.querySelectorAll("details.card"));
+  cards.forEach(function (d) {
+    var sum = d.querySelector("summary");
+    if (!sum) return;
+    if (!d.id) {
+      var txt = sum.cloneNode(true);
+      txt.querySelectorAll(".mode, .mini, .caret").forEach(function (el) { el.remove(); });
+      var base = "c-" + (slug(txt.textContent.trim()) || "card");
+      var id = base, n = 2;
+      while (used[id]) { id = base + "-" + n; n++; }
+      used[id] = true;
+      d.id = id;
+    }
+    sum.setAttribute("aria-expanded", d.open ? "true" : "false");
+    d.addEventListener("toggle", function () {
+      sum.setAttribute("aria-expanded", d.open ? "true" : "false");
+    });
+  });
+
+  var openFromHash = function () {
+    var h = decodeURIComponent(location.hash || "").slice(1);
+    if (!h) return;
+    var t = document.getElementById(h);
+    if (t && t.tagName === "DETAILS") {
+      t.open = true;
+      t.classList.add("linked");
+      setTimeout(function () { t.scrollIntoView({ block: "center" }); }, 40);
+      setTimeout(function () { t.classList.remove("linked"); }, 2600);
+    }
+  };
+  window.addEventListener("hashchange", openFromHash);
+  openFromHash();
+
+  /* ----- what is inside each section, before you open it ----- */
+  document.querySelectorAll("section.section").forEach(function (sec) {
+    var kicker = sec.querySelector(".section-kicker");
+    var secCards = sec.querySelectorAll("details.card");
+    if (!kicker || !secCards.length) return;
+    var words = 0, mins = 0;
+    secCards.forEach(function (d) {
+      var body = d.querySelector(".body") || d;
+      words += (body.textContent || "").trim().split(/\s+/).length;
+      var mini = d.querySelector("summary .mini");
+      var mm2 = mini && mini.textContent.match(/(\d+)/);
+      if (mm2) mins += parseInt(mm2[1], 10);
+    });
+    var meta = document.createElement("span");
+    meta.className = "sec-meta";
+    meta.textContent = secCards.length + (secCards.length === 1 ? " card" : " cards")
+      + (mins ? " · " + mins + " min" : "")
+      + " · " + words.toLocaleString() + " words";
+    kicker.appendChild(meta);
+  });
+
+  /* ----- reading modes: Session (default) / Study (remembered) ----- */
+  var bar = document.querySelector(".toolbar .wrap");
+  var toggleAll = document.getElementById("toggle-all");
+  if (bar && cards.length) {
+    var modeBtn = document.createElement("button");
+    modeBtn.type = "button";
+    modeBtn.className = "btn";
+    modeBtn.id = "mode-toggle";
+
+    var paint = function (on) {
+      modeBtn.textContent = on ? "Study mode: on" : "Study mode: off";
+      modeBtn.classList.toggle("mode-on", on);
+      modeBtn.setAttribute("aria-pressed", on ? "true" : "false");
+      modeBtn.title = on
+        ? "Everything open, so the whole session is readable and searchable"
+        : "Live cards open, self-study collapsed - the 45 minute view";
+    };
+
+    var apply = function (on) {
+      cards.forEach(function (d) {
+        if (on) { d.open = true; return; }
+        var live = d.querySelector("summary .mode.live");
+        d.open = !!live;
+      });
+      if (toggleAll) toggleAll.textContent = on ? "Collapse all" : "Expand all";
+    };
+
+    var stored = null;
+    try { stored = localStorage.getItem(MODE_KEY); } catch (e) {}
+    var on = stored === "1";
+    paint(on);
+    if (on) apply(true);
+
+    modeBtn.addEventListener("click", function () {
+      on = !on;
+      paint(on);
+      apply(on);
+      try { localStorage.setItem(MODE_KEY, on ? "1" : "0"); } catch (e) {}
+    });
+    bar.insertBefore(modeBtn, toggleAll || null);
+  }
+})();
+/* === /LWP-PATCH === */
