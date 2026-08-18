@@ -64,6 +64,28 @@
       <h2>Estimator, bias, consistency, and the likelihood <span class="tag concept">7 min live</span></h2>
     </div>
     <p class="lede">Four ideas. The first three judge an estimator; the fourth manufactures one from scratch.</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two overlapping circles representing the criteria for judging an estimator: being unbiased, meaning it is centered on the truth on average, and being consistent, meaning it tightens onto the truth as sample size grows; an estimator that is both is the ideal one.">
+    <style>
+      .b6bcT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b6bcS { font: 700 12px Inter, sans-serif; fill: #10232A; }
+      .b6bcI { font: 700 12px Inter, sans-serif; fill: #0B5563; }
+      .b6bcN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="300" fill="#E6F6F9"/>
+    <text class="b6bcT" x="40" y="28">What makes an estimator good: two separate questions</text>
+
+    <circle cx="370" cy="160" r="118" fill="#0E7C90" opacity=".22" stroke="#0E7C90" stroke-width="1.5"/>
+    <circle cx="510" cy="160" r="118" fill="#F97362" opacity=".22" stroke="#F97362" stroke-width="1.5"/>
+    <text class="b6bcS" x="244" y="164" text-anchor="end">Unbiased: centered</text>
+    <text class="b6bcS" x="636" y="164" text-anchor="start">Consistent: narrows</text>
+    <text class="b6bcI" x="440" y="164" text-anchor="middle">ideal estimator</text>
+
+    <text class="b6bcN" x="40" y="276">Bias asks if an estimator is centered right; consistency asks if it tightens as n grows.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - a good estimator is both centered right and tightens with more data</figcaption>
+</figure>
+
 
     <figure class="zoomable">
       <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A log-likelihood curve rising to a single peak at p-hat equals 0.032, the maximum likelihood estimate of Lumen's conversion rate, with a dashed line dropping to the axis at 0.032.">
@@ -155,6 +177,34 @@ print("mean of /N-1 (ddof=1):", round(np.mean(unbiased), 1))  # matches true_var
 # ddof=0 lands ~ (n-1)/n = 29/30 of the truth; ddof=1 is unbiased.</pre>
         </div>
         <p>The <code>ddof=0</code> average sits about 3% low - exactly the factor (n-1)/n = 29/30. The <code>ddof=1</code> average lands on the truth. That is Bessel's correction, not as a rule to memorize but as a fact you just measured.</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A bar chart comparing three variance estimates averaged over repeated samples of size 30 from the full Lumen dataset: the true population variance and the ddof=1 sample variance both land at 100 percent, while the ddof=0 sample variance sits at about 97 percent, low by the factor 29 over 30.">
+    <style>
+      .b6ncT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b6ncL { font: 600 12px Inter, sans-serif; fill: #10232A; }
+      .b6ncV { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+      .b6ncN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="300" fill="#E6F6F9"/>
+    <text class="b6ncT" x="40" y="28">The N-1 correction, measured over repeated n=30 samples</text>
+
+    <text class="b6ncL" x="240" y="90" text-anchor="end">True variance</text>
+    <rect x="260" y="70" width="480" height="30" rx="6" fill="#557079"/>
+    <text class="b6ncV" x="272" y="90">100%</text>
+
+    <text class="b6ncL" x="240" y="142" text-anchor="end">ddof=1 estimate (N-1)</text>
+    <rect x="260" y="122" width="480" height="30" rx="6" fill="#0E7C90"/>
+    <text class="b6ncV" x="272" y="142">100%</text>
+
+    <text class="b6ncL" x="240" y="194" text-anchor="end">ddof=0 estimate (N)</text>
+    <rect x="260" y="174" width="464" height="30" rx="6" fill="#F97362"/>
+    <text class="b6ncV" x="272" y="194">~97%</text>
+
+    <text class="b6ncN" x="40" y="276">Averaged over many n=30 samples, ddof=0 sits low by exactly the factor (n-1)/n = 29/30.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - dividing by N instead of N-1 leaves variance about 3% low</figcaption>
+</figure>
+
       </div>
 
       <div class="step">

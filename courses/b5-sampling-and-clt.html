@@ -64,6 +64,30 @@
       <h2>Sampling distributions, standard error, and the CLT <span class="tag concept">6 min live</span></h2>
     </div>
     <p class="lede">Three ideas stack on top of each other. Get them in order and the rest of the course is downhill.</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A bar chart comparing sample size multiples needed for the standard error of the mean: a baseline sample size versus four times that sample size, which is what it takes to cut the standard error in half.">
+    <style>
+      .b5seT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b5seL { font: 600 12px Inter, sans-serif; fill: #10232A; }
+      .b5seV { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+      .b5seN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="300" fill="#E6F6F9"/>
+    <text class="b5seT" x="40" y="28">Halving the standard error costs four times the data</text>
+
+    <text class="b5seL" x="240" y="100" text-anchor="end">Baseline sample size</text>
+    <rect x="260" y="80" width="120" height="30" rx="6" fill="#7FD1DE"/>
+    <text class="b5seV" x="272" y="100" fill="#10232A">1x n</text>
+
+    <text class="b5seL" x="240" y="180" text-anchor="end">To halve the SE</text>
+    <rect x="260" y="160" width="480" height="30" rx="6" fill="#0E7C90"/>
+    <text class="b5seV" x="272" y="180">4x n</text>
+
+    <text class="b5seN" x="40" y="276">SE shrinks by sqrt(n), so halving it costs four times the sample, not two times the sample.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - cutting the standard error in half needs 4x the data, not 2x</figcaption>
+</figure>
+
 
     <figure class="zoomable">
       <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A right-skewed population on the left feeds into distributions of the sample mean; as sample size grows from 2 to 10 to 50 the distribution of means becomes normal and narrows.">
@@ -209,6 +233,41 @@ for n in (2, 10, 50):
 
       <div class="step">
         <p><strong>Bootstrap - a standard error with no formula.</strong> Resample the data <em>with replacement</em>, recompute the mean each time, and read the spread straight off the resamples.</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two stacked bars showing what bootstrap resampling adds over a single sample mean: the lower bar is one average with no sense of its own uncertainty, the upper bar resamples with replacement and recomputes the mean each time to produce a standard error and confidence interval for any statistic.">
+    <style>
+      .b5bsT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b5bsB { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+      .b5bsS { font: 400 11.5px Inter, sans-serif; fill: rgba(255,255,255,.84); }
+      .b5bsC { font: 700 11px Inter, sans-serif; fill: #0B5563; }
+      .b5bsE { font: 700 11.5px Inter, sans-serif; fill: #10232A; }
+      .b5bsN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="300" fill="#E6F6F9"/>
+    <text class="b5bsT" x="40" y="28">What resampling adds to a single sample mean</text>
+
+    <rect x="60" y="60" width="170" height="30" rx="8" fill="#7FD1DE"/>
+    <text class="b5bsC" x="145" y="80" text-anchor="middle">no formula needed</text>
+    <rect x="250" y="60" width="170" height="30" rx="8" fill="#7FD1DE"/>
+    <text class="b5bsC" x="335" y="80" text-anchor="middle">any statistic works</text>
+
+    <rect x="60" y="104" width="700" height="52" rx="10" fill="#0E7C90"/>
+    <text class="b5bsB" x="78" y="128">BOOTSTRAP RESAMPLING</text>
+    <text class="b5bsS" x="78" y="146">resample and recompute the mean</text>
+
+    <rect x="60" y="196" width="700" height="52" rx="10" fill="#557079"/>
+    <text class="b5bsB" x="78" y="220">ONE SAMPLE MEAN</text>
+    <text class="b5bsS" x="78" y="238">one average, with no error bar</text>
+
+    <path d="M776,104 h14 v148 h-14" fill="none" stroke="#0B5563" stroke-width="1.6"/>
+    <text class="b5bsE" x="800" y="174">= SE and CI</text>
+    <text class="b5bsE" x="786" y="190">from resampling</text>
+
+    <text class="b5bsN" x="40" y="276">Resampling with replacement gives a standard error and a CI for any statistic, with no formula.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - resampling gives you a standard error with no formula at all</figcaption>
+</figure>
+
         <div class="prompt-box good">
           <span class="label">bootstrap.py</span>
 <pre>rng = np.random.default_rng(42)

@@ -64,6 +64,32 @@
       <h2>The five verbs, and which distribution to reach for <span class="tag concept">7 min live</span></h2>
     </div>
     <p class="lede">Two things to hold in your head. First, the five methods every scipy distribution shares. Second, a quick decision for which distribution fits your data - is it a continuous symmetric measurement, a count of yes/no trials, a count of events per period, or right-skewed money? The map below is the whole decision.</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two small distribution shapes side by side: a binomial with 4,000 trials and a 3.2 percent success probability, and a Poisson for daily order counts, both centered at approximately 128.">
+    <style>
+      .b4smT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b4smC { font: 700 12px Inter, sans-serif; fill: #10232A; text-anchor: middle; }
+      .b4smA { font: 400 11px Inter, sans-serif; fill: #557079; text-anchor: middle; }
+      .b4smN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="260" fill="#E6F6F9"/>
+    <text class="b4smT" x="40" y="28">Binomial(4,000, 3.2%) and Poisson land on the same mean</text>
+
+    <text class="b4smC" x="134" y="48">Binomial</text>
+    <line x1="134" y1="60" x2="134" y2="175" stroke="#B4D2D9" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <polyline points="60,165 80,150 100,110 120,75 134,65 148,75 168,110 188,150 208,165" fill="none" stroke="#0E7C90" stroke-width="2.5"/>
+    <text class="b4smA" x="134" y="190">n=4,000, p=3.2%</text>
+
+    <text class="b4smC" x="292" y="48">Poisson</text>
+    <line x1="292" y1="60" x2="292" y2="175" stroke="#B4D2D9" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <polyline points="218,165 238,150 258,110 278,75 292,65 306,75 326,110 346,150 366,165" fill="none" stroke="#0E7C90" stroke-width="2.5"/>
+    <text class="b4smA" x="292" y="190">mean ~128/day</text>
+
+    <text class="b4smN" x="40" y="236">Binomial(n=4,000, p=3.2%) and Poisson(mean ~128) center on the same number - different shapes.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - two different shapes, the same average of about 128</figcaption>
+</figure>
+
 
     <figure class="zoomable">
       <svg viewBox="0 0 880 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A which-distribution decision map. From a central question, four branches lead to Normal for continuous symmetric data, Binomial for counts of yes-no trials, Poisson for events per period, and Lognormal for right-skewed money.">
@@ -189,6 +215,34 @@ plt.tight_layout(); plt.show()</pre>
         <div class="callout example">
           <span class="ex-pill">Real world</span>
           <p>A Lumen analyst once built a "flag orders more than 2 standard deviations above the mean" rule, assuming normality. On lognormal data that rule flags almost nothing on the low side and a flood of ordinary large orders on the high side, because the normal model puts the mean and SD in the wrong place. The Q-Q plot above is the 10-second check that would have caught it: when the tail points bend away from the line, stop assuming normal.</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two panels contrasting a wrong assumption and the right check for Lumen order value: assuming normality misses low outliers and over-flags ordinary large orders, while checking a Q-Q plot first reveals the data is lognormal and sets the flag correctly.">
+    <style>
+      .b4baT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b4baH { font: 700 13px Inter, sans-serif; }
+      .b4baB { font: 400 12px Inter, sans-serif; fill: #10232A; }
+      .b4baN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="300" fill="#E6F6F9"/>
+    <text class="b4baT" x="40" y="28">A normal-shaped assumption on right-skewed money</text>
+
+    <rect x="40" y="50" width="390" height="180" rx="12" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1.5"/>
+    <text class="b4baH" x="58" y="84" fill="#991B1B">✗ Assume normal order value</text>
+    <text class="b4baB" x="58" y="114">Flags almost nothing on the low side</text>
+    <text class="b4baB" x="58" y="134">Floods the flag with big ordinary orders</text>
+    <text class="b4baB" x="58" y="154">Normal puts mean, SD in wrong place</text>
+
+    <rect x="450" y="50" width="390" height="180" rx="12" fill="#E6F6F9" stroke="#0E7C90" stroke-width="1.5"/>
+    <text class="b4baH" x="468" y="84" fill="#0B5563">✓ Check a Q-Q plot first</text>
+    <text class="b4baB" x="468" y="114">Order value is lognormal, not normal</text>
+    <text class="b4baB" x="468" y="134">Fit lognormal, then set the flag line</text>
+    <text class="b4baB" x="468" y="154">Bent tail = stop assuming normal</text>
+
+    <text class="b4baN" x="40" y="276">A normal-based flag mis-fires on lognormal order value; a Q-Q plot catches the bent tail first.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - check the Q-Q plot before you trust a normal-based rule</figcaption>
+</figure>
+
         </div>
       </div>
 

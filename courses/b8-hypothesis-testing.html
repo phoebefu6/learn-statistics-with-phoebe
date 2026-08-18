@@ -64,6 +64,45 @@
       <h2>Null, alternative, statistic, p-value, alpha, and the two errors <span class="tag concept">13 min live</span></h2>
     </div>
     <p class="lede">Every test is the same six moving parts. Learn them once here and the code in Part 2 is just plumbing.</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A 2 by 2 grid of hypothesis test outcomes: when H0 is true, failing to reject it is correct and rejecting it is a Type I error at rate alpha; when H0 is false, failing to reject it is a Type II error at rate beta and rejecting it is correct.">
+    <style>
+      .b8ttT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b8ttK { font: 700 11px Inter, sans-serif; fill: #557079; text-anchor: middle; }
+      .b8ttR { font: 700 11px Inter, sans-serif; fill: #557079; text-anchor: end; }
+      .b8ttH { font: 700 12.5px Inter, sans-serif; text-anchor: middle; }
+      .b8ttS { font: 400 11px Inter, sans-serif; text-anchor: middle; }
+      .b8ttN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="330" fill="#E6F6F9"/>
+    <text class="b8ttT" x="40" y="28">The 2x2 that names your testing risk</text>
+
+    <text class="b8ttK" x="310" y="72">Fail to reject H0</text>
+    <text class="b8ttK" x="650" y="72">Reject H0</text>
+    <text class="b8ttR" x="130" y="140">H0 true</text>
+    <text class="b8ttR" x="130" y="230">H0 false</text>
+
+    <rect x="140" y="90" width="340" height="90" fill="#E6F6F9" stroke="#0E7C90" stroke-width="1.2"/>
+    <text class="b8ttH" x="310" y="130" fill="#0B5563">CORRECT</text>
+    <text class="b8ttS" x="310" y="148" fill="#557079">no error</text>
+
+    <rect x="480" y="90" width="340" height="90" fill="#FCA5A5" opacity=".55" stroke="#991B1B" stroke-width="1.2"/>
+    <text class="b8ttH" x="650" y="130" fill="#991B1B">TYPE I ERROR</text>
+    <text class="b8ttS" x="650" y="148" fill="#4A1109">false positive, rate alpha</text>
+
+    <rect x="140" y="180" width="340" height="90" fill="#FFF1EF" stroke="#F97362" stroke-width="1.2"/>
+    <text class="b8ttH" x="310" y="220" fill="#4A1109">TYPE II ERROR</text>
+    <text class="b8ttS" x="310" y="238" fill="#4A1109">false negative, rate beta</text>
+
+    <rect x="480" y="180" width="340" height="90" fill="#E6F6F9" stroke="#0E7C90" stroke-width="1.2"/>
+    <text class="b8ttH" x="650" y="220" fill="#0B5563">CORRECT</text>
+    <text class="b8ttS" x="650" y="238" fill="#557079">true effect found</text>
+
+    <text class="b8ttN" x="40" y="306">Lowering alpha shrinks Type I error but grows Type II unless you also add more data.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - alpha and beta name the two ways a test can be wrong</figcaption>
+</figure>
+
 
     <figure class="zoomable">
       <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A null sampling distribution shaped like a bell, centered at zero, with the observed statistic marked on the right tail and the two symmetric tail areas beyond it shaded as the two-tailed p-value.">
@@ -200,6 +239,37 @@ print(f"n=32,000/arm: z = {z2:.2f}, p = {p2:.3f}")   # z~2.8,  p~0.005 significa
         <div class="callout example">
           <span class="ex-pill">Real world</span>
           <p>Read those two lines slowly. The lift is identical - 3.2% to 3.6%, a +0.4pp, +12.5% relative bump - in both. At 5,000 per arm the p-value is ~0.25 and Lumen would (correctly) refuse to ship. At 32,000 per arm the same lift lands at p~0.005 and now it is "significant". Nothing about the button changed; only the sample size did. This is why the experimentation course sizes the test <em>before</em> launch instead of peeking at whatever n happens to arrive.</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two mini charts of the p-value for testing the same 3.2 to 3.6 percent conversion lift: at 5,000 users per arm the p-value is about 0.25 and the test fails, at 32,000 users per arm the same lift produces a p-value of about 0.005 and the test succeeds.">
+    <style>
+      .b8smT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b8smC { font: 700 12px Inter, sans-serif; fill: #10232A; text-anchor: middle; }
+      .b8smA { font: 400 11px Inter, sans-serif; fill: #557079; text-anchor: middle; }
+      .b8smK { font: 600 9.5px Inter, sans-serif; fill: #557079; text-anchor: middle; }
+      .b8smN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="260" fill="#E6F6F9"/>
+    <text class="b8smT" x="40" y="28">Same 3.2%-to-3.6% lift, two different sample sizes</text>
+
+    <text class="b8smC" x="134" y="48">n = 5,000/arm</text>
+    <rect x="60" y="110" width="148" height="14" rx="7" fill="#DCEBEE"/>
+    <rect x="60" y="110" width="123" height="14" rx="7" fill="#FCA5A5"/>
+    <line x1="85" y1="100" x2="85" y2="124" stroke="#10232A" stroke-width="1.5"/>
+    <text class="b8smK" x="85" y="94">alpha=.05</text>
+    <text class="b8smA" x="134" y="150">p ~ 0.25, fail</text>
+
+    <text class="b8smC" x="292" y="48">n = 32,000/arm</text>
+    <rect x="218" y="110" width="148" height="14" rx="7" fill="#DCEBEE"/>
+    <rect x="218" y="110" width="3" height="14" rx="1.5" fill="#0E7C90"/>
+    <line x1="243" y1="100" x2="243" y2="124" stroke="#10232A" stroke-width="1.5"/>
+    <text class="b8smK" x="243" y="94">alpha=.05</text>
+    <text class="b8smA" x="292" y="150">p ~ 0.005, ship</text>
+
+    <text class="b8smN" x="40" y="236">Same lift, same effect - only n changed the verdict from fail to ship. Size the test first.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - same lift, but only the larger sample clears the bar</figcaption>
+</figure>
+
         </div>
       </div>
 

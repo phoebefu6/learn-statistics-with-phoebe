@@ -45,6 +45,31 @@
       <h2>A probability is a long-run frequency you can fake in code</h2>
     </div>
     <p class="lede">"Lumen converts at 3.2%" is a probability statement. It does not mean every 100th session buys - it means that over a very large number of sessions, about 3.2 in 100 do. That reframing is the whole trick: any probability you can write down, you can also <em>estimate</em> by generating a mountain of random outcomes and taking the average. This session teaches the rules and the simulation habit side by side, so you never again get stuck on a probability word problem.</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A bar chart of the two-outcome sample space for a single Lumen session: converting happens 3.2 percent of the time and not converting happens 96.8 percent of the time.">
+    <style>
+      .b2ssT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b2ssL { font: 600 12px Inter, sans-serif; fill: #10232A; }
+      .b2ssV { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+      .b2ssVO { font: 700 12px Inter, sans-serif; fill: #10232A; }
+      .b2ssN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="300" fill="#E6F6F9"/>
+    <text class="b2ssT" x="40" y="28">One Lumen session has exactly two outcomes</text>
+
+    <text class="b2ssL" x="240" y="100" text-anchor="end">Convert</text>
+    <rect x="260" y="80" width="16" height="30" rx="4" fill="#F97362"/>
+    <text class="b2ssVO" x="286" y="100">3.2%</text>
+
+    <text class="b2ssL" x="240" y="180" text-anchor="end">No convert</text>
+    <rect x="260" y="160" width="480" height="30" rx="6" fill="#0E7C90"/>
+    <text class="b2ssV" x="272" y="180">96.8%</text>
+
+    <text class="b2ssN" x="40" y="276">A Lumen session converts 3.2% of the time and does not 96.8% of the time - the whole sample space.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - conversion is the rare outcome, at 3.2% of sessions</figcaption>
+</figure>
+
     <div class="legend">
       <span class="pill solid">Live - built in session</span>
       <span class="pill light">Self-study - run after</span>
@@ -64,6 +89,54 @@
       <h2>Sample spaces, the four rules, and Bayes <span class="tag concept">7 min live</span></h2>
     </div>
     <p class="lede">Everything starts with a sample space - the set of things that can happen. A Lumen session either converts or it does not: the sample space is {convert, no convert} with probabilities {0.032, 0.968}. From there, four rules do the heavy lifting, and Bayes is the one people fear. The picture below shows why the fear is misplaced: count people, not fractions.</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A decision tree for choosing a probability rule: wanting P of A or B uses the addition rule; otherwise, if A and B are independent multiply P of A by P of B; if not independent, use the conditional rule and multiply by P of B given A.">
+    <style>
+      .b2dtT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b2dtQ { font: 700 12.5px Inter, sans-serif; fill: #0B5563; }
+      .b2dtO { font: 700 12px Inter, sans-serif; fill: #0B5563; }
+      .b2dtS { font: 400 11px Inter, sans-serif; fill: #557079; }
+      .b2dtE { font: 600 11px Inter, sans-serif; fill: #557079; }
+      .b2dtN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="360" fill="#E6F6F9"/>
+    <text class="b2dtT" x="40" y="28">Which probability rule do you reach for</text>
+
+    <line x1="320" y1="68" x2="640" y2="72" stroke="#B4D2D9" stroke-width="2"/>
+    <text class="b2dtE" x="470" y="58" text-anchor="middle">yes</text>
+
+    <line x1="180" y1="96" x2="180" y2="150" stroke="#B4D2D9" stroke-width="2"/>
+    <text class="b2dtE" x="196" y="126">no</text>
+
+    <line x1="320" y1="178" x2="640" y2="182" stroke="#B4D2D9" stroke-width="2"/>
+    <text class="b2dtE" x="470" y="168" text-anchor="middle">yes</text>
+
+    <path d="M320,178 H480 V282 H640" fill="none" stroke="#B4D2D9" stroke-width="2"/>
+    <text class="b2dtE" x="494" y="228">no</text>
+
+    <rect x="40" y="40" width="280" height="56" rx="10" fill="#FFFFFF" stroke="#0B5563" stroke-width="1.5"/>
+    <text class="b2dtQ" x="180" y="73" text-anchor="middle">Do you want P(A or B)?</text>
+
+    <rect x="40" y="150" width="280" height="56" rx="10" fill="#FFFFFF" stroke="#0B5563" stroke-width="1.5"/>
+    <text class="b2dtQ" x="180" y="183" text-anchor="middle">Are A and B independent?</text>
+
+    <rect x="640" y="40" width="200" height="64" rx="10" fill="#E6F6F9" stroke="#0E7C90" stroke-width="1.5"/>
+    <text class="b2dtO" x="740" y="66" text-anchor="middle">Addition rule</text>
+    <text class="b2dtS" x="740" y="84" text-anchor="middle">P(A) + P(B) - overlap</text>
+
+    <rect x="640" y="150" width="200" height="64" rx="10" fill="#E6F6F9" stroke="#0E7C90" stroke-width="1.5"/>
+    <text class="b2dtO" x="740" y="176" text-anchor="middle">Multiply P(A) x P(B)</text>
+    <text class="b2dtS" x="740" y="194" text-anchor="middle">for independent events</text>
+
+    <rect x="640" y="250" width="200" height="64" rx="10" fill="#E6F6F9" stroke="#0E7C90" stroke-width="1.5"/>
+    <text class="b2dtO" x="740" y="276" text-anchor="middle">Conditional rule</text>
+    <text class="b2dtS" x="740" y="294" text-anchor="middle">multiply by P(B given A)</text>
+
+    <text class="b2dtN" x="40" y="336">Four rules collapse to one question: are you combining events with OR, AND, or given information?</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - OR adds, independent AND multiplies, dependent AND conditions</figcaption>
+</figure>
+
 
     <figure class="zoomable">
       <svg viewBox="0 0 880 390" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A natural-frequency box: 10,000 orders split into 400 high-value and 9,600 ordinary, the flag catches 360 of the high-value and 768 of the ordinary, so only 360 of 1,128 flagged orders are truly high-value, about 32 percent.">

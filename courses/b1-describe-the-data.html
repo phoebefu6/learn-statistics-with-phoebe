@@ -225,6 +225,40 @@ plt.tight_layout(); plt.show()</pre>
         <div class="callout example">
           <span class="ex-pill">Real world</span>
           <p>A Lumen analyst shipped a dashboard headline: "avg order $74." The growth team built a persona around it. The histogram above would have stopped them - the mode is nearer $50, the median $63, and the $74 is a tail artifact. One <code>ov.skew()</code> of about +0.9 is the number that says "report the median too."</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A bar chart comparing three measures of center for the Lumen order value column: the mean at 74 dollars, the median at 63 dollars, and the mode near 50 dollars, showing the mean is pulled upward by the right-skewed tail.">
+    <style>
+      .b1bnT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b1bnL { font: 600 12px Inter, sans-serif; fill: #10232A; }
+      .b1bnV { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+      .b1bnK { font: 600 11px Inter, sans-serif; fill: #557079; }
+      .b1bnN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="300" fill="#E6F6F9"/>
+    <text class="b1bnT" x="40" y="28">Same 50,000-order dataset, three different centers</text>
+
+    <rect x="600" y="16" width="12" height="12" rx="3" fill="#F97362"/>
+    <text class="b1bnK" x="618" y="26">the misleading headline</text>
+    <rect x="600" y="34" width="12" height="12" rx="3" fill="#0E7C90"/>
+    <text class="b1bnK" x="618" y="44">the honest centers</text>
+
+    <text class="b1bnL" x="240" y="90" text-anchor="end">Mean</text>
+    <rect x="260" y="70" width="480" height="30" rx="6" fill="#F97362"/>
+    <text class="b1bnV" x="272" y="90">$74</text>
+
+    <text class="b1bnL" x="240" y="142" text-anchor="end">Median</text>
+    <rect x="260" y="122" width="409" height="30" rx="6" fill="#0E7C90"/>
+    <text class="b1bnV" x="272" y="142">$63</text>
+
+    <text class="b1bnL" x="240" y="194" text-anchor="end">Mode (~)</text>
+    <rect x="260" y="174" width="324" height="30" rx="6" fill="#0E7C90"/>
+    <text class="b1bnV" x="272" y="194">~$50</text>
+
+    <text class="b1bnN" x="40" y="276">The $74 headline is the mean; skew ~+0.9 pulls it above the $63 median and ~$50 mode.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - the $74 headline is the mean, not the typical order</figcaption>
+</figure>
+
         </div>
       </div>
     </div>

@@ -64,6 +64,30 @@
       <h2>Pearson vs Spearman, and reading a regression <span class="tag concept">13 min live</span></h2>
     </div>
     <p class="lede">Correlation is one number for "do these move together". Regression is the line (or plane) that quantifies how. The danger is that the single number can look identical across wildly different pictures - which is what the figure shows.</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A bar chart splitting the variance in Lumen order value using a Pearson correlation of about 0.6 between prior 30 day spend and order value: prior spend explains about 36 percent, r-squared, and the remaining 64 percent comes from other factors.">
+    <style>
+      .b10rsT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b10rsL { font: 600 12px Inter, sans-serif; fill: #10232A; }
+      .b10rsV { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+      .b10rsN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="300" fill="#E6F6F9"/>
+    <text class="b10rsT" x="40" y="28">r ~ 0.6 between prior spend and order value</text>
+
+    <text class="b10rsL" x="240" y="100" text-anchor="end">Explained (r-squared)</text>
+    <rect x="260" y="80" width="173" height="30" rx="6" fill="#0E7C90"/>
+    <text class="b10rsV" x="272" y="100">36%</text>
+
+    <text class="b10rsL" x="240" y="180" text-anchor="end">Unexplained (other)</text>
+    <rect x="260" y="160" width="307" height="30" rx="6" fill="#7FD1DE"/>
+    <text class="b10rsV" x="272" y="180" fill="#10232A">64%</text>
+
+    <text class="b10rsN" x="40" y="276">r-squared ~0.36 means prior spend explains about 36% of order value; the rest is other factors.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - r ~ 0.6 explains just 36% of order value, not all of it</figcaption>
+</figure>
+
 
     <figure class="zoomable">
       <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Four small scatterplots in the style of Anscombe's quartet, each with the same correlation but very different shapes: a clean linear cloud, a smooth curve, a tight line with one outlier, and a vertical stack with one distant point.">
@@ -183,6 +207,31 @@ plt.title("Residuals vs fitted"); plt.show()</pre>
 
       <div class="step">
         <p><strong>Fallacy 1 - p-hacking, and the fix.</strong> Correlate 20 pure-noise features with order value. About one clears p &lt; 0.05 by luck alone. Then correct for the 20 looks.</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A bar chart comparing 20 pure-noise features correlated against order value to the roughly 1 expected false positive result at the 0.05 significance level from testing all 20 by chance.">
+    <style>
+      .b10phT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b10phL { font: 600 12px Inter, sans-serif; fill: #10232A; }
+      .b10phV { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+      .b10phVO { font: 700 12px Inter, sans-serif; fill: #10232A; }
+      .b10phN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="300" fill="#E6F6F9"/>
+    <text class="b10phT" x="40" y="28">20 pure-noise features, and the one that wins by chance</text>
+
+    <text class="b10phL" x="240" y="100" text-anchor="end">Noise features tested</text>
+    <rect x="260" y="80" width="480" height="30" rx="6" fill="#557079"/>
+    <text class="b10phV" x="272" y="100">20</text>
+
+    <text class="b10phL" x="240" y="180" text-anchor="end">Expected false 'hits'</text>
+    <rect x="260" y="160" width="24" height="30" rx="4" fill="#F97362"/>
+    <text class="b10phVO" x="292" y="180">~1</text>
+
+    <text class="b10phN" x="40" y="276">At alpha 0.05, testing 20 pure-noise features hands you about one false 'significant' result free.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - test 20 random features and one clears p&lt;0.05 by luck</figcaption>
+</figure>
+
         <div class="prompt-box good">
           <span class="label">phacking.py</span>
 <pre>from statsmodels.stats.multitest import multipletests

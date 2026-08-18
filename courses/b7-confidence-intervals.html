@@ -64,6 +64,34 @@
       <h2>z vs t, Wald vs Wilson, and what 95% means <span class="tag concept">7 min live</span></h2>
     </div>
     <p class="lede">Which interval you reach for depends on what you know and how much data you have. Four tools, one correct interpretation.</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two panels contrasting the Wald and Wilson confidence intervals for a proportion: the Wald interval can spill below 0 or above 1 and is too narrow when successes are few, while the Wilson interval always stays inside the 0 to 1 range and is the safer default for rare events like Lumen's 3.2 percent conversion rate.">
+    <style>
+      .b7wrT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b7wrH { font: 700 13px Inter, sans-serif; }
+      .b7wrB { font: 400 12px Inter, sans-serif; fill: #10232A; }
+      .b7wrN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="300" fill="#E6F6F9"/>
+    <text class="b7wrT" x="40" y="28">Wald vs Wilson for a rare 3.2% conversion rate</text>
+
+    <rect x="40" y="50" width="390" height="180" rx="12" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1.5"/>
+    <text class="b7wrH" x="58" y="84" fill="#991B1B">✗ Wald interval</text>
+    <text class="b7wrB" x="58" y="114">Can spill below 0 or above 1</text>
+    <text class="b7wrB" x="58" y="134">Too narrow when successes are few</text>
+    <text class="b7wrB" x="58" y="154">Assumes the normal has kicked in</text>
+
+    <rect x="450" y="50" width="390" height="180" rx="12" fill="#E6F6F9" stroke="#0E7C90" stroke-width="1.5"/>
+    <text class="b7wrH" x="468" y="84" fill="#0B5563">✓ Wilson interval</text>
+    <text class="b7wrB" x="468" y="114">Always stays inside the [0, 1] range</text>
+    <text class="b7wrB" x="468" y="134">Built for rare-event proportions</text>
+    <text class="b7wrB" x="468" y="154">The safer default for conversion work</text>
+
+    <text class="b7wrN" x="40" y="276">For a rare 3.2% conversion rate, Wilson is the safer default; Wald can spill past 0 or 1.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - Wilson is the safer default when successes are rare</figcaption>
+</figure>
+
 
     <figure class="zoomable">
       <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two overlaid bell curves: a narrow z distribution and a wider t distribution with fatter tails, showing that the t interval is wider when the population standard deviation is unknown and n is small.">
@@ -207,6 +235,37 @@ print("t-interval  95% CI: matches - two roads, one destination")</pre>
         <div class="callout example">
           <span class="ex-pill">Real world</span>
           <p>Here is the bridge to the whole experimentation course. Lumen's control converts at 3.2%; a proposed variant is hoped to hit 3.6%. At n=5,000 the control's 95% CI is [2.71%, 3.69%] - and 3.6% sits comfortably inside it. The interval is telling you, before you spend a cent, that this sample is far too small to separate the two rates. Pushing that overlap apart to a confident "the variant wins" is what forces ~32,000 sessions per arm in the experimentation course. The confidence interval is not a footnote - it is the sample-size calculator in disguise.</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An interval strip on a 0 to 5 percent conversion-rate scale showing Lumen's control 95 percent confidence interval of 2.71 to 3.69 percent, with the control point estimate of 3.2 percent and the hoped-for variant rate of 3.6 percent both sitting inside that same interval.">
+    <style>
+      .b7isT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b7isL { font: 600 11px Inter, sans-serif; fill: #10232A; }
+      .b7isE { font: 600 11px Inter, sans-serif; fill: #0B5563; }
+      .b7isA { font: 400 10px Inter, sans-serif; fill: #557079; }
+      .b7isN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="220" fill="#E6F6F9"/>
+    <text class="b7isT" x="40" y="28">Lumen's control conversion rate, with its 95% CI</text>
+
+    <rect x="120" y="110" width="640" height="26" rx="13" fill="#DCEBEE"/>
+    <rect x="467" y="110" width="125" height="26" rx="6" fill="#0E7C90"/>
+    <text class="b7isA" x="120" y="152" text-anchor="start">0%</text>
+    <text class="b7isA" x="760" y="152" text-anchor="end">5%</text>
+    <text class="b7isL" x="467" y="100" text-anchor="middle">2.71%</text>
+    <text class="b7isL" x="592" y="100" text-anchor="middle">3.69%</text>
+
+    <line x1="530" y1="86" x2="530" y2="136" stroke="#10232A" stroke-width="2"/>
+    <text class="b7isE" x="530" y="76" text-anchor="middle">control 3.2%</text>
+
+    <line x1="581" y1="110" x2="581" y2="160" stroke="#F97362" stroke-width="2.5" stroke-dasharray="4 3"/>
+    <text class="b7isE" x="581" y="176" text-anchor="middle" fill="#4A1109">variant 3.6%</text>
+
+    <text class="b7isN" x="40" y="196">The variant 3.6% sits inside the control 95% CI of [2.71%, 3.69%].</text>
+    <text class="b7isN" x="40" y="212">Too small a sample at n=5,000 to tell the two rates apart yet.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - the variant's 3.6% is not outside the control's own uncertainty</figcaption>
+</figure>
+
         </div>
       </div>
     </div>

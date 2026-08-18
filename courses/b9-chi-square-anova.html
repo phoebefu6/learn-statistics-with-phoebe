@@ -64,6 +64,28 @@
       <h2>Chi-square on counts, ANOVA on group means <span class="tag concept">13 min live</span></h2>
     </div>
     <p class="lede">Two ideas, one figure. Chi-square compares what you observed to what you expected. ANOVA asks whether the gaps <em>between</em> group means are big relative to the noise <em>within</em> the groups.</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A gauge showing that running six pairwise t-tests across four groups, each at a 0.05 significance level, pushes the combined chance of at least one false positive past 25 percent, far above the single-test rate of 5 percent.">
+    <style>
+      .b9fpT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b9fpK { font: 700 11px Inter, sans-serif; fill: #4A1109; text-anchor: middle; }
+      .b9fpV { font: 700 15px Inter, sans-serif; fill: #991B1B; }
+      .b9fpN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="220" fill="#E6F6F9"/>
+    <text class="b9fpT" x="40" y="28">Six t-tests inflate your real false-positive rate</text>
+
+    <rect x="120" y="110" width="640" height="26" rx="13" fill="#DCEBEE"/>
+    <rect x="120" y="110" width="533" height="26" rx="13" fill="#991B1B"/>
+    <line x1="227" y1="92" x2="227" y2="152" stroke="#F97362" stroke-width="2.5"/>
+    <text class="b9fpK" x="227" y="84">single test 5%</text>
+    <text class="b9fpV" x="665" y="129">&gt;25%</text>
+
+    <text class="b9fpN" x="40" y="196">Four groups need six t-tests; at alpha 0.05 each, the combined false-positive chance tops 25%.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - six t-tests can more than quintuple your real false-positive rate</figcaption>
+</figure>
+
 
     <figure class="zoomable">
       <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Left panel: an observed-versus-expected count table for a chi-square test. Right panel: an ANOVA picture showing three group clusters spread apart, with between-group spread compared to within-group spread as the F ratio.">
@@ -164,6 +186,34 @@
     <div class="steps">
       <div class="step">
         <p><strong>Chi-square goodness-of-fit as a sample-ratio-mismatch check.</strong> A "50/50" A/B assignment of 20,000 users came back 10,420 / 9,580. Did randomization break?</p>
+<figure class="zoomable">
+  <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A bar chart comparing the expected 10,000 users per arm in a 50/50 assignment of 20,000 users to the observed counts of 10,420 in arm A and 9,580 in arm B.">
+    <style>
+      .b9srT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+      .b9srL { font: 600 12px Inter, sans-serif; fill: #10232A; }
+      .b9srV { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+      .b9srN { font: 400 12px Inter, sans-serif; fill: #557079; }
+    </style>
+    <rect x="0" y="0" width="880" height="300" fill="#E6F6F9"/>
+    <text class="b9srT" x="40" y="28">A 50/50 split that came back 10,420 / 9,580</text>
+
+    <text class="b9srL" x="240" y="90" text-anchor="end">Expected each arm</text>
+    <rect x="260" y="70" width="461" height="30" rx="6" fill="#557079"/>
+    <text class="b9srV" x="272" y="90">10,000</text>
+
+    <text class="b9srL" x="240" y="142" text-anchor="end">Observed arm A</text>
+    <rect x="260" y="122" width="480" height="30" rx="6" fill="#0E7C90"/>
+    <text class="b9srV" x="272" y="142">10,420</text>
+
+    <text class="b9srL" x="240" y="194" text-anchor="end">Observed arm B</text>
+    <rect x="260" y="174" width="441" height="30" rx="6" fill="#F97362"/>
+    <text class="b9srV" x="272" y="194">9,580</text>
+
+    <text class="b9srN" x="40" y="276">A gap this size across 20,000 users is exactly what chi-square checks before trusting an A/B test.</text>
+  </svg>
+  <figcaption>🔍 Click to zoom - a 50/50 split should not land 10,420 to 9,580 by chance</figcaption>
+</figure>
+
         <div class="prompt-box good">
           <span class="label">srm_check.py</span>
 <pre>from scipy import stats
