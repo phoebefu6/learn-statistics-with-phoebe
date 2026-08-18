@@ -125,6 +125,32 @@
     </div>
     <p class="lede">We simulate the Lumen orders with a fixed seed so your numbers match mine - and match every later builder session. Right-skewed order values (lognormal), a ~3.2% conversion flag, and a prior-spend column we will need for correlation in b10.</p>
 
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A bar chart of the Lumen catalog mix built in build_lumen.py: cleanser 34 percent, serum 28 percent, moisturizer 26 percent and set 12 percent of the 50,000 simulated orders.">
+        <style>
+          .b1cmT { font: 700 13px Inter, sans-serif; fill: #10232A; }
+          .b1cmL { font: 600 12px Inter, sans-serif; fill: #10232A; }
+          .b1cmV { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .b1cmN { font: 400 12px Inter, sans-serif; fill: #557079; }
+        </style>
+        <text class="b1cmT" x="40" y="28">The catalog mix - the p= weights the generator deals 50,000 orders across</text>
+        <text class="b1cmL" x="240" y="90" text-anchor="end">cleanser</text>
+        <rect x="260" y="70" width="480" height="30" rx="6" fill="#0E7C90"/>
+        <text class="b1cmV" x="272" y="90">34%</text>
+        <text class="b1cmL" x="240" y="142" text-anchor="end">serum</text>
+        <rect x="260" y="122" width="395" height="30" rx="6" fill="#0E7C90"/>
+        <text class="b1cmV" x="272" y="142">28%</text>
+        <text class="b1cmL" x="240" y="194" text-anchor="end">moisturizer</text>
+        <rect x="260" y="174" width="367" height="30" rx="6" fill="#0E7C90"/>
+        <text class="b1cmV" x="272" y="194">26%</text>
+        <text class="b1cmL" x="240" y="246" text-anchor="end">set</text>
+        <rect x="260" y="226" width="169" height="30" rx="6" fill="#0E7C90"/>
+        <text class="b1cmV" x="272" y="246">12%</text>
+        <text class="b1cmN" x="40" y="282">rng.choice deals categories at p = .34 / .28 / .26 / .12 - the mix every later session inherits.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - four fixed category weights shape every later session's dataset</figcaption>
+    </figure>
+
     <div class="steps">
       <div class="step">
         <p><strong>Build the dataset (seed 42).</strong> Run this once; save it - b2 through b10 reload it.</p>
