@@ -306,15 +306,29 @@
   var mm = document.querySelector(".mindmap, #mindmap");
   if (mm) mm.classList.add("figscroll");
 
-  /* ----- every table gets a scroll container ----- */
-  document.querySelectorAll("table").forEach(function (t) {
-    var p = t.parentElement;
-    if (!p || p.classList.contains("tablescroll")) return;
-    var w = document.createElement("div");
-    w.className = "tablescroll";
-    p.insertBefore(w, t);
-    w.appendChild(t);
-  });
+  /* ----- every table gets a scroll container -----
+     Simulators inject tables after load, so run once now, once on a delay, and
+     again whenever the DOM changes. */
+  var wrapTables = function () {
+    document.querySelectorAll("table").forEach(function (t) {
+      var p = t.parentElement;
+      if (!p || p.classList.contains("tablescroll")) return;
+      var w = document.createElement("div");
+      w.className = "tablescroll";
+      p.insertBefore(w, t);
+      w.appendChild(t);
+    });
+  };
+  wrapTables();
+  setTimeout(wrapTables, 1200);
+  if (window.MutationObserver) {
+    var mo = new MutationObserver(function (recs) {
+      for (var i = 0; i < recs.length; i++) {
+        if (recs[i].addedNodes && recs[i].addedNodes.length) { wrapTables(); return; }
+      }
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+  }
 
   /* ----- accordion cards: stable ids + aria-expanded + deep links ----- */
   var slug = function (s) {

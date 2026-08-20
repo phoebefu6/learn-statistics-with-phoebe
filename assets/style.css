@@ -734,7 +734,8 @@ details.card.linked { border-color: var(--pv-flag); box-shadow: 0 0 0 3px var(--
   /* long inline code tokens and nowrap chips are the two things that still
      forced the page sideways below 640px: let them break rather than push
      the layout. Inside the media query only - desktop is untouched. */
-  :not(pre) > code, .prompt-box span, code span { overflow-wrap: anywhere; word-break: break-word; }
+  :not(pre) > code, .prompt-box span, code span,
+  p span, li span, td span { overflow-wrap: anywhere; word-break: break-word; }
   .chip, .syn-chip, .pill, .mode, .tag { white-space: normal; max-width: 100%; }
 
   /* the agenda bar truncated its own labels into nonsense - stack it */
