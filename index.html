@@ -78,11 +78,241 @@
   .noteband { margin-top: 2.4rem; background: var(--indigo-50); border: 1px solid var(--hairline); border-radius: var(--radius); padding: 1rem 1.2rem; font-size: .9rem; color: var(--ink); }
   .noteband b { color: var(--indigo); }
 
-  .poster-cta { margin-top: 1.4rem; font-size: .92rem; }
-  .poster-cta a { font-weight: 800; color: #fff; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.34); border-radius: 999px; padding: .55rem 1.05rem; text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; }
-  .poster-cta a:hover { background: rgba(255,255,255,.28); }
-  .poster-cta span { opacity: .8; margin-left: .6rem; font-size: .84rem; }
-  @media (max-width: 640px) { .poster-cta span { display: block; margin: .5rem 0 0; } }
+
+.vposter{
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --mono:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  transform-origin:top left;
+}
+.vposter{width:1400px;background:var(--paper);font-family:var(--sans);color:var(--ink);
+       -webkit-font-smoothing:antialiased}
+.vposter .vp-sheet{padding:34px 38px 0}
+.vposter .vp-top{display:flex;align-items:flex-end;gap:28px;border-bottom:3px solid var(--indigo-deep);
+       padding-bottom:18px;margin-bottom:20px}
+.vposter .vp-top h1{font-size:54px;font-weight:800;letter-spacing:-.03em;line-height:.95;color:var(--indigo-deep)}
+.vposter .vp-subs{flex:1;padding-bottom:4px}
+.vposter .vp-s1{font-size:20px;font-weight:700;color:var(--indigo);line-height:1.25}
+.vposter .vp-s2{font-size:14.5px;color:var(--muted);margin-top:5px;font-weight:500}
+.vposter .vp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.vposter .vp-mod{border:1px solid var(--hairline);border-radius:12px;background:#fff;overflow:hidden;
+       display:flex;flex-direction:column}
+.vposter .vp-mod > h2{background:var(--indigo-deep);color:#fff;font-size:14px;font-weight:800;
+       letter-spacing:.06em;padding:9px 14px;display:flex;align-items:baseline;gap:10px}
+.vposter .vp-mod > h2 b{font-family:var(--sans);font-size:11.5px;font-weight:800;color:var(--indigo-soft);
+       letter-spacing:.1em}
+.vposter .vp-body{padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;
+       justify-content:space-between}
+.vposter .vp-span2{grid-column:span 2}
+.vposter .vp-note{font-size:12.5px;color:var(--muted);line-height:1.45}
+.vposter .vp-flag{background:var(--amber-50);border:1px solid var(--amber);border-radius:7px;
+        padding:8px 11px;font-size:12.5px;color:var(--amber-ink);font-weight:600;line-height:1.4}
+.vposter .vp-tracks{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vposter .vp-tk h3{font-size:11px;font-weight:800;letter-spacing:.05em;color:#fff;background:var(--indigo);
+        padding:6px 9px;border-radius:6px;line-height:1.3}
+.vposter .vp-tk.vp-lead h3{background:var(--indigo-deep)}
+.vposter .vp-tk ol{list-style:none;margin-top:7px;display:flex;flex-direction:column;gap:3px}
+.vposter .vp-tk li{display:flex;gap:7px;align-items:baseline;font-size:12.5px;line-height:1.3}
+.vposter .vp-tk li i{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--indigo);
+        background:var(--indigo-50);border-radius:4px;padding:2px 5px;font-style:normal;min-width:29px;
+        text-align:center;flex:none}
+.vposter .vp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;
+        border-top:1px solid var(--hairline);padding-top:11px}
+.vposter .vp-stats div{text-align:center}
+.vposter .vp-stats b{display:block;font-size:23px;font-weight:800;color:var(--indigo-deep);line-height:1;
+        font-variant-numeric:tabular-nums}
+.vposter .vp-stats span{display:block;font-size:10.5px;font-weight:700;color:var(--muted);
+        text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
+.vposter .vp-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.vposter .vp-tbl{border:1px solid var(--indigo-soft);border-radius:8px;overflow:hidden;background:var(--indigo-50)}
+.vposter .vp-tbl h4{display:flex;justify-content:space-between;align-items:center;background:var(--indigo);
+        color:#fff;font-family:var(--mono);font-size:12.5px;font-weight:700;padding:5px 9px;gap:8px}
+.vposter .vp-tbl h4 span{font-family:var(--sans);font-size:11.5px;font-weight:800;color:var(--amber)}
+.vposter .vp-tbl ul{list-style:none;padding:7px 9px;display:flex;flex-direction:column;gap:1px}
+.vposter .vp-tbl li{font-family:var(--mono);font-size:11.5px;color:var(--ink);line-height:1.42;
+        overflow-wrap:anywhere}
+.vposter .vp-tbl li.vp-key{font-weight:700;color:var(--indigo-deep)}
+.vposter .vp-lad{display:flex;flex-direction:column-reverse;gap:3px}
+.vposter .vp-lad2{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;align-content:start}
+.vposter .vp-lad2 .vp-rung{margin:0}
+.vposter .vp-rung{display:flex;align-items:stretch;border:1px solid var(--hairline);border-radius:6px;overflow:hidden}
+.vposter .vp-rung i{font-family:var(--mono);font-size:11.5px;font-weight:700;background:var(--indigo-deep);
+        color:#fff;display:flex;align-items:center;padding:0 8px;font-style:normal;flex:none}
+.vposter .vp-kw{flex:1;padding:5px 8px;font-size:11.5px;line-height:1.32}
+.vposter .vp-kw b{font-family:var(--mono);font-weight:700;color:var(--indigo-deep)}
+.vposter .vp-kw em{font-style:normal;color:var(--muted);display:block;margin-top:1px;font-size:11px}
+.vposter .vp-rung u{background:var(--amber);color:var(--amber-ink);font-family:var(--mono);font-size:11.5px;
+        font-weight:700;text-decoration:none;display:flex;align-items:center;padding:0 8px;flex:none}
+.vposter .vp-ord{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vposter .vp-ord h3{font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--indigo-deep);
+        text-align:center;padding-bottom:6px;border-bottom:1px solid var(--hairline);margin-bottom:7px}
+.vposter .vp-ord ul{list-style:none;display:flex;flex-direction:column;gap:4px}
+.vposter .vp-ord li{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--indigo-soft);
+        border-radius:6px;padding:4px 8px;font-family:var(--mono);font-size:12px;font-weight:700;
+        color:var(--indigo-deep);background:#fff;gap:6px}
+.vposter .vp-ord li s{text-decoration:none;font-family:var(--sans);font-size:10.5px;font-weight:800;
+        color:var(--amber-ink);background:var(--amber-50);border:1px solid var(--amber);
+        border-radius:99px;min-width:17px;height:17px;display:grid;place-items:center;flex:none}
+.vposter .vp-jn{display:flex;flex-direction:column;gap:8px}
+.vposter .vp-row{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--hairline);
+        border-radius:7px;padding:7px 9px}
+.vposter .vp-row i{font-family:var(--mono);font-size:11.5px;font-weight:700;color:#fff;background:var(--indigo);
+        border-radius:6px;padding:3px 7px;font-style:normal;flex:none;margin-top:1px}
+.vposter .vp-row b{font-family:var(--mono);font-size:11.5px;color:var(--indigo-deep);display:block}
+.vposter .vp-row span{font-size:11.5px;color:var(--muted);line-height:1.35;display:block;margin-top:1px}
+.vposter .vp-traps{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:9px}
+.vposter .vp-trap{background:var(--amber-50);border:1px solid var(--amber);border-radius:8px;padding:9px 11px}
+.vposter .vp-trap b{font-size:12.5px;color:var(--amber-ink);font-weight:800;display:block;line-height:1.3}
+.vposter .vp-trap span{font-size:12px;color:var(--muted);line-height:1.4;display:block;margin-top:3px}
+.vposter .vp-trap span i{font-style:normal;font-weight:700;color:var(--indigo-deep)}
+.vposter .vp-fun{display:flex;flex-direction:column;gap:4px}
+.vposter .vp-step{display:flex;gap:9px;align-items:flex-start;background:var(--indigo-50);border-radius:6px;padding:6px 9px}
+.vposter .vp-step i{font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;background:var(--indigo);
+        border-radius:99px;min-width:18px;height:18px;display:grid;place-items:center;font-style:normal;
+        flex:none;margin-top:1px}
+.vposter .vp-step b{font-size:11.5px;font-weight:800;color:var(--indigo-deep);letter-spacing:.02em;display:block;line-height:1.3}
+.vposter .vp-step span{font-size:11.5px;color:var(--muted);display:block;line-height:1.32}
+.vposter .vp-conseq{border-top:1px solid var(--hairline);padding-top:10px}
+.vposter .vp-body > .vp-conseq:first-child{border-top:0;padding-top:0}
+.vposter .vp-conseq > b{font-size:10.5px;font-weight:800;color:var(--indigo-deep);letter-spacing:.06em;
+        text-transform:uppercase;display:block;margin-bottom:6px}
+.vposter .vp-code{font-family:var(--mono);font-size:11.5px;line-height:1.5;background:var(--code-bg);
+        color:var(--code-ink);border-radius:6px;padding:7px 9px;white-space:pre;overflow:hidden}
+.vposter .vp-code u{text-decoration:none;color:var(--amber);font-weight:700}
+.vposter .vp-code s{text-decoration:none;color:var(--indigo-soft);font-weight:700}
+.vposter .vp-conseq p{font-size:11.5px;color:var(--muted);line-height:1.4;margin:5px 0 7px}
+.vposter .vp-conseq p:last-child{margin-bottom:0}
+.vposter .vp-foot{margin:20px -38px 0;background:var(--indigo-deep);color:#fff;padding:13px 38px;
+        display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:700;gap:16px}
+.vposter .vp-mid{font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--indigo-soft);letter-spacing:.01em}
+
+  /* The poster lives at the foot of this page, below the knowledge map, rather than on a
+     page of its own. It holds its authored width and either scales to fit or scrolls,
+     because a reference sheet that reflows stops being a reference sheet. */
+  .poster-section { margin-top: 2.2rem; padding-top: 1.5rem; border-top: 1px solid var(--hairline); }
+  .poster-section h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: .2rem; }
+  .poster-section .ps-lede { color: var(--muted); font-size: .92rem; margin-bottom: .7rem; }
+  .poster-bar { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; margin-bottom: .7rem; }
+  .poster-bar .pb-note { font-size: .82rem; color: var(--muted); min-width: 0; flex: 1; }
+  .poster-btn {
+    font: inherit; font-size: .82rem; font-weight: 700; cursor: pointer;
+    border: 1px solid var(--hairline); background: #fff; color: var(--indigo-deep);
+    border-radius: 999px; padding: .5rem 1rem; min-height: 44px;
+    display: inline-flex; align-items: center; gap: .4rem; text-decoration: none;
+    transition: all .12s ease;
+  }
+  .poster-btn:hover { background: var(--indigo-50); border-color: var(--indigo-soft); }
+  .poster-btn[aria-pressed="true"] { background: var(--indigo-deep); color: #fff; border-color: var(--indigo-deep); }
+  .poster-frame {
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    background: var(--paper); overflow: auto; -webkit-overflow-scrolling: touch;
+  }
+  .poster-stage { position: relative; margin: 0 auto; }
+  .poster-frame > .poster-stage > img { display: block; width: 100%; height: auto; }
+.vposter{
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --mono:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  transform-origin:top left;
+}
+.vposter{width:1400px;background:var(--paper);font-family:var(--sans);color:var(--ink);
+       -webkit-font-smoothing:antialiased}
+.vposter .vp-sheet{padding:34px 38px 0}
+.vposter .vp-top{display:flex;align-items:flex-end;gap:28px;border-bottom:3px solid var(--indigo-deep);
+       padding-bottom:18px;margin-bottom:20px}
+.vposter .vp-top h1{font-size:54px;font-weight:800;letter-spacing:-.03em;line-height:.95;color:var(--indigo-deep)}
+.vposter .vp-subs{flex:1;padding-bottom:4px}
+.vposter .vp-s1{font-size:20px;font-weight:700;color:var(--indigo);line-height:1.25}
+.vposter .vp-s2{font-size:14.5px;color:var(--muted);margin-top:5px;font-weight:500}
+.vposter .vp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.vposter .vp-mod{border:1px solid var(--hairline);border-radius:12px;background:#fff;overflow:hidden;
+       display:flex;flex-direction:column}
+.vposter .vp-mod > h2{background:var(--indigo-deep);color:#fff;font-size:14px;font-weight:800;
+       letter-spacing:.06em;padding:9px 14px;display:flex;align-items:baseline;gap:10px}
+.vposter .vp-mod > h2 b{font-family:var(--sans);font-size:11.5px;font-weight:800;color:var(--indigo-soft);
+       letter-spacing:.1em}
+.vposter .vp-body{padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;
+       justify-content:space-between}
+.vposter .vp-span2{grid-column:span 2}
+.vposter .vp-note{font-size:12.5px;color:var(--muted);line-height:1.45}
+.vposter .vp-flag{background:var(--amber-50);border:1px solid var(--amber);border-radius:7px;
+        padding:8px 11px;font-size:12.5px;color:var(--amber-ink);font-weight:600;line-height:1.4}
+.vposter .vp-tracks{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vposter .vp-tk h3{font-size:11px;font-weight:800;letter-spacing:.05em;color:#fff;background:var(--indigo);
+        padding:6px 9px;border-radius:6px;line-height:1.3}
+.vposter .vp-tk.vp-lead h3{background:var(--indigo-deep)}
+.vposter .vp-tk ol{list-style:none;margin-top:7px;display:flex;flex-direction:column;gap:3px}
+.vposter .vp-tk li{display:flex;gap:7px;align-items:baseline;font-size:12.5px;line-height:1.3}
+.vposter .vp-tk li i{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--indigo);
+        background:var(--indigo-50);border-radius:4px;padding:2px 5px;font-style:normal;min-width:29px;
+        text-align:center;flex:none}
+.vposter .vp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;
+        border-top:1px solid var(--hairline);padding-top:11px}
+.vposter .vp-stats div{text-align:center}
+.vposter .vp-stats b{display:block;font-size:23px;font-weight:800;color:var(--indigo-deep);line-height:1;
+        font-variant-numeric:tabular-nums}
+.vposter .vp-stats span{display:block;font-size:10.5px;font-weight:700;color:var(--muted);
+        text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
+.vposter .vp-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.vposter .vp-tbl{border:1px solid var(--indigo-soft);border-radius:8px;overflow:hidden;background:var(--indigo-50)}
+.vposter .vp-tbl h4{display:flex;justify-content:space-between;align-items:center;background:var(--indigo);
+        color:#fff;font-family:var(--mono);font-size:12.5px;font-weight:700;padding:5px 9px;gap:8px}
+.vposter .vp-tbl h4 span{font-family:var(--sans);font-size:11.5px;font-weight:800;color:var(--amber)}
+.vposter .vp-tbl ul{list-style:none;padding:7px 9px;display:flex;flex-direction:column;gap:1px}
+.vposter .vp-tbl li{font-family:var(--mono);font-size:11.5px;color:var(--ink);line-height:1.42;
+        overflow-wrap:anywhere}
+.vposter .vp-tbl li.vp-key{font-weight:700;color:var(--indigo-deep)}
+.vposter .vp-lad{display:flex;flex-direction:column-reverse;gap:3px}
+.vposter .vp-lad2{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;align-content:start}
+.vposter .vp-lad2 .vp-rung{margin:0}
+.vposter .vp-rung{display:flex;align-items:stretch;border:1px solid var(--hairline);border-radius:6px;overflow:hidden}
+.vposter .vp-rung i{font-family:var(--mono);font-size:11.5px;font-weight:700;background:var(--indigo-deep);
+        color:#fff;display:flex;align-items:center;padding:0 8px;font-style:normal;flex:none}
+.vposter .vp-kw{flex:1;padding:5px 8px;font-size:11.5px;line-height:1.32}
+.vposter .vp-kw b{font-family:var(--mono);font-weight:700;color:var(--indigo-deep)}
+.vposter .vp-kw em{font-style:normal;color:var(--muted);display:block;margin-top:1px;font-size:11px}
+.vposter .vp-rung u{background:var(--amber);color:var(--amber-ink);font-family:var(--mono);font-size:11.5px;
+        font-weight:700;text-decoration:none;display:flex;align-items:center;padding:0 8px;flex:none}
+.vposter .vp-ord{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vposter .vp-ord h3{font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--indigo-deep);
+        text-align:center;padding-bottom:6px;border-bottom:1px solid var(--hairline);margin-bottom:7px}
+.vposter .vp-ord ul{list-style:none;display:flex;flex-direction:column;gap:4px}
+.vposter .vp-ord li{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--indigo-soft);
+        border-radius:6px;padding:4px 8px;font-family:var(--mono);font-size:12px;font-weight:700;
+        color:var(--indigo-deep);background:#fff;gap:6px}
+.vposter .vp-ord li s{text-decoration:none;font-family:var(--sans);font-size:10.5px;font-weight:800;
+        color:var(--amber-ink);background:var(--amber-50);border:1px solid var(--amber);
+        border-radius:99px;min-width:17px;height:17px;display:grid;place-items:center;flex:none}
+.vposter .vp-jn{display:flex;flex-direction:column;gap:8px}
+.vposter .vp-row{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--hairline);
+        border-radius:7px;padding:7px 9px}
+.vposter .vp-row i{font-family:var(--mono);font-size:11.5px;font-weight:700;color:#fff;background:var(--indigo);
+        border-radius:6px;padding:3px 7px;font-style:normal;flex:none;margin-top:1px}
+.vposter .vp-row b{font-family:var(--mono);font-size:11.5px;color:var(--indigo-deep);display:block}
+.vposter .vp-row span{font-size:11.5px;color:var(--muted);line-height:1.35;display:block;margin-top:1px}
+.vposter .vp-traps{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:9px}
+.vposter .vp-trap{background:var(--amber-50);border:1px solid var(--amber);border-radius:8px;padding:9px 11px}
+.vposter .vp-trap b{font-size:12.5px;color:var(--amber-ink);font-weight:800;display:block;line-height:1.3}
+.vposter .vp-trap span{font-size:12px;color:var(--muted);line-height:1.4;display:block;margin-top:3px}
+.vposter .vp-trap span i{font-style:normal;font-weight:700;color:var(--indigo-deep)}
+.vposter .vp-fun{display:flex;flex-direction:column;gap:4px}
+.vposter .vp-step{display:flex;gap:9px;align-items:flex-start;background:var(--indigo-50);border-radius:6px;padding:6px 9px}
+.vposter .vp-step i{font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;background:var(--indigo);
+        border-radius:99px;min-width:18px;height:18px;display:grid;place-items:center;font-style:normal;
+        flex:none;margin-top:1px}
+.vposter .vp-step b{font-size:11.5px;font-weight:800;color:var(--indigo-deep);letter-spacing:.02em;display:block;line-height:1.3}
+.vposter .vp-step span{font-size:11.5px;color:var(--muted);display:block;line-height:1.32}
+.vposter .vp-conseq{border-top:1px solid var(--hairline);padding-top:10px}
+.vposter .vp-body > .vp-conseq:first-child{border-top:0;padding-top:0}
+.vposter .vp-conseq > b{font-size:10.5px;font-weight:800;color:var(--indigo-deep);letter-spacing:.06em;
+        text-transform:uppercase;display:block;margin-bottom:6px}
+.vposter .vp-code{font-family:var(--mono);font-size:11.5px;line-height:1.5;background:var(--code-bg);
+        color:var(--code-ink);border-radius:6px;padding:7px 9px;white-space:pre;overflow:hidden}
+.vposter .vp-code u{text-decoration:none;color:var(--amber);font-weight:700}
+.vposter .vp-code s{text-decoration:none;color:var(--indigo-soft);font-weight:700}
+.vposter .vp-conseq p{font-size:11.5px;color:var(--muted);line-height:1.4;margin:5px 0 7px}
+.vposter .vp-conseq p:last-child{margin-bottom:0}
+.vposter .vp-foot{margin:20px -38px 0;background:var(--indigo-deep);color:#fff;padding:13px 38px;
+        display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:700;gap:16px}
+.vposter .vp-mid{font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--indigo-soft);letter-spacing:.01em}
 </style>
 </head>
 <body>
@@ -98,7 +328,6 @@
       <div class="stat"><b data-count="3">3</b><span>live in-browser stat tools</span></div>
       <div class="stat"><b data-count="1">1</b><span>running brand: Lumen</span></div>
     </div>
-    <p class="poster-cta"><a href="poster.html">&#128208; The whole course on one poster</a> <span>three shapes, six fallacies, one honest error bar</span></p>
   </div>
 </header>
 
@@ -302,6 +531,157 @@
     <div class="mm-wrap"><div id="mindmap"></div></div>
   </section>
 
+
+
+
+  <section class="section poster-section" id="poster">
+    <h2>The whole course on one sheet 📐</h2>
+    <p class="ps-lede">Seven modules: both tracks, the three shapes almost every business number takes, what an honest error bar actually claims, the builder ladder from describing data to regression, which test to reach for, the six fallacies that fool smart rooms, and the Lumen checkout claim worked end to end.</p>
+    <div class="poster-bar">
+      <button class="poster-btn" id="zoomToggle" type="button" aria-pressed="false">Actual size</button>
+      <a class="poster-btn" href="assets/poster/learn-statistics-with-phoebe-poster.png" download>Download for print (2800px)</a>
+      <span class="pb-note">Every word here is real selectable text, so it stays sharp however far you zoom.</span>
+    </div>
+    <div class="poster-frame" id="frame">
+      <div class="poster-stage" id="stage">
+        <div class="vposter" id="vp">
+<div class="vp-sheet">
+
+  <div class="vp-top">
+    <h1>learn statistics<br>with phoebe</h1>
+    <div class="vp-subs">
+      <div class="vp-s1">Is this real, or is it noise?</div>
+      <div class="vp-s2">16 sessions - two tracks - one running brand, Lumen - no math you have to do</div>
+    </div>
+  </div>
+
+  <div class="vp-grid">
+    <section class="vp-mod">
+      <h2><b>SEC-01</b> TWO TRACKS</h2>
+      <div class="vp-body">
+        <div class="vp-tracks">
+<div class="vp-tk vp-lead"><h3>LEADER TRACK<br>read it without being fooled, no code</h3><ol>
+<li><i>a1</i>Reading the data</li>
+<li><i>a2</i>Thinking in odds</li>
+<li><i>a3</i>The bell and its cousins</li>
+<li><i>a4</i>What a sample can say</li>
+<li><i>a5</i>The number and its error bars</li>
+<li><i>a6</i>Real, or noise?</li>
+</ol></div>
+<div class="vp-tk"><h3>BUILDER TRACK<br>run it yourself in scipy</h3><ol>
+<li><i>b1</i>Describe the data</li>
+<li><i>b2</i>Probability and simulation</li>
+<li><i>b3</i>Random variables</li>
+<li><i>b4</i>Distributions in scipy</li>
+<li><i>b5</i>Sampling and the CLT</li>
+<li><i>b6</i>Estimation and MLE</li>
+<li><i>b7</i>Confidence intervals</li>
+<li><i>b8</i>Hypothesis testing</li>
+<li><i>b9</i>Chi-square and ANOVA</li>
+<li><i>b10</i>Correlation and regression</li>
+</ol></div>
+</div>
+        <div class="vp-note">Both tracks read the same numbers off the same brand.</div>
+        <div class="vp-stats"><div><b>16</b><span>sessions</span></div><div><b>6</b><span>leader</span></div><div><b>10</b><span>builder</span></div><div><b>45</b><span>min each</span></div></div>
+      </div>
+    </section>
+    <section class="vp-mod">
+      <h2><b>SEC-02</b> THE THREE SHAPES</h2>
+      <div class="vp-body">
+        <div class="vp-note">Almost every number a business tracks falls into one of three shapes. Name the shape and you can read the number properly.</div>
+        <div class="vp-cards">
+<div class="vp-tbl"><h4>normal<span>bell</span></h4><ul><li class="vp-key">heights, errors</li><li class="vp-key">averages of anything</li><li>typical: the centre</li><li>swings: symmetric</li></ul></div>
+<div class="vp-tbl"><h4>binomial<span>tries</span></h4><ul><li class="vp-key">successes out of</li><li class="vp-key">a fixed set of tries</li><li>typical: rate x tries</li><li>swings: widest at 50%</li></ul></div>
+<div class="vp-tbl"><h4>poisson<span>rate</span></h4><ul><li class="vp-key">events per stretch</li><li class="vp-key">of time</li><li>typical: the rate</li><li>swings: grow with count</li></ul></div>
+</div>
+        <div class="vp-conseq"><b>Why the shape comes first</b><p>The shape tells you what is typical, what is surprising, and how wide the swings should be. Read a count as if it were a bell and every unusual week looks like a crisis.</p></div>
+      </div>
+    </section>
+    <section class="vp-mod">
+      <h2><b>SEC-03</b> THE HONEST NUMBER</h2>
+      <div class="vp-body">
+        <div class="vp-note">A single number is a best guess. The honest version carries its margin of error, and the margin is the part people drop.</div>
+        <div class="vp-conseq"><b>Point estimate against interval</b><div class="vp-code">point estimate   3.2%
+
+small sample     [2.0% <u>4.4%</u>]
+large sample     [3.0% <s>3.4%</s>]</div><p>Same best guess, very different confidence. Bigger samples make the interval tighter: more data, more certainty, narrower error bar.</p></div>
+        <div class="vp-flag">3.2% +/- 0.5pp is the same claim as [2.7%, 3.7%]. If two error bars overlap, "different" is probably just noise.</div>
+        <div class="vp-conseq"><b>The one rule that governs it</b><p>Bigger samples make the interval tighter. Same best guess, more certainty, narrower bar. Every confidence interval on the sheet is that one rule applied.</p></div>
+      </div>
+    </section>
+    <section class="vp-mod vp-span2">
+      <h2><b>SEC-04</b> THE BUILDER LADDER</h2>
+      <div class="vp-body">
+        <div class="vp-lad2">
+<div class="vp-rung"><i>1</i><div class="vp-kw"><b>mean, median, spread, shape</b> <em>describe what you already have</em></div><u>b1</u></div>
+<div class="vp-rung"><i>2</i><div class="vp-kw"><b>simulation</b> <em>run it when the formula is harder than the loop</em></div><u>b2</u></div>
+<div class="vp-rung"><i>3</i><div class="vp-kw"><b>expectation, variance</b> <em>the two numbers that summarise any variable</em></div><u>b3</u></div>
+<div class="vp-rung"><i>4</i><div class="vp-kw"><b>scipy.stats</b> <em>one API for every shape of randomness</em></div><u>b4</u></div>
+<div class="vp-rung"><i>5</i><div class="vp-kw"><b>CLT</b> <em>why sample means go normal whatever the source</em></div><u>b5</u></div>
+<div class="vp-rung"><i>6</i><div class="vp-kw"><b>MLE</b> <em>fit a shape to the data you observed</em></div><u>b6</u></div>
+<div class="vp-rung"><i>7</i><div class="vp-kw"><b>confidence intervals</b> <em>the honest error bar</em></div><u>b7</u></div>
+<div class="vp-rung"><i>8</i><div class="vp-kw"><b>hypothesis tests</b> <em>is the difference real</em></div><u>b8</u></div>
+<div class="vp-rung"><i>9</i><div class="vp-kw"><b>chi-square, ANOVA</b> <em>counts, and more than two groups</em></div><u>b9</u></div>
+<div class="vp-rung"><i>10</i><div class="vp-kw"><b>correlation, regression</b> <em>association, then prediction</em></div><u>b10</u></div>
+</div>
+        <div class="vp-conseq"><b>How to climb it</b><p>Rungs 1 to 4 are description. Rung 5 is the hinge: once sample means go normal, every error bar and test above it becomes available.</p></div>
+      </div>
+    </section>
+    <section class="vp-mod">
+      <h2><b>SEC-05</b> WHICH TEST, WHICH TOOL</h2>
+      <div class="vp-body">
+        <div class="vp-jn">
+<div class="vp-row"><i>b10</i><div><b>Pearson</b><span>Linear association between two numbers. Blind to curves.</span></div></div>
+<div class="vp-row"><i>b10</i><div><b>Spearman</b><span>Monotonic association. Survives a curve that Pearson reads as zero.</span></div></div>
+<div class="vp-row"><i>b9</i><div><b>chi-square</b><span>Counts falling into categories. Are these proportions different?</span></div></div>
+<div class="vp-row"><i>b9</i><div><b>ANOVA</b><span>More than two groups at once, without testing every pair.</span></div></div>
+<div class="vp-row"><i>b10</i><div><b>regression</b><span>Predict a number from others. Simple and multiple, fitted to Lumen order value.</span></div></div>
+</div>
+        <div class="vp-note">Session b8 runs the tests in scipy and statsmodels; b9 and b10 pick the right one.</div>
+      </div>
+    </section>
+    <section class="vp-mod vp-span2">
+      <h2><b>SEC-06</b> THE FALLACY GAUNTLET</h2>
+      <div class="vp-body">
+        <div class="vp-traps">
+<div class="vp-trap"><b>p-hacking</b><span>Test twenty noise features and one clears the bar by luck. <i>Ask: how many things were tested before this one?</i></span></div>
+<div class="vp-trap"><b>Correlation is not causation</b><span>The line fits and still explains nothing. <i>Ask: what else moved at the same time?</i></span></div>
+<div class="vp-trap"><b>Simpson's paradox</b><span>Grouping the same rows can reverse the verdict outright. <i>Ask: does this hold inside every segment?</i></span></div>
+<div class="vp-trap"><b>Base-rate neglect</b><span>A test that is 99 percent accurate is still mostly wrong on a rare event. <i>Ask: how common is the thing being detected?</i></span></div>
+<div class="vp-trap"><b>The over-trusted average</b><span>The mean is the most over-trusted number in business, and one outlier moves it. <i>Ask: what does the median say?</i></span></div>
+<div class="vp-trap"><b>Two bars that overlap</b><span>Two error bars touching is not two different results. <i>Ask: do the intervals overlap?</i></span></div>
+</div>
+        <div class="vp-flag">A correlation of zero can hide a perfect curve. Pearson measures straight lines only; Spearman catches anything monotonic.</div>
+        <div class="vp-conseq"><b>Why this is the capstone, not the footnote</b><p>Every fallacy here is an honest calculation. Nobody lied, nobody mistyped a formula. The number is right and the reading is wrong, which is exactly why the fallacy survives a review that only checks the arithmetic.</p></div>
+      </div>
+    </section>
+    <section class="vp-mod">
+      <h2><b>SEC-07</b> IS IT REAL, OR LUCK?</h2>
+      <div class="vp-body">
+        <div class="vp-conseq"><b>The claim on the table, from session a6</b><div class="vp-code">Lumen checkout        old 3.2%   -&gt;   new <u>3.6%</u>
+                      +0.4 points, a 12.5% relative gain</div><p>The room is already celebrating. With a small sample a jump that size happens by pure luck more often than you would guess.</p></div>
+        <div class="vp-fun">
+<div class="vp-step"><i>1</i><div><b>NAME THE SHAPE</b><span>counts out of tries, so binomial, not a bell</span></div></div>
+<div class="vp-step"><i>2</i><div><b>GET THE INTERVAL</b><span>the point estimate alone cannot answer the question</span></div></div>
+<div class="vp-step"><i>3</i><div><b>CHECK THE OVERLAP</b><span>if the two intervals overlap, hold the champagne</span></div></div>
+<div class="vp-step"><i>4</i><div><b>ASK WHAT ELSE WAS TESTED</b><span>one winner out of twenty is not a winner</span></div></div>
+<div class="vp-step"><i>5</i><div><b>SIZE THE NEXT TEST FIRST</b><span>which is where the experimentation course starts</span></div></div>
+</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="vp-foot">
+    <span>learn statistics with phoebe</span>
+    <span class="vp-mid">16 sessions - 3 shapes - 6 fallacies - 1 honest error bar</span>
+    <span>by Phoebe Fu</span>
+  </div>
+</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <footer class="pagefoot">
     <span>learn-statistics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a> · sequels: <a href="https://phoebefu6.github.io/learn-experimentation-with-phoebe/">learn-experimentation</a> · <a href="https://phoebefu6.github.io/learn-python-data-analysis-with-phoebe/">learn-python-data-analysis</a></span>
   </footer>
@@ -368,5 +748,38 @@ window.MINDMAP_DATA = {
 <script src="assets/stat-live.js?v=6"></script>
 <script src="assets/mindmap.js?v=6"></script>
 <script src="assets/app.js?v=6"></script>
+
+
+<script>
+(function () {
+  var vp = document.getElementById('vp');
+  if (!vp) return;
+  var W = 1400, MIN_FIT = 0.6;
+  var frame = document.getElementById('frame'), stage = document.getElementById('stage'),
+      btn = document.getElementById('zoomToggle');
+  var userChose = false, actual = false;
+  function full() { vp.style.transform = 'none'; stage.style.height = ''; stage.style.width = W + 'px'; }
+  function apply() {
+    var avail = frame.clientWidth;
+    if (!avail || avail < 40) { full(); return; }   // a hidden frame must never scale to nothing
+    var s = avail / W;
+    if (!userChose) actual = s < MIN_FIT;           // below 0.6 the labels stop being readable
+    if (actual || s >= 1) full();
+    else {
+      vp.style.transform = 'scale(' + s + ')';
+      stage.style.width = W + 'px';
+      stage.style.height = Math.ceil(vp.offsetHeight * s) + 'px';
+    }
+    btn.setAttribute('aria-pressed', actual ? 'true' : 'false');
+    btn.textContent = actual ? 'Fit to width' : 'Actual size';
+  }
+  btn.addEventListener('click', function () {
+    userChose = true; actual = !actual; apply(); if (actual) frame.scrollLeft = 0;
+  });
+  window.addEventListener('resize', apply);
+  if (typeof ResizeObserver === 'function') new ResizeObserver(apply).observe(frame);
+  apply();
+})();
+</script>
 </body>
 </html>
