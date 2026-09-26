@@ -101,8 +101,9 @@ body {
   border-bottom: 1px solid var(--hairline);
   padding: .55rem 0;
 }
-.toolbar .wrap { display: flex; align-items: center; gap: .6rem; }
-.toolbar .crumb { font-size: .8rem; color: var(--muted); font-weight: 600; margin-right: auto; }
+.toolbar .wrap { display: flex; align-items: center; gap: .5rem; flex-wrap: nowrap; }
+.toolbar .crumb { font-size: .8rem; color: var(--muted); font-weight: 600; margin-right: auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.toolbar .btn { white-space: nowrap; flex: none; padding: .38rem .8rem; font-size: .78rem; line-height: 1.2; }
 .toolbar .crumb a { color: var(--indigo); text-decoration: none; }
 .btn {
   border: 1px solid var(--hairline);
@@ -302,11 +303,15 @@ table.clean td:first-child { font-weight: 600; }
 /* ---------- demo steps ---------- */
 .steps { counter-reset: step; margin: .6rem 0 1rem; }
 .step {
-  display: flex;
-  gap: .9rem;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: .9rem;
+  row-gap: .2rem;
   padding: .85rem 0;
   border-bottom: .5px solid var(--hairline);
 }
+.step > * { grid-column: 2; min-width: 0; }
+.step > .prompt-box { margin: .8rem 0 .4rem; }
 .step:last-child { border-bottom: none; }
 .step::before {
   counter-increment: step;
@@ -727,7 +732,10 @@ details.card.linked { border-color: var(--pv-flag); box-shadow: 0 0 0 3px var(--
   /* 44px tap targets */
   details.card summary { min-height: 44px; }
   .qopt { min-height: 44px; display: flex; align-items: center; padding: .7rem .9rem; }
-  .toolbar .btn, .pagefoot a { min-height: 44px; display: inline-flex; align-items: center; }
+  .toolbar .btn, .pagefoot a { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+  .toolbar .crumb, .toolbar #zoom-toggle { display: none; }
+  .toolbar .btn { flex: 1 1 0; padding: .3rem .4rem; font-size: .72rem; }
+  table.clean { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }
 
 @media (max-width: 640px) {
