@@ -1110,7 +1110,7 @@ window.MINDMAP_DATA = {
     if (actual || s >= 1) full();
     else {
       vp.style.transform = 'scale(' + s + ')';
-      stage.style.width = W + 'px';
+      stage.style.width = Math.ceil(W * s) + 'px';       /* the stage is the SCALED box, or it overflows the frame */
       stage.style.height = Math.ceil(vp.offsetHeight * s) + 'px';
     }
     btn.setAttribute('aria-pressed', actual ? 'true' : 'false');
