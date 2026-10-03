@@ -2,6 +2,7 @@
    Accent: indigo #0E7C90 · Ink: #10232A · Flagship: amber #F97362 */
 
 :root {
+  --indigo-text: #0E788B;
   --indigo: #0E7C90;
   --indigo-deep: #0B5563;
   --indigo-mid: #22A5B8;
@@ -152,7 +153,7 @@ main { padding: 2.5rem 0 4rem; }
   text-transform: uppercase;
   letter-spacing: .08em;
 }
-.tag.concept { background: var(--indigo-50); color: var(--indigo); }
+.tag.concept { background: var(--indigo-50); color: var(--indigo-text); }
 .tag.demo { background: var(--amber-50); color: var(--amber-ink); }
 .tag.exercise { background: var(--ink); color: #fff; }
 
@@ -221,7 +222,7 @@ details.card .body h4:first-child { margin-top: 0; }
   font-weight: 600;
 }
 .pill.solid { background: var(--indigo); color: #fff; }
-.pill.light { background: var(--indigo-50); color: var(--indigo); }
+.pill.light { background: var(--indigo-50); color: var(--indigo-text); }
 .pill.inkpill { background: var(--ink); color: #fff; }
 .pill.amber, .pill.peach { background: var(--amber); color: var(--amber-ink); }
 .pill.bare { color: var(--faint); }
@@ -320,7 +321,7 @@ table.clean td:first-child { font-weight: 600; }
   width: 1.7rem; height: 1.7rem;
   border-radius: 999px;
   background: var(--indigo-50);
-  color: var(--indigo);
+  color: var(--indigo-text);
   font-weight: 700;
   font-size: .85rem;
   display: inline-flex;
