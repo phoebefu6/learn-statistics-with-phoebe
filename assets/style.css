@@ -16,8 +16,8 @@
   --amber-ink: #4A1109;
   --amber-50: #FFF1EF;
   --paper: #FFFFFF;
-  --code-bg: #0A1A20;
-  --code-ink: #D6F0F5;
+  --code-bg: #E6F6F9;
+  --code-ink: #10232A;
   --radius: 14px;
 }
 
@@ -47,7 +47,7 @@ body {
   font-size: .75rem;
   letter-spacing: .18em;
   text-transform: uppercase;
-  opacity: .85;
+  opacity: 1;
   font-weight: 600;
 }
 .masthead h1 {
@@ -58,7 +58,7 @@ body {
   letter-spacing: -.02em;
 }
 .masthead h1 .accent { color: inherit; }
-.masthead .sub { font-size: 1.05rem; opacity: .92; max-width: 44rem; }
+.masthead .sub { font-size: 1.05rem; opacity: 1; max-width: 44rem; }
 
 .chip-row { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.1rem; }
 .chip {
@@ -72,7 +72,7 @@ body {
   white-space: nowrap;
 }
 .chip.level { background: #fff; color: var(--indigo); }
-.chip.audience { background: rgba(255,255,255,.16); color: #fff; border: 1px solid rgba(255,255,255,.35); }
+.chip.audience { background: rgba(255,255,255,.08); color: #fff; border: 1px solid rgba(255,255,255,.35); }
 .chip.time { background: var(--ink); color: #fff; font-variant-numeric: tabular-nums; }
 
 /* ---------- agenda bar ---------- */
@@ -225,7 +225,7 @@ details.card .body h4:first-child { margin-top: 0; }
 .pill.light { background: var(--indigo-50); color: var(--indigo-text); }
 .pill.inkpill { background: var(--ink); color: #fff; }
 .pill.amber, .pill.peach { background: var(--amber); color: var(--amber-ink); }
-.pill.bare { color: var(--faint); }
+.pill.bare { color: var(--muted); }
 
 /* ---------- 4D grid ---------- */
 .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: .8rem; margin: .5rem 0 1rem; }
@@ -254,10 +254,11 @@ table.clean td { padding: .7rem .6rem; border-bottom: .5px solid var(--hairline)
 table.clean td:first-child { font-weight: 600; }
 
 /* ---------- prompt boxes ---------- */
-.prompt-box {
+.prompt-box{
   position: relative;
-  background: var(--code-bg);
-  color: var(--code-ink);
+  background: #E6F6F9;
+  border: 1px solid #DCEBEE;
+  color: #10232A;
   border-radius: var(--radius);
   padding: 1.1rem 1.2rem;
   margin: 1rem 0 1.2rem;
@@ -267,12 +268,12 @@ table.clean td:first-child { font-weight: 600; }
   white-space: pre-wrap;
   word-break: break-word;
 }
-.prompt-box .label {
+.prompt-box .label{
   position: absolute;
   top: -0.7rem;
   left: 1rem;
-  background: var(--indigo);
-  color: #fff;
+  background: #0E7C90;
+  color: #FFFFFF;
   font-family: "Inter", -apple-system, sans-serif;
   font-size: .68rem;
   font-weight: 700;
@@ -283,13 +284,13 @@ table.clean td:first-child { font-weight: 600; }
 }
 .prompt-box.bad .label { background: var(--faint); color: var(--ink); }
 .prompt-box.good .label { background: var(--amber); color: var(--amber-ink); }
-.copy-btn {
+.copy-btn{
   position: absolute;
   top: .7rem;
   right: .7rem;
-  background: rgba(255,255,255,.1);
-  border: 1px solid rgba(255,255,255,.25);
-  color: #fff;
+  background: #FFFFFF;
+  border: 1px solid #DCEBEE;
+  color: #10232A;
   border-radius: 999px;
   padding: .25rem .8rem;
   font-size: .72rem;
@@ -298,7 +299,7 @@ table.clean td:first-child { font-weight: 600; }
   font-family: "Inter", -apple-system, sans-serif;
   transition: background .15s ease;
 }
-.copy-btn:hover { background: rgba(255,255,255,.22); }
+.copy-btn:hover { background: #DCEBEE; }
 .copy-btn.copied { background: var(--amber); border-color: var(--amber); color: var(--amber-ink); }
 
 /* ---------- demo steps ---------- */
@@ -388,11 +389,11 @@ figure.zoomable figcaption {
   gap: .4rem;
 }
 
-.lightbox {
+.lightbox{
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(16,35,42,.9);
+  background: rgba(255,255,255,.97);
   display: none;
   align-items: center;
   justify-content: center;
@@ -400,8 +401,10 @@ figure.zoomable figcaption {
   cursor: zoom-out;
 }
 .lightbox.open { display: flex; }
-.lightbox .inner {
+.lightbox .inner{
   background: #fff;
+  border: 1px solid #DCEBEE;
+  box-shadow: 0 10px 40px rgba(16,35,42,.14);
   border-radius: var(--radius);
   padding: 2rem;
   max-width: 94vw;
@@ -409,13 +412,12 @@ figure.zoomable figcaption {
   overflow: auto;
 }
 .lightbox .inner svg, .lightbox .inner img { width: min(88vw, 70rem); height: auto; }
-.lightbox .close-hint {
+.lightbox .close-hint{
   position: fixed;
   top: 1rem; right: 1.4rem;
-  color: #fff;
+  color: #10232A;
   font-size: .8rem;
   font-weight: 600;
-  opacity: .8;
 }
 
 /* ---------- courses covered ---------- */
@@ -434,19 +436,20 @@ figure.zoomable figcaption {
 .covered-row .note { margin-left: auto; color: var(--muted); font-size: .78rem; text-align: right; }
 
 /* ---------- cheat sheet footer ---------- */
-.cheat {
-  background: var(--ink);
-  color: #fff;
+.cheat{
+  background: #E6F6F9;
+  border: 1px solid #DCEBEE;
+  color: #10232A;
   border-radius: var(--radius);
   padding: 1.6rem 1.6rem 1.3rem;
   margin-top: 3rem;
 }
 .cheat h3 { font-size: 1.1rem; margin-bottom: 1rem; }
-.cheat h3 span { color: var(--indigo-soft); }
+.cheat h3 span { color: #0B5563; }
 .cheat .grid-2 { gap: 1rem; }
 .cheat .cheat-item { border-left: 3px solid var(--indigo-mid); padding-left: .8rem; }
-.cheat .cheat-item b { display: block; font-size: .85rem; color: var(--indigo-soft); }
-.cheat .cheat-item span { font-size: .82rem; opacity: .85; }
+.cheat .cheat-item b { display: block; font-size: .85rem; color: #0B5563; }
+.cheat .cheat-item span { font-size: .82rem; color: #557079; }
 
 footer.pagefoot {
   border-top: 1px solid var(--hairline);
@@ -541,7 +544,7 @@ details.card summary:hover { background: #F5FBFC; }
   margin-top: 1.1rem;
   flex-wrap: wrap;
 }
-.journey .jlabel { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; opacity: .8; margin-right: .3rem; }
+.journey .jlabel { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; opacity: 1; margin-right: .3rem; }
 .journey a {
   width: 1.7rem; height: 1.7rem;
   border-radius: 999px;
@@ -776,3 +779,33 @@ figure.zoomable.can-scroll figcaption::after {
   color: var(--pv-flag);
 }
 /* === /LWP-PATCH === */
+
+/* layout-patch-3: phone-width overflow (2026-10-10) */
+.sql-bar { flex-wrap: wrap; }
+@media (max-width: 480px) {
+  .covered-row { flex-wrap: wrap; }
+  .covered-row .note { margin-left: 0; text-align: left; flex-basis: 100%; }
+  details.card summary { flex-wrap: wrap; }
+  details.card summary .mini { white-space: normal; }
+  .wk, .sqlbox, .prompt-box, pre { max-width: 100%; overflow-x: auto; }
+  .mono, code, strong, .note { overflow-wrap: anywhere; }
+  select, input[type=range], label { max-width: 100%; }
+  canvas, svg, img { max-width: 100%; height: auto; }
+  .tree-kids, .tree-node-wrap, .tree-node, .rb-night, .al-row, .gd-field, .tl-row, .sl-row { max-width: 100%; overflow-x: auto; }
+  .tl-cols, .sl-cols, .bb-cols, .ev-cols, [class$="-cols"] { grid-template-columns: 1fr !important; display: grid; }
+  .tl-cols > *, .sl-cols > *, [class$="-cols"] > * { min-width: 0; max-width: 100%; }
+  .mono { white-space: normal; }
+  .er-w, .bb-lab, .tl-lev, .sl-lev { max-width: 100%; white-space: normal; }
+}
+/* contrast-patch-2b */
+.cheat a { color: var(--indigo-deep, var(--ink)); }
+.chip.audience { background: transparent; border-color: rgba(255,255,255,.55); }
+.masthead a, .masthead .sub a { color: #fff; text-decoration: underline; text-underline-offset: 2px; }
+.prompt-box b, .prompt-box strong { color: var(--indigo-deep, var(--ink)); }
+.prompt-box span, .prompt-box em, .prompt-box i { color: inherit; }
+.pp-stamp i { color: var(--ink); }
+/* contrast-patch-2 */
+.klabel, .section-kicker .klabel, details.card summary .caret, .crumb a, .toolbar .crumb a, .pagenav a, .pagefoot a, footer.pagefoot a, .pagefoot p a, .cnum, .course-card .cnum, .pill.light, .covered-row .status.light, .paths a, .tag.concept, .chip.level, .quiz-score, .mmd-launch, .mode.self, .legend .pill.light { color: var(--indigo-deep); }
+.chip.audience { background: transparent; border-color: rgba(255,255,255,.55); }
+.journey a { background: var(--indigo-deep); border-color: rgba(255,255,255,.6); }
+.skip-link { background: var(--indigo-deep); }
